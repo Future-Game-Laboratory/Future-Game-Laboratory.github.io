@@ -3,7 +3,7 @@
 The site is built and deployed by `.github/workflows/deploy-pages.yml` whenever
 `main` is updated. The production URL is:
 
-<https://future-game-laboratory.github.io/FGL-Blog/>
+<https://future-game-laboratory.github.io/>
 
 ## One-time repository setup
 
@@ -26,17 +26,18 @@ npm run build
 npm run preview
 ```
 
-The repository is a project site, so Astro uses `/FGL-Blog` as its base path.
-Internal links and public assets must continue to include this base path through
+The repository is the organization site, so Astro uses `/` as its base path.
+Internal links and public assets resolve directly from the root domain through
 the shared link component or `import.meta.env.BASE_URL`.
 
-## Changing the repository name
+## Hosting as a project site instead
 
-If the repository is renamed, update all of the following together:
+If the Blog later moves back to a normal project repository, update all of the
+following together:
 
 - `base` and `site` in `astro.config.ts`
 - `SITE.href` in `src/consts.ts`
 - the two font URLs in `src/styles/global.css`
 
-If the repository becomes `Future-Game-Laboratory.github.io`, use `/` as the
-base path and `https://future-game-laboratory.github.io/` as the site URL.
+For example, a repository named `FGL-Blog` would use `/FGL-Blog` as the base
+path and `https://future-game-laboratory.github.io/FGL-Blog/` as the site URL.

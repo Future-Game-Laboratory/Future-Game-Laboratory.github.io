@@ -39,7 +39,7 @@ const initialDraft: EditorDraft = {
 
 const initialSettings: PublishSettings = {
   owner: 'Future-Game-Laboratory',
-  repo: 'FGL-Blog',
+  repo: 'Future-Game-Laboratory.github.io',
   branch: 'main',
   token: '',
 }

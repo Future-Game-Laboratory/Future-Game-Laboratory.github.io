@@ -2,7 +2,7 @@
 
 Future Game Laboratory 的研究、开发记录与游戏创作实践。
 
-线上地址：<https://future-game-laboratory.github.io/FGL-Blog/>
+线上地址：<https://future-game-laboratory.github.io/>
 
 ## 技术栈
 
@@ -19,7 +19,7 @@ npm ci
 npm run dev
 ```
 
-本地服务默认运行在 <http://localhost:1234/FGL-Blog/>。
+本地服务默认运行在 <http://localhost:1234/>。
 
 生产构建：
 
@@ -30,7 +30,7 @@ npm run preview
 
 ## 内容编辑器
 
-访问 `/FGL-Blog/editor/` 可以编写、预览和发布文章。编辑器支持：
+访问 `/editor/` 可以编写、预览和发布文章。编辑器支持：
 
 - 文章元数据和 Markdown/MDX 正文编辑
 - 阅读视图与完整 MDX 源码预览

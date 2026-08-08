@@ -4,7 +4,7 @@ export const SITE: Site = {
   title: 'Future Game Laboratory',
   description:
     'Future Game Laboratory 的研究、开发记录与游戏创作实践。',
-  href: 'https://future-game-laboratory.github.io/FGL-Blog/',
+  href: 'https://future-game-laboratory.github.io/',
   author: 'Future Game Laboratory',
   locale: 'zh-CN',
   featuredPostCount: 2,

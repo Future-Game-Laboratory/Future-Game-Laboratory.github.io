@@ -2,7 +2,7 @@
 
 编辑器位于站点的 `/editor/` 路由。在当前 GitHub Pages 配置下，完整地址为：
 
-<https://future-game-laboratory.github.io/FGL-Blog/editor/>
+<https://future-game-laboratory.github.io/editor/>
 
 ## 写作与本地草稿
 
@@ -28,7 +28,7 @@ src/content/blog/<article-slug>/index.mdx
 
 创建 fine-grained personal access token 时：
 
-1. 将 **Repository access** 限制为 `FGL-Blog`。
+1. 将 **Repository access** 限制为 `Future-Game-Laboratory.github.io`。
 2. 只授予 **Contents: Read and write** 权限。
 3. 使用较短的过期时间，并定期轮换。
 4. 不要把 token 写进文章、提交、Issue 或截图。

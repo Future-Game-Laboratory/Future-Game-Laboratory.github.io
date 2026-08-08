@@ -21,7 +21,7 @@ import tailwindcss from '@tailwindcss/vite'
 
 export default defineConfig({
   site: 'https://future-game-laboratory.github.io',
-  base: '/FGL-Blog',
+  base: '/',
   trailingSlash: 'always',
   integrations: [
     mdx(),

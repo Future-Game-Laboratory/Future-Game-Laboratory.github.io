@@ -5,7 +5,7 @@ import test from 'node:test'
 
 const root = new URL('../', import.meta.url).pathname
 const dist = join(root, 'dist')
-const base = '/FGL-Blog/'
+const base = '/'
 const origin = 'https://future-game-laboratory.github.io'
 
 const walk = (directory: string): string[] =>
@@ -86,6 +86,6 @@ test('template author and draft template posts are not generated', () => {
 test('RSS and robots use the GitHub Pages production base', () => {
   const rss = readFileSync(join(dist, 'rss.xml'), 'utf8')
   const robots = readFileSync(join(dist, 'robots.txt'), 'utf8')
-  assert.match(rss, /https:\/\/future-game-laboratory\.github\.io\/FGL-Blog\/blog\/welcome\//)
-  assert.match(robots, /https:\/\/future-game-laboratory\.github\.io\/FGL-Blog\/sitemap-index\.xml/)
+  assert.match(rss, /https:\/\/future-game-laboratory\.github\.io\/blog\/welcome\//)
+  assert.match(robots, /https:\/\/future-game-laboratory\.github\.io\/sitemap-index\.xml/)
 })

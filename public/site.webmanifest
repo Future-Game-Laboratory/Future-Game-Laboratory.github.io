@@ -1,8 +1,8 @@
 {
   "name": "Future Game Laboratory",
   "short_name": "FGL Blog",
-  "start_url": "/FGL-Blog/",
-  "scope": "/FGL-Blog/",
+  "start_url": "/",
+  "scope": "/",
   "icons": [
     {
       "src": "web-app-manifest-192x192.png",
