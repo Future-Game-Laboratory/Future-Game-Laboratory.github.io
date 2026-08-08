@@ -1,8 +1,10 @@
 import { getCollection, render, type CollectionEntry } from 'astro:content'
 import { readingTime, calculateWordCountFromHtml } from '@/lib/utils'
+import { withBase } from '@/lib/paths'
 
 export async function getAllAuthors(): Promise<CollectionEntry<'authors'>[]> {
-  return await getCollection('authors')
+  const authors = await getCollection('authors')
+  return authors.filter((author) => !author.data.draft)
 }
 
 export async function getAllPosts(): Promise<CollectionEntry<'blog'>[]> {
@@ -202,7 +204,7 @@ export async function parseAuthors(authorIds: string[] = []) {
     return {
       id,
       name: author?.data?.name || id,
-      avatar: author?.data?.avatar || '/static/logo.png',
+      avatar: withBase(author?.data?.avatar || '/static/logo.png'),
       isRegistered: !!author,
     }
   })

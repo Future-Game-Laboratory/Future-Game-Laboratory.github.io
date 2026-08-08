@@ -1,46 +1,30 @@
 ---
 import Breadcrumbs from '@/components/breadcrumbs.astro'
-import Link from '@/components/link.astro'
 import PageHead from '@/components/page-head.astro'
-import ProjectCard from '@/components/project-card.astro'
 import Layout from '@/layouts/layout.astro'
-import { getAllProjects } from '@/lib/data-utils'
-
-const projects = await getAllProjects()
 ---
 
 <Layout class="max-w-3xl">
-  <PageHead slot="head" title="About" />
-  <Breadcrumbs items={[{ label: 'About', icon: 'lucide:info' }]} />
+  <PageHead slot="head" title="关于" />
+  <Breadcrumbs items={[{ label: '关于', icon: 'lucide:info' }]} />
 
   <section>
     <div class="min-w-full">
       <div class="prose mb-8">
-        <p class="mt-0">
-          astro-erudite is an opinionated, unstyled static blogging template
-          that prioritizes simplicity and performance, built with <Link
-            href="https://astro.build"
-            external
-            underline>Astro</Link
-          >, <Link href="https://tailwindcss.com" external underline
-            >Tailwind</Link
-          >, and <Link href="https://ui.shadcn.com" external underline
-            >shadcn/ui</Link
-          >. It provides a clean foundation for your content while being
-          extremely easy to customize.
+        <h1>关于 Future Game Laboratory</h1>
+        <p>
+          Future Game Laboratory 是一个围绕游戏研究与创作实践展开的开放实验室。我们把游戏视为技术系统、表达媒介，也是理解人与社会的一种方法。
         </p>
         <p>
-          To learn more about the philosophy behind this template, check out the
-          following blog post: <Link
-            href="/blog/the-state-of-static-blogs"
-            underline>The State of Static Blogs in 2024</Link
-          >.
+          这个 Blog 用来保存那些值得公开的过程：设计决策、工程问题、实验记录、失败复盘，以及仍在生长中的想法。文章不必伪装成最终答案；可验证的过程本身就有价值。
         </p>
-      </div>
-
-      <h2 class="mb-4 text-2xl font-medium">Example Projects Listing</h2>
-      <div class="flex flex-col gap-4">
-        {projects.map((project) => <ProjectCard project={project} />)}
+        <h2>我们关注什么</h2>
+        <ul>
+          <li>游戏机制、叙事与玩家体验的研究</li>
+          <li>游戏开发工具、工程方法与技术实验</li>
+          <li>原型、项目和创作过程的复盘</li>
+          <li>与游戏文化相关的观察和讨论</li>
+        </ul>
       </div>
     </div>
   </section>

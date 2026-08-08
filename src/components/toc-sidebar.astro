@@ -3,6 +3,7 @@ import { ScrollArea } from '@/components/ui/scroll-area'
 import type { TOCSection } from '@/lib/data-utils'
 import { getParentId, isSubpost } from '@/lib/data-utils'
 import { cn, getHeadingMargin } from '@/lib/utils'
+import { withBase } from '@/lib/paths'
 
 type Props = {
   sections: TOCSection[]
@@ -60,7 +61,7 @@ const parentId = isCurrentSubpost ? getParentId(currentPostId) : currentPostId
                         <a
                           href={
                             isCurrentSubpost
-                              ? `/blog/${parentId}#${heading.slug}`
+                              ? withBase(`/blog/${parentId}#${heading.slug}`)
                               : `#${heading.slug}`
                           }
                           class="marker:text-foreground/30 list-none underline decoration-transparent underline-offset-[3px] transition-colors duration-200 hover:decoration-inherit"
@@ -91,7 +92,7 @@ const parentId = isCurrentSubpost ? getParentId(currentPostId) : currentPostId
                           href={
                             section.subpostId === currentPostId
                               ? '#'
-                              : `/blog/${section.subpostId}`
+                              : withBase(`/blog/${section.subpostId}`)
                           }
                           class="marker:text-foreground/30 list-none underline decoration-transparent underline-offset-[3px] transition-colors duration-200 hover:decoration-inherit"
                           data-heading-link={
@@ -117,7 +118,7 @@ const parentId = isCurrentSubpost ? getParentId(currentPostId) : currentPostId
                             href={
                               section.subpostId === currentPostId
                                 ? `#${heading.slug}`
-                                : `/blog/${section.subpostId}#${heading.slug}`
+                                : withBase(`/blog/${section.subpostId}#${heading.slug}`)
                             }
                             class="marker:text-foreground/30 hover:text-foreground/60 list-none underline decoration-transparent underline-offset-[3px] transition-colors duration-200 hover:decoration-inherit"
                             data-heading-link={

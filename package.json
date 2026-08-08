@@ -1,13 +1,15 @@
 {
-  "name": "astro-erudite",
+  "name": "fgl-blog",
   "type": "module",
-  "version": "1.6.3",
+  "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "astro dev",
-    "start": "astro dev",
-    "build": "astro check && astro build",
-    "preview": "astro preview",
+    "dev": "ASTRO_TELEMETRY_DISABLED=1 astro dev",
+    "start": "ASTRO_TELEMETRY_DISABLED=1 astro dev",
+    "build": "ASTRO_TELEMETRY_DISABLED=1 astro check && ASTRO_TELEMETRY_DISABLED=1 astro build",
+    "test": "node --experimental-strip-types --test tests/editor.test.ts",
+    "test:dist": "node --experimental-strip-types --test tests/build-output.test.ts",
+    "preview": "ASTRO_TELEMETRY_DISABLED=1 astro preview",
     "astro": "astro",
     "prettier": "prettier --write **/*.{ts,tsx,css,astro} --ignore-path .gitignore"
   },
@@ -22,7 +24,7 @@
     "@expressive-code/plugin-line-numbers": "^0.40.2",
     "@iconify-json/lucide": "^1.2.26",
     "@shikijs/rehype": "^3.4.0",
-    "@tailwindcss/vite": "^4.0.7",
+    "@tailwindcss/vite": "4.2.1",
     "@types/react": "19.0.0",
     "@types/react-dom": "19.0.0",
     "astro": "6.0.2",
@@ -39,7 +41,7 @@
     "remark-emoji": "^5.0.1",
     "remark-math": "^6.0.0",
     "tailwind-merge": "^3.3.0",
-    "tailwindcss": "^4.1.7",
+    "tailwindcss": "4.2.1",
     "typescript": "^5.8.3"
   },
   "devDependencies": {

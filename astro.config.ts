@@ -20,8 +20,15 @@ import type { ExpressiveCodeTheme } from 'rehype-expressive-code'
 import tailwindcss from '@tailwindcss/vite'
 
 export default defineConfig({
-  site: 'https://astro-erudite.vercel.app',
-  integrations: [mdx(), react(), sitemap(), icon()],
+  site: 'https://future-game-laboratory.github.io',
+  base: '/FGL-Blog',
+  trailingSlash: 'always',
+  integrations: [
+    mdx(),
+    react(),
+    sitemap({ filter: (page) => !page.endsWith('/editor/') }),
+    icon(),
+  ],
   vite: {
     plugins: [tailwindcss()],
   },

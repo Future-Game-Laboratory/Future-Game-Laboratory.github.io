@@ -11,7 +11,13 @@ const { post } = Astro.props
 
 const title = post.data.title || SITE.title
 const description = post.data.description || SITE.description
-const image = new URL('/static/1200x630.png', Astro.site)
+const image = new URL(
+  `${import.meta.env.BASE_URL.replace(/^\//, '')}static/1200x630.png`,
+  Astro.site,
+)
+const socialImage = post?.data?.image?.src
+  ? new URL(post.data.image.src, Astro.site)
+  : image
 const author =
   post.data.authors && post.data.authors.length > 0
     ? post.data.authors.join(', ')
@@ -21,7 +27,7 @@ const author =
 <title>{`${title} | ${SITE.title}`}</title>
 <meta name="title" content={`${title} | ${SITE.title}`} />
 <meta name="description" content={description} />
-<link rel="canonical" href={SITE.href} />
+<link rel="canonical" href={Astro.url} />
 
 {isSubpost(post.id) && <meta name="robots" content="noindex" />}
 
@@ -29,9 +35,7 @@ const author =
 <meta property="og:description" content={description} />
 <meta
   property="og:image"
-  content={post?.data?.image?.src
-    ? `${SITE.href}${post.data.image.src}`
-    : image}
+  content={socialImage}
 />
 <meta property="og:image:alt" content={title} />
 <meta property="og:type" content="website" />
@@ -44,9 +48,7 @@ const author =
 <meta name="twitter:description" content={description} />
 <meta
   property="twitter:image"
-  content={post?.data?.image?.src
-    ? `${SITE.href}${post.data.image.src}`
-    : image}
+  content={socialImage}
 />
 <meta name="twitter:image:alt" content={title} />
 <meta name="twitter:card" content="summary_large_image" />

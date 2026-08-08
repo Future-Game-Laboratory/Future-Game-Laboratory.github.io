@@ -12,12 +12,15 @@ const {
   description = SITE.description,
   noindex = false,
 } = Astro.props
-const image = new URL('/static/1200x630.png', Astro.site)
+const image = new URL(
+  `${import.meta.env.BASE_URL.replace(/^\//, '')}static/1200x630.png`,
+  Astro.site,
+)
 ---
 
 <title>{`${title} | ${SITE.title}`}</title>
 <meta name="description" content={description} />
-<link rel="canonical" href={SITE.href} />
+<link rel="canonical" href={Astro.url} />
 {noindex && <meta name="robots" content="noindex, nofollow" />}
 
 <meta property="og:title" content={title} />

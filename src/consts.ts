@@ -1,12 +1,12 @@
 import type { IconMap, SocialLink, Site } from '@/types'
 
 export const SITE: Site = {
-  title: 'astro-erudite',
+  title: 'Future Game Laboratory',
   description:
-    'astro-erudite is a opinionated, unstyled blogging template—built with Astro, Tailwind, and shadcn/ui.',
-  href: 'https://astro-erudite.vercel.app',
-  author: 'jktrn',
-  locale: 'en-US',
+    'Future Game Laboratory 的研究、开发记录与游戏创作实践。',
+  href: 'https://future-game-laboratory.github.io/FGL-Blog/',
+  author: 'Future Game Laboratory',
+  locale: 'zh-CN',
   featuredPostCount: 2,
   postsPerPage: 3,
 }
@@ -14,30 +14,22 @@ export const SITE: Site = {
 export const NAV_LINKS: SocialLink[] = [
   {
     href: '/blog',
-    label: 'blog',
-  },
-  {
-    href: '/authors',
-    label: 'authors',
+    label: '文章',
   },
   {
     href: '/about',
-    label: 'about',
+    label: '关于',
+  },
+  {
+    href: '/editor',
+    label: '写作',
   },
 ]
 
 export const SOCIAL_LINKS: SocialLink[] = [
   {
-    href: 'https://github.com/jktrn',
+    href: 'https://github.com/Future-Game-Laboratory',
     label: 'GitHub',
-  },
-  {
-    href: 'https://twitter.com/enscry',
-    label: 'Twitter',
-  },
-  {
-    href: 'mailto:jason@enscribe.dev',
-    label: 'Email',
   },
   {
     href: '/rss.xml',

@@ -12,74 +12,44 @@ const blog = await getRecentPosts(SITE.featuredPostCount)
 
 <Layout class="max-w-3xl">
   <PageHead slot="head" title="Home" />
-  <section class="rounded-lg border">
-    <div class="flex flex-col space-y-1.5 p-6">
-      <h3 class="text-3xl leading-none font-medium">er·u·dite</h3>
-      <p class="text-muted-foreground text-sm">
-        /ˈer(y)əˌdīt/ &bull; <span class="font-medium">adjective</span>
-      </p>
-    </div>
-    <div class="p-6 pt-0">
-      <p class="text-muted-foreground mb-2 text-sm">
-        astro-erudite is an opinionated, unstyled static blogging template built
-        with <Link
-          href="https://astro.build"
-          class="text-foreground"
-          external
-          underline>Astro</Link
-        >, <Link
-          href="https://tailwindcss.com"
-          class="text-foreground"
-          external
-          underline>Tailwind</Link
-        >, and <Link
-          href="https://ui.shadcn.com"
-          class="text-foreground"
-          external
-          underline>shadcn/ui</Link
-        >. Extraordinarily loosely based on the <Link
-          href="https://astro-micro.vercel.app/"
-          class="text-foreground"
-          external
-          underline>Astro Micro</Link
-        > theme.
-      </p>
-      <p class="text-muted-foreground text-sm">
-        To use this template, check out the <Link
-          href="https://github.com/jktrn/astro-erudite"
-          class="text-foreground"
-          underline
-          external>GitHub</Link
-        > repository. To learn more about why this template exists, read this blog
-        post: <Link
-          href="/blog/the-state-of-static-blogs"
-          class="text-foreground"
-          underline>The State of Static Blogs in 2024</Link
-        >.
-      </p>
+  <section class="rounded-xl border px-6 py-10 sm:px-10 sm:py-14">
+    <p class="text-muted-foreground mb-4 font-mono text-sm">Future Game Laboratory</p>
+    <h1 class="max-w-2xl text-4xl leading-tight font-semibold tracking-tight sm:text-5xl">
+      记录游戏如何被构思、制作与理解。
+    </h1>
+    <p class="text-muted-foreground mt-6 max-w-2xl text-base leading-7">
+      这里收录实验室的研究笔记、开发复盘与创作实践。我们关心游戏背后的系统、技术和人，也公开尚未完成的探索过程。
+    </p>
+    <div class="mt-8 flex flex-wrap gap-3">
+      <Link href="/blog" class={buttonVariants()}>阅读文章</Link>
+      <Link href="/about" class={buttonVariants({ variant: 'outline' })}>
+        了解实验室
+      </Link>
     </div>
   </section>
   <section class="flex flex-col gap-y-4">
-    <h2 class="text-2xl font-medium">Latest posts</h2>
-    <ul class="flex flex-col gap-y-4">
-      {
-        blog.map((post) => (
-          <li>
-            <BlogCard entry={post} />
-          </li>
-        ))
-      }
-    </ul>
-    <div class="flex justify-center">
-      <Link
-        href="/blog"
-        class={buttonVariants({ variant: 'ghost' }) + ' group'}
-      >
-        See all posts <span
-          class="ml-1.5 transition-transform group-hover:translate-x-1"
-          >&rarr;</span
-        >
-      </Link>
-    </div>
+    <h2 class="text-2xl font-medium">最新文章</h2>
+    {
+      blog.length > 0 ? (
+        <>
+          <ul class="flex flex-col gap-y-4">
+            {blog.map((post) => (
+              <li><BlogCard entry={post} /></li>
+            ))}
+          </ul>
+          <div class="flex justify-center">
+            <Link href="/blog" class={buttonVariants({ variant: 'ghost' }) + ' group'}>
+              查看全部 <span class="ml-1.5 transition-transform group-hover:translate-x-1">&rarr;</span>
+            </Link>
+          </div>
+        </>
+      ) : (
+        <div class="rounded-lg border border-dashed px-6 py-10 text-center">
+          <p class="font-medium">第一篇文章正在路上</p>
+          <p class="text-muted-foreground mt-2 text-sm">内容编辑器已经就绪，可以从一次研究记录或开发复盘开始。</p>
+          <Link href="/editor" class={buttonVariants({ variant: 'outline' }) + ' mt-5'}>开始写作</Link>
+        </div>
+      )
+    }
   </section>
 </Layout>

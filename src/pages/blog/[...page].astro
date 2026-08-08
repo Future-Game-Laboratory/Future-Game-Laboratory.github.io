@@ -21,6 +21,7 @@ const { page } = Astro.props
 
 const postsByYear = groupPostsByYear(page.data)
 const years = Object.keys(postsByYear).sort((a, b) => parseInt(b) - parseInt(a))
+const base = import.meta.env.BASE_URL.replace(/\/$/, '')
 ---
 
 <Layout class="max-w-3xl">
@@ -52,7 +53,7 @@ const years = Object.keys(postsByYear).sort((a, b) => parseInt(b) - parseInt(a))
   <PaginationComponent
     currentPage={page.currentPage}
     totalPages={page.lastPage}
-    baseUrl="/blog/"
+    baseUrl={`${base}/blog/`}
     client:load
   />
 </Layout>

@@ -198,13 +198,13 @@ const tocSections = await getTOCSections(currentPostId)
             post.data.tags &&
               post.data.tags.length > 0 &&
               post.data.tags.map((tag) => (
-                <a
+                <Link
                   href={`/tags/${tag}`}
                   class={badgeVariants({ variant: 'muted' })}
                 >
                   <Icon name="lucide:hash" class="size-3" />
                   {tag}
-                </a>
+                </Link>
               ))
           }
         </div>
