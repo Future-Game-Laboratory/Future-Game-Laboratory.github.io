@@ -33,6 +33,28 @@ export const NAV_LINKS: SocialLink[] = [
   },
 ]
 
+// 联系方式配置：填写后显示；SNS 链接留空时不会渲染对应按钮。
+export const CONTACT = {
+  email: '',
+  socials: [
+    {
+      label: '小红书',
+      href: '',
+      icon: 'xiaohongshu',
+    },
+    {
+      label: 'X',
+      href: '',
+      icon: 'x-social',
+    },
+    {
+      label: '哔哩哔哩',
+      href: '',
+      icon: 'bilibili',
+    },
+  ],
+} as const
+
 export const ICON_MAP: IconMap = {
   Website: 'lucide:globe',
   GitHub: 'lucide:github',

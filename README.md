@@ -40,6 +40,16 @@ npm run preview
 
 完整说明见 [docs/EDITOR.md](docs/EDITOR.md)。
 
+## 联系方式
+
+在 `src/consts.ts` 的 `CONTACT` 中配置公开邮箱、小红书、X 和哔哩哔哩链接：
+
+- 邮箱会在联系页单独以明文显示。
+- SNS 链接填写后显示对应图标按钮；留空则不渲染。
+- 未提供真实邮箱前，联系页会明确显示“邮箱暂未配置”，不会使用虚构地址。
+
+About 页正文位于 `src/content/pages/about.md`，可直接使用 Markdown 维护。
+
 ## 部署
 
 推送到 `main` 后，`.github/workflows/deploy-pages.yml` 会执行内容检查、

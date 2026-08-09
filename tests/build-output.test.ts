@@ -78,6 +78,37 @@ test('editor page contains its hydrated app and publishing controls', () => {
   assert.match(editor, /content-editor\.[^"']+\.js/)
 })
 
+test('nixie loader renders an eight-tube six-decimal progress display', () => {
+  const homepage = readFileSync(join(dist, 'index.html'), 'utf8')
+  const tubes = homepage.match(/<span class="nixie-tube"[^>]+data-nixie-tube/g)
+  const cathodes = homepage.match(/data-digit="[0-9]"/g)
+
+  assert.equal(tubes?.length, 8)
+  assert.equal(cathodes?.length, 80)
+  assert.match(homepage, /role="progressbar"/)
+  assert.match(homepage, /aria-valuetext="加载进度 00\.000000%"/)
+  assert.doesNotMatch(homepage, /nixie-loader__track|nixie-timecode/)
+})
+
+test('homepage keeps the cover and a single announcement entry point', () => {
+  const homepage = readFileSync(join(dist, 'index.html'), 'utf8')
+  assert.match(homepage, /\/static\/forked-light-cover\.webp/)
+  assert.match(homepage, /class="announcement-panel"/)
+  assert.doesNotMatch(
+    homepage,
+    /class="(?:front-hero|front-directory|front-sidebar|front-closing)"/,
+  )
+})
+
+test('contact hides unconfigured SNS links and about renders Markdown', () => {
+  const contact = readFileSync(join(dist, 'contact/index.html'), 'utf8')
+  const about = readFileSync(join(dist, 'about/index.html'), 'utf8')
+  assert.doesNotMatch(contact, /href=""/)
+  assert.doesNotMatch(contact, /class="social-buttons"/)
+  assert.match(about, /<h1 id="关于">关于<\/h1>/)
+  assert.match(about, /<h2 id="-成员">■ 成员<\/h2>/)
+})
+
 test('template author and draft template posts are not generated', () => {
   assert.equal(existsSync(join(dist, 'authors/enscribe/index.html')), false)
   assert.equal(existsSync(join(dist, 'blog/2023-post/index.html')), false)

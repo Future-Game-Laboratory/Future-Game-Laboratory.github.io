@@ -1,356 +1,60 @@
 ---
-import Breadcrumbs from '@/components/breadcrumbs.astro'
-import Link from '@/components/link.astro'
 import PageHead from '@/components/page-head.astro'
-import PageHeader from '@/components/page-header.astro'
-import { buttonVariants } from '@/components/ui/button'
 import Layout from '@/layouts/layout.astro'
-import { withBase } from '@/lib/paths'
+import { getEntry, render } from 'astro:content'
 
-const logo = withBase('/static/future-game-institute.png')
+const about = await getEntry('pages', 'about')
+if (!about) throw new Error('Missing about page content')
+const { Content } = await render(about)
 ---
 
-<Layout class="max-w-6xl">
+<Layout class="max-w-5xl">
   <PageHead
     slot="head"
-    title="研究所"
-    description="了解未来游戏研究所，以及我们如何研究、制作并记录游戏。"
-  />
-  <Breadcrumbs items={[{ label: '研究所', icon: 'lucide:info' }]} />
-  <PageHeader
-    label="ABOUT / INSTITUTE"
-    title="在游戏结束之后，继续追问它如何发生。"
-    description="未来游戏研究所是围绕游戏研究与创作实践展开的社团。我们保存问题、原型与阶段性结论，让创作过程能够被阅读、讨论和继续验证。"
+    title={about.data.title}
+    description={about.data.description}
   />
 
-  <section class="about-opening" aria-labelledby="about-opening-title">
-    <div class="about-mark">
-      <span>未来 / 游戏 / 研究</span>
-      <img
-        src={logo}
-        width="225"
-        height="225"
-        alt="未来游戏研究所，Future Game Laboratory"
-      />
-      <small>EST. FOR THE NEXT QUESTION</small>
-    </div>
-    <div class="about-statement">
-      <p class="about-number" aria-hidden="true">01</p>
-      <h2 id="about-opening-title">答案之前，先保存问题发生的现场。</h2>
-      <div>
-        <p>
-          游戏很少从一个完整结论开始。它更常起源于不稳定的手感、没有按计划发生的测试，或一个暂时无法被命名的问题。
-        </p>
-        <p>
-          这个网站用来保存这些容易在项目结束后消失的过程：设计决策、工程问题、实验记录、失败复盘，以及仍在生长中的想法。文章不必伪装成最终答案；能够被继续验证的过程本身就有价值。
-        </p>
-      </div>
-    </div>
-  </section>
-
-  <section class="practice-index" aria-labelledby="practice-title">
-    <header>
-      <p class="signal-label">WHAT WE DO</p>
-      <h2 id="practice-title">研究、制作、记录。</h2>
-      <p>三个动作互相连接，也构成这个网站整理信息的方式。</p>
-    </header>
-    <ol>
-      <li>
-        <span>01 / RESEARCH</span>
-        <h3>研究</h3>
-        <p>拆解机制、叙事、工具与文化语境，提出可以继续被验证的问题。</p>
-      </li>
-      <li>
-        <span>02 / MAKE</span>
-        <h3>制作</h3>
-        <p>通过原型、项目与活动测试想法，让选择与取舍成为公开材料。</p>
-      </li>
-      <li>
-        <span>03 / ARCHIVE</span>
-        <h3>记录</h3>
-        <p>保存失败、偏差与阶段性结论，不把真实发生的弯路改写成直线。</p>
-      </li>
-    </ol>
-  </section>
-
-  <section class="about-directory" aria-labelledby="directory-title">
-    <div>
-      <p class="signal-label">SITE DIRECTORY</p>
-      <h2 id="directory-title">从这里继续。</h2>
-    </div>
-    <nav aria-label="研究所内容入口">
-      <Link href="/blog"
-        ><span>资讯</span><small>INFORMATION / 研究记录与开发复盘</small><i>↗</i
-        ></Link
-      >
-      <Link href="/works"
-        ><span>项目</span><small>WORKS / 原型、活动与公开项目</small><i>↗</i
-        ></Link
-      >
-      <Link href="/contact"
-        ><span>联系</span><small>CONTACT / 合作、纠错与加入</small><i>↗</i
-        ></Link
-      >
-    </nav>
-  </section>
-
-  <section class="about-cta">
-    <p>公开内容面向所有读者；写作入口为研究所成员保留。</p>
-    <div>
-      <Link href="/blog" class={buttonVariants()}>阅读资讯</Link>
-      <Link href="/edits" class={buttonVariants({ variant: 'outline' })}>
-        打开编辑器
-      </Link>
-    </div>
-  </section>
+  <article class="prose about-document">
+    <Content />
+  </article>
 </Layout>
 
 <style>
-  .about-opening {
-    display: grid;
-    grid-template-columns: minmax(15rem, 0.72fr) minmax(0, 1.28fr);
-    gap: clamp(2.5rem, 8vw, 8rem);
-    align-items: stretch;
+  .about-document {
+    width: 100%;
+    max-width: 60rem;
+    padding-bottom: clamp(3rem, 8vw, 7rem);
   }
 
-  .about-mark {
-    display: grid;
-    min-height: 28rem;
-    place-items: center;
-    border: 1px solid var(--foreground);
-    padding: 2rem;
+  .about-document :global(h1) {
+    margin: 0 0 2.5rem;
+    border-bottom: 2px solid var(--foreground);
+    padding-bottom: 0.45rem;
+    font-family: var(--font-sans);
+    font-size: clamp(2.4rem, 6vw, 4.8rem);
+    font-weight: 730;
+    line-height: 1;
+    letter-spacing: -0.04em;
   }
 
-  .about-mark img {
-    width: min(72%, 14rem);
-    height: auto;
-    filter: var(--brand-logo-filter, none);
-  }
-
-  .about-mark span,
-  .about-mark small,
-  .about-number,
-  .practice-index li > span {
-    font-family: var(--font-mono);
-    font-size: 0.68rem;
-    letter-spacing: 0.08em;
-  }
-
-  .about-mark span {
-    justify-self: start;
-  }
-
-  .about-mark small {
-    justify-self: end;
-    color: var(--muted-foreground);
-  }
-
-  .about-statement {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    border-top: 1px solid var(--foreground);
-    border-bottom: 1px solid var(--foreground);
-    padding: clamp(1.5rem, 4vw, 3rem) 0;
-  }
-
-  .about-number {
-    color: var(--signal-magenta-ink);
-  }
-
-  .about-statement h2,
-  .practice-index h2,
-  .about-directory h2 {
-    font-family: var(--font-serif);
-    font-weight: 700;
-    text-wrap: balance;
-  }
-
-  .about-statement h2 {
-    max-width: 13ch;
-    margin: clamp(2rem, 7vw, 6rem) 0;
-    font-size: clamp(2.2rem, 5vw, 4.6rem);
-    line-height: 1.1;
-  }
-
-  .about-statement > div {
-    columns: 2 15rem;
-    column-gap: 2rem;
-  }
-
-  .about-statement > div p {
-    margin: 0;
-    color: var(--muted-foreground);
-    line-height: 1.85;
-  }
-
-  .about-statement > div p + p {
-    margin-top: 1rem;
-  }
-
-  .practice-index {
-    display: grid;
-    grid-template-columns: minmax(13rem, 0.6fr) minmax(0, 1.4fr);
-    gap: clamp(2.5rem, 8vw, 8rem);
-    padding: clamp(3rem, 7vw, 6rem) 0;
-  }
-
-  .practice-index header {
-    position: sticky;
-    top: calc(var(--header-height) + 2rem);
-    align-self: start;
-  }
-
-  .practice-index h2,
-  .about-directory h2 {
-    max-width: 10ch;
-    margin-top: 1rem;
-    font-size: clamp(2rem, 4vw, 3.7rem);
-    line-height: 1.08;
-  }
-
-  .practice-index header > p:last-child {
-    max-width: 23rem;
-    margin-top: 1.25rem;
-    color: var(--muted-foreground);
-    line-height: 1.75;
-  }
-
-  .practice-index ol {
-    margin: 0;
-    border-top: 1px solid var(--foreground);
+  .about-document :global(h2) {
+    margin-top: clamp(3rem, 7vw, 5.5rem);
+    border: 0;
     padding: 0;
-    list-style: none;
-  }
-
-  .practice-index li {
-    display: grid;
-    grid-template-columns: 7.5rem minmax(6rem, 0.35fr) minmax(0, 1fr);
-    gap: 1rem;
-    align-items: baseline;
-    border-bottom: 1px solid var(--foreground);
-    padding: clamp(1.4rem, 3vw, 2.2rem) 0;
-  }
-
-  .practice-index li > span {
-    color: var(--signal-cyan-ink);
-  }
-
-  .practice-index h3 {
-    font-family: var(--font-serif);
-    font-size: clamp(1.5rem, 3vw, 2.3rem);
+    font-family: var(--font-sans);
+    font-size: 1.25rem;
     font-weight: 700;
+    letter-spacing: 0;
   }
 
-  .practice-index li p {
-    color: var(--muted-foreground);
-    line-height: 1.75;
+  .about-document :global(p) {
+    max-width: 70ch;
   }
 
-  .about-directory {
-    display: grid;
-    grid-template-columns: minmax(12rem, 0.55fr) minmax(0, 1.45fr);
-    gap: clamp(2.5rem, 8vw, 8rem);
-    background: var(--foreground);
-    color: var(--background);
-    padding: clamp(2rem, 6vw, 5rem);
-  }
-
-  .about-directory .signal-label {
-    color: color-mix(in srgb, var(--background) 70%, transparent);
-  }
-
-  .about-directory nav {
-    border-top: 1px solid color-mix(in srgb, var(--background) 32%, transparent);
-  }
-
-  .about-directory nav a {
-    display: grid;
-    grid-template-columns: minmax(5rem, 0.35fr) minmax(0, 1fr) auto;
-    gap: 1rem;
-    align-items: baseline;
-    border-bottom: 1px solid
-      color-mix(in srgb, var(--background) 32%, transparent);
-    padding: 1.35rem 0;
-    color: inherit;
-    transition: padding-left 180ms var(--ease-signal);
-  }
-
-  .about-directory nav a:hover {
-    padding-left: 0.6rem;
-  }
-
-  .about-directory nav span {
-    font-family: var(--font-serif);
-    font-size: 1.4rem;
-    font-weight: 700;
-  }
-
-  .about-directory nav small {
-    color: color-mix(in srgb, var(--background) 68%, transparent);
-    font-family: var(--font-mono);
-    font-size: 0.68rem;
-    letter-spacing: 0.05em;
-  }
-
-  .about-directory nav i {
-    font-style: normal;
-  }
-
-  .about-cta {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 2rem;
-    border-top: 1px solid var(--foreground);
-    border-bottom: 1px solid var(--foreground);
-    padding: 1.5rem 0;
-  }
-
-  .about-cta > div {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.75rem;
-  }
-
-  @media (max-width: 760px) {
-    .about-opening,
-    .practice-index,
-    .about-directory {
-      grid-template-columns: 1fr;
-    }
-
-    .about-mark {
-      min-height: 22rem;
-    }
-
-    .practice-index header {
-      position: static;
-    }
-
-    .practice-index li {
-      grid-template-columns: 5.5rem 1fr;
-    }
-
-    .practice-index li p {
-      grid-column: 2;
-    }
-
-    .about-cta {
-      align-items: flex-start;
-      flex-direction: column;
-    }
-  }
-
-  @media (max-width: 480px) {
-    .practice-index li,
-    .about-directory nav a {
-      grid-template-columns: 1fr auto;
-    }
-
-    .practice-index li p,
-    .about-directory nav small {
-      grid-column: 1 / -1;
-    }
+  .about-document :global(img) {
+    width: min(100%, 34rem);
+    margin: clamp(2rem, 6vw, 4rem) 0;
+    filter: var(--brand-logo-filter, none);
   }
 </style>

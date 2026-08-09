@@ -121,8 +121,8 @@
       },
       {
         "name": "boot-sequence",
-        "value": "1320ms cubic-bezier(.22,1,.36,1)",
-        "purpose": "可跳过的 001 辉光管启动动画。"
+        "value": "1860ms cubic-bezier(.22,1,.36,1)",
+        "purpose": "可跳过的 XX.XXXXXX 八管冷阴极启动动画。"
       }
     ],
     "breakpoints": [
@@ -166,21 +166,21 @@
     {
       "name": "Nixie Boot Sequence",
       "kind": "custom",
-      "description": "唯一使用暖色辉光的短暂启动动画。",
-      "html": "<div class=\"ds-nixie\" role=\"status\" aria-label=\"未来游戏研究所正在启动\"><span>0</span><span>0</span><span>1</span><small>00:00:01</small></div>",
-      "css": ".ds-nixie{display:flex;align-items:center;gap:8px;background:#090909;color:#FF7A1A;padding:24px;font:600 36px/1 'Geist Mono',monospace}.ds-nixie span{display:grid;place-items:center;width:48px;height:68px;border:1px solid #5A2C14;border-radius:18px;text-shadow:0 0 8px rgba(255,122,26,.85),0 0 24px rgba(255,122,26,.38)}.ds-nixie small{margin-left:12px;color:#B3B3B3;font-size:11px;letter-spacing:.08em}@media(prefers-reduced-motion:reduce){.ds-nixie *{animation:none!important;transition:none!important}}"
+      "description": "纯白环境中的八管冷阴极计数器；真实感来自玻璃反光、阳极网、层叠电极、胶木管座和短暂阴极辉光。",
+      "html": "<div class=\"ds-nixie\" role=\"progressbar\" aria-valuetext=\"加载进度 00.000000%\"><span>0</span><span>0</span><b>.</b><span>0</span><span>0</span><span>0</span><span>0</span><span>0</span><span>0</span></div>",
+      "css": ".ds-nixie{display:flex;align-items:center;gap:8px;background:#fff;color:#FF7A1A;padding:24px}.ds-nixie span{display:grid;place-items:center;width:48px;height:88px;border:1px solid #596066;border-radius:45% 45% 18% 18%/18% 18% 10% 10%;background:linear-gradient(96deg,rgba(255,255,255,.88),rgba(190,200,205,.12),rgba(255,255,255,.7));font:300 46px/1 'Arial Narrow',sans-serif;-webkit-text-stroke:1px #FF8A2B;color:rgba(255,121,31,.1);text-shadow:0 0 4px rgba(255,111,23,.98),0 0 18px rgba(255,91,0,.42)}@media(prefers-reduced-motion:reduce){.ds-nixie *{animation:none!important;transition:none!important}}"
     }
   ],
   "narrative": {
     "northStar": "来自未来的白色标题页",
-    "overview": "界面是一份可阅读的社团刊物。纯白画布、中文书宋标题、坚定的黑色结构与少量套色偏移构成主体；首页以品牌主视觉、Information 时间流和 Works/About/Contact 侧栏组织真实内容。",
+    "overview": "界面是一份可阅读的社团刊物。首页只保留完整作品封面与 Information 公告流；Works、About、Contact 由全站导航进入，不在首页重复出现。",
     "keyCharacteristics": [
       "真正的纯白画布",
       "中文书宋标题",
-      "Information 主栏与栏目侧栏",
+      "单一封面与公告入口",
       "稀少的青洋红套色",
       "自然主题揭示",
-      "001 辉光管启动动画"
+      "XX.XXXXXX 八管冷阴极启动动画"
     ],
     "rules": [
       {
@@ -211,7 +211,7 @@
     ],
     "donts": [
       "Don't 使用超大 FGL 字母或技术仪表盘。",
-      "Don't 添加 Discography、Music 或 SNS。",
+      "Don't 添加 Discography、Music 或独立 SNS 内容分区。",
       "Don't 使用米白画布、渐变文字、玻璃拟态或持续霓虹。",
       "Don't 复刻参考站点的专有素材。"
     ]

@@ -1,114 +1,153 @@
 ---
-import Breadcrumbs from '@/components/breadcrumbs.astro'
 import Link from '@/components/link.astro'
 import PageHead from '@/components/page-head.astro'
-import PageHeader from '@/components/page-header.astro'
-import { buttonVariants } from '@/components/ui/button'
+import { CONTACT } from '@/consts'
 import Layout from '@/layouts/layout.astro'
+import { Icon } from 'astro-icon/components'
+
+const socialLinks = CONTACT.socials.filter((channel) => channel.href.trim())
 ---
 
-<Layout class="max-w-6xl">
+<Layout class="max-w-5xl">
   <PageHead
     slot="head"
     title="联系"
     description="联系未来游戏研究所，提出合作、内容纠错或加入意向。"
   />
-  <Breadcrumbs items={[{ label: '联系', icon: 'lucide:mail' }]} />
-  <PageHeader
-    label="CONTACT / INQUIRY"
-    title="与研究所取得联系。"
-    description="研究合作、内容纠错、活动邀请与加入意向，都可以通过公开仓库与我们建立联系。"
-  />
 
-  <section class="contact-sheet">
-    <header>
-      <p>INQUIRY</p>
-      <h2>提交一条联系事项</h2>
-    </header>
-    <div>
-      <p>
-        当前统一使用 GitHub Issues
-        接收联系事项。请在标题中注明“合作”“纠错”或“加入”，并避免提交不应公开的个人信息。
-      </p>
-      <dl>
-        <div><dt>合作</dt><dd>联合研究、项目协作与活动邀请</dd></div>
-        <div><dt>纠错</dt><dd>文章问题、引用补充与站点反馈</dd></div>
-        <div><dt>加入</dt><dd>研究兴趣、技能背景与希望参与的方向</dd></div>
-      </dl>
-      <Link
-        href="https://github.com/Future-Game-Laboratory/Future-Game-Laboratory.github.io/issues/new"
-        external
-        class={buttonVariants()}
-      >
-        前往联系入口 <span aria-hidden="true">↗</span>
-      </Link>
-    </div>
-  </section>
+  <article class="contact-document">
+    <h1>取得联系</h1>
+    <p class="contact-intro">
+      研究合作、内容纠错、活动邀请与加入意向，都可以通过以下方式与未来游戏研究所联系。
+    </p>
+
+    <section aria-labelledby="email-heading">
+      <h2 id="email-heading">■ 邮箱</h2>
+      {
+        CONTACT.email ? (
+          <Link class="contact-email" href={`mailto:${CONTACT.email}`} external>
+            {CONTACT.email}
+          </Link>
+        ) : (
+          <p class="contact-unconfigured">邮箱暂未配置。</p>
+        )
+      }
+    </section>
+
+    {
+      socialLinks.length > 0 && (
+        <section aria-labelledby="sns-heading">
+          <h2 id="sns-heading">■ SNS</h2>
+          <nav class="social-buttons" aria-label="社交平台">
+            {socialLinks.map((channel) => (
+              <Link
+                href={channel.href}
+                external
+                class="social-button"
+                aria-label={channel.label}
+                title={channel.label}
+              >
+                <Icon name={channel.icon} aria-hidden="true" />
+              </Link>
+            ))}
+          </nav>
+        </section>
+      )
+    }
+
+    <p class="contact-note">请不要通过公开平台发送不应公开的个人信息。</p>
+  </article>
 </Layout>
 
 <style>
-  .contact-sheet {
+  .contact-document {
+    width: 100%;
+    max-width: 60rem;
+    padding-bottom: clamp(3rem, 8vw, 7rem);
+  }
+
+  .contact-document h1 {
+    border-bottom: 2px solid var(--foreground);
+    padding-bottom: 0.45rem;
+    font-size: clamp(2.4rem, 6vw, 4.8rem);
+    font-weight: 730;
+    line-height: 1;
+    letter-spacing: -0.04em;
+  }
+
+  .contact-intro {
+    max-width: 56rem;
+    margin-top: 2.5rem;
+    font-size: 1.05rem;
+    line-height: 1.9;
+  }
+
+  .contact-document section {
+    margin-top: clamp(3rem, 7vw, 5.5rem);
+  }
+
+  .contact-document h2 {
+    margin-bottom: 1.25rem;
+    font-size: 1.25rem;
+    font-weight: 700;
+  }
+
+  .contact-email {
+    display: inline-block;
+    font-size: clamp(1.2rem, 3vw, 1.8rem);
+    font-weight: 650;
+    text-decoration: underline;
+    text-underline-offset: 0.35rem;
+    overflow-wrap: anywhere;
+  }
+
+  .contact-unconfigured,
+  .contact-note {
+    color: var(--muted-foreground);
+  }
+
+  .social-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  .social-button {
     display: grid;
-    grid-template-columns: minmax(13rem, 0.65fr) minmax(0, 1.35fr);
-    gap: clamp(2.5rem, 8vw, 8rem);
+    width: 3rem;
+    height: 3rem;
+    place-items: center;
+    border: 1px solid var(--foreground);
+    border-radius: 50%;
+    transition:
+      transform 160ms var(--ease-signal),
+      background-color 160ms var(--ease-signal),
+      color 160ms var(--ease-signal),
+      box-shadow 160ms var(--ease-signal);
+  }
+
+  .social-button :global(svg) {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+
+  .social-button:hover {
+    transform: translateY(-2px);
     background: var(--foreground);
     color: var(--background);
-    padding: clamp(2rem, 6vw, 5rem);
+    box-shadow: var(--signal-shadow);
   }
 
-  .contact-sheet header > p {
-    color: var(--signal-cyan);
-    font-family: var(--font-mono);
-    font-size: 0.68rem;
-    letter-spacing: 0.08em;
+  .contact-note {
+    margin-top: clamp(4rem, 10vw, 8rem);
+    border-top: 1px solid var(--border);
+    padding-top: 1rem;
+    font-size: 0.85rem;
   }
 
-  .contact-sheet h2 {
-    max-width: 8ch;
-    margin-top: 1rem;
-    font-family: var(--font-serif);
-    font-size: clamp(2rem, 5vw, 3.8rem);
-    font-weight: 700;
-    line-height: 1.08;
-  }
-
-  .contact-sheet > div > p {
-    max-width: 40rem;
-    color: color-mix(in srgb, var(--background) 76%, var(--foreground));
-    line-height: 1.8;
-  }
-
-  .contact-sheet dl {
-    margin: 2rem 0;
-    border-top: 1px solid color-mix(in srgb, var(--background) 28%, transparent);
-  }
-
-  .contact-sheet dl > div {
-    display: grid;
-    grid-template-columns: 6rem 1fr;
-    gap: 1rem;
-    border-bottom: 1px solid
-      color-mix(in srgb, var(--background) 28%, transparent);
-    padding: 1rem 0;
-  }
-
-  .contact-sheet dt {
-    font-weight: 650;
-  }
-
-  .contact-sheet dd {
-    color: color-mix(in srgb, var(--background) 72%, var(--foreground));
-  }
-
-  .contact-sheet :global([data-slot='button']) {
-    border-color: var(--background);
-    background: var(--background);
-    color: var(--foreground);
-  }
-
-  @media (max-width: 720px) {
-    .contact-sheet {
-      grid-template-columns: 1fr;
+  @media (prefers-reduced-motion: reduce) {
+    .social-button:hover {
+      transform: none;
     }
   }
 </style>
