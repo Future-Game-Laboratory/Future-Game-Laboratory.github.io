@@ -5,6 +5,7 @@ import '@/styles/typography.css'
 import Footer from '@/components/footer.astro'
 import Head from '@/components/head.astro'
 import Header from '@/components/header.astro'
+import NixieLoader from '@/components/nixie-loader.astro'
 import { SITE } from '@/consts'
 import { cn } from '@/lib/utils'
 
@@ -16,26 +17,61 @@ const { class: className } = Astro.props
 ---
 
 <!doctype html>
-<html
-  class="bg-background text-foreground scheme-light-dark"
-  lang={SITE.locale}
->
+<html class="bg-background text-foreground" lang={SITE.locale}>
   <Head>
     <slot name="head" />
   </Head>
-  <body class="flex h-fit min-h-screen flex-col gap-y-6 font-sans">
-    <header
-      class="bg-background/50 sticky top-0 z-50 divide-y backdrop-blur-sm xl:divide-none"
-    >
+  <body class="site-body">
+    <a class="skip-link" href="#main-content">跳到主要内容</a>
+    <NixieLoader />
+    <header class="site-header-shell">
       <Header />
       <slot name="subposts-navigation" />
       <slot name="table-of-contents" />
     </header>
-    <main
-      class={cn('w-full mx-auto flex grow flex-col gap-y-6 px-4', className)}
-    >
+    <main id="main-content" class={cn('site-main', className)}>
       <slot />
     </main>
     <Footer />
+    <script>
+      function scrambleSignalLabels() {
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches)
+          return
+
+        document
+          .querySelectorAll<HTMLElement>('[data-signal-label]')
+          .forEach((label) => {
+            if (label.dataset.scrambled === 'true') return
+            const finalText = label.textContent?.trim()
+            if (!finalText) return
+
+            label.dataset.scrambled = 'true'
+            label.setAttribute('aria-label', finalText)
+            let frame = 0
+            const totalFrames = 9
+            const interval = window.setInterval(() => {
+              frame += 1
+              const resolved = Math.floor(
+                (frame / totalFrames) * finalText.length,
+              )
+              label.textContent = Array.from(finalText)
+                .map((character, index) => {
+                  if (character === ' ' || character === '/') return character
+                  if (index < resolved) return character
+                  return Math.random() > 0.5 ? '1' : '0'
+                })
+                .join('')
+
+              if (frame >= totalFrames) {
+                window.clearInterval(interval)
+                label.textContent = finalText
+              }
+            }, 38)
+          })
+      }
+
+      scrambleSignalLabels()
+      document.addEventListener('astro:page-load', scrambleSignalLabels)
+    </script>
   </body>
 </html>

@@ -49,9 +49,9 @@ function ReadingPreview({ draft }: { draft: EditorDraft }) {
 
   return (
     <article className="prose prose-neutral dark:prose-invert max-w-none">
-      <header className="not-prose mb-8 border-b pb-6">
-        <p className="text-muted-foreground mb-2 text-sm">{draft.date}</p>
-        <h2 className="text-3xl font-semibold tracking-tight">
+      <header className="not-prose editor-reading-head mb-8 border-b pb-6">
+        <p className="signal-label mb-3">PREVIEW / {draft.date}</p>
+        <h2 className="font-display text-3xl font-semibold tracking-tight sm:text-4xl">
           {draft.title || '无标题文章'}
         </h2>
         <p className="text-muted-foreground mt-3 leading-7">
@@ -63,7 +63,8 @@ function ReadingPreview({ draft }: { draft: EditorDraft }) {
         if (line.startsWith('## ')) return <h2 key={index}>{line.slice(3)}</h2>
         if (line.startsWith('# ')) return <h1 key={index}>{line.slice(2)}</h1>
         if (line.startsWith('- ')) return <li key={index}>{line.slice(2)}</li>
-        if (line.startsWith('> ')) return <blockquote key={index}>{line.slice(2)}</blockquote>
+        if (line.startsWith('> '))
+          return <blockquote key={index}>{line.slice(2)}</blockquote>
         if (!line.trim()) return <div className="h-3" key={index} />
         return <p key={index}>{line}</p>
       })}
@@ -151,7 +152,12 @@ export default function ContentEditor() {
     setMessage('')
     const issue = validateDraft(draft)
     if (issue) return setError(issue)
-    if (!settings.owner || !settings.repo || !settings.branch || !settings.token)
+    if (
+      !settings.owner ||
+      !settings.repo ||
+      !settings.branch ||
+      !settings.token
+    )
       return setError('请完整填写 GitHub 发布设置。')
 
     setBusy(true)
@@ -164,9 +170,12 @@ export default function ContentEditor() {
     }
 
     try {
-      const existing = await fetch(`${apiUrl}?ref=${encodeURIComponent(settings.branch)}`, {
-        headers,
-      })
+      const existing = await fetch(
+        `${apiUrl}?ref=${encodeURIComponent(settings.branch)}`,
+        {
+          headers,
+        },
+      )
       let sha: string | undefined
       if (existing.ok) sha = (await existing.json()).sha
       else if (existing.status !== 404) {
@@ -202,16 +211,18 @@ export default function ContentEditor() {
         `文章已${sha ? '更新' : '发布'}到 ${settings.branch}，GitHub Actions 将自动构建站点。`,
       )
     } catch (reason) {
-      setError(reason instanceof Error ? reason.message : '发布失败，请稍后重试。')
+      setError(
+        reason instanceof Error ? reason.message : '发布失败，请稍后重试。',
+      )
     } finally {
       setBusy(false)
     }
   }
 
   return (
-    <div className="space-y-8">
-      <section className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(22rem,0.8fr)]">
-        <div className="space-y-5">
+    <div className="editor-workspace space-y-8">
+      <section className="editor-grid grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(22rem,0.8fr)]">
+        <div className="editor-form space-y-5">
           <div className="grid gap-4 sm:grid-cols-2">
             <label className="space-y-2 sm:col-span-2">
               <span className="text-sm font-medium">标题</span>
@@ -230,7 +241,9 @@ export default function ContentEditor() {
               <span className="text-sm font-medium">摘要</span>
               <textarea
                 value={draft.description}
-                onChange={(event) => updateDraft('description', event.target.value)}
+                onChange={(event) =>
+                  updateDraft('description', event.target.value)
+                }
                 maxLength={155}
                 rows={2}
                 placeholder="用一两句话告诉读者这篇文章解决什么问题"
@@ -244,7 +257,9 @@ export default function ContentEditor() {
               <span className="text-sm font-medium">文章路径</span>
               <input
                 value={draft.slug}
-                onChange={(event) => updateDraft('slug', slugify(event.target.value))}
+                onChange={(event) =>
+                  updateDraft('slug', slugify(event.target.value))
+                }
                 placeholder="article-slug"
                 className="bg-background w-full rounded-md border px-3 py-2.5 font-mono text-sm"
               />
@@ -289,7 +304,7 @@ export default function ContentEditor() {
             />
           </label>
 
-          <label className="flex items-center gap-3 rounded-md border px-4 py-3">
+          <label className="editor-draft-toggle flex items-center gap-3 border px-4 py-3">
             <input
               type="checkbox"
               checked={draft.draft}
@@ -305,30 +320,30 @@ export default function ContentEditor() {
           </label>
         </div>
 
-        <div className="lg:sticky lg:top-20 lg:self-start">
+        <div className="editor-preview lg:sticky lg:top-24 lg:self-start">
           <div className="mb-3 flex items-center justify-between gap-3">
-            <div className="flex rounded-md border p-1">
+            <div className="editor-view-toggle flex border p-1">
               <button
                 type="button"
                 onClick={() => setView('preview')}
-                className={`flex items-center gap-2 rounded px-3 py-1.5 text-sm ${view === 'preview' ? 'bg-muted font-medium' : 'text-muted-foreground'}`}
+                className={`flex items-center gap-2 px-3 py-1.5 text-sm ${view === 'preview' ? 'is-active bg-muted font-medium' : 'text-muted-foreground'}`}
               >
                 <Eye className="size-4" /> 阅读预览
               </button>
               <button
                 type="button"
                 onClick={() => setView('source')}
-                className={`flex items-center gap-2 rounded px-3 py-1.5 text-sm ${view === 'source' ? 'bg-muted font-medium' : 'text-muted-foreground'}`}
+                className={`flex items-center gap-2 px-3 py-1.5 text-sm ${view === 'source' ? 'is-active bg-muted font-medium' : 'text-muted-foreground'}`}
               >
                 <FileText className="size-4" /> MDX 源码
               </button>
             </div>
           </div>
-          <div className="bg-background min-h-[38rem] overflow-auto rounded-lg border p-6">
+          <div className="editor-preview-surface bg-background min-h-[38rem] overflow-auto border p-6">
             {view === 'preview' ? (
               <ReadingPreview draft={draft} />
             ) : (
-              <pre className="whitespace-pre-wrap break-words font-mono text-xs leading-6">
+              <pre className="font-mono text-xs leading-6 break-words whitespace-pre-wrap">
                 {mdx}
               </pre>
             )}
@@ -336,7 +351,7 @@ export default function ContentEditor() {
         </div>
       </section>
 
-      <section className="space-y-5 border-t pt-8">
+      <section className="editor-publish space-y-5 border-t pt-8">
         <div>
           <h2 className="text-xl font-semibold">发布到 GitHub</h2>
           <p className="text-muted-foreground mt-1 max-w-2xl text-sm leading-6">
@@ -348,7 +363,11 @@ export default function ContentEditor() {
           {(['owner', 'repo', 'branch'] as const).map((key) => (
             <label className="space-y-2" key={key}>
               <span className="text-sm font-medium">
-                {key === 'owner' ? '组织 / 用户' : key === 'repo' ? '仓库' : '分支'}
+                {key === 'owner'
+                  ? '组织 / 用户'
+                  : key === 'repo'
+                    ? '仓库'
+                    : '分支'}
               </span>
               <input
                 value={settings[key]}
@@ -371,12 +390,18 @@ export default function ContentEditor() {
         </div>
 
         {error && (
-          <p role="alert" className="text-destructive rounded-md border px-4 py-3 text-sm">
+          <p
+            role="alert"
+            className="editor-alert text-destructive border px-4 py-3 text-sm"
+          >
             {error}
           </p>
         )}
         {message && (
-          <p role="status" className="flex items-center gap-2 rounded-md border px-4 py-3 text-sm">
+          <p
+            role="status"
+            className="editor-alert flex items-center gap-2 border px-4 py-3 text-sm"
+          >
             <CheckCircle2 className="size-4" /> {message}
           </p>
         )}
@@ -386,22 +411,26 @@ export default function ContentEditor() {
             type="button"
             onClick={publish}
             disabled={busy}
-            className="bg-primary text-primary-foreground hover:bg-primary/90 flex items-center gap-2 rounded-md px-4 py-2.5 text-sm font-medium disabled:opacity-50"
+            className="signal-control bg-primary text-primary-foreground border-primary flex min-h-11 items-center gap-2 border px-[18px] py-2.5 text-sm font-medium disabled:opacity-50"
           >
-            {busy ? <LoaderCircle className="size-4 animate-spin" /> : <Send className="size-4" />}
+            {busy ? (
+              <LoaderCircle className="size-4 animate-spin" />
+            ) : (
+              <Send className="size-4" />
+            )}
             {busy ? '正在发布…' : '提交并触发构建'}
           </button>
           <button
             type="button"
             onClick={download}
-            className="hover:bg-muted flex items-center gap-2 rounded-md border px-4 py-2.5 text-sm font-medium"
+            className="signal-control hover:bg-muted flex min-h-11 items-center gap-2 border px-[18px] py-2.5 text-sm font-medium"
           >
             <Download className="size-4" /> 下载 MDX
           </button>
           <button
             type="button"
             onClick={copy}
-            className="hover:bg-muted flex items-center gap-2 rounded-md border px-4 py-2.5 text-sm font-medium"
+            className="signal-control hover:bg-muted flex min-h-11 items-center gap-2 border px-[18px] py-2.5 text-sm font-medium"
           >
             <Clipboard className="size-4" /> 复制源码
           </button>

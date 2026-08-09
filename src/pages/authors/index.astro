@@ -2,26 +2,41 @@
 import AuthorCard from '@/components/author-card.astro'
 import Breadcrumbs from '@/components/breadcrumbs.astro'
 import PageHead from '@/components/page-head.astro'
+import PageHeader from '@/components/page-header.astro'
 import Layout from '@/layouts/layout.astro'
 import { getAllAuthors } from '@/lib/data-utils'
 
 const authors = await getAllAuthors()
 ---
 
-<Layout class="max-w-3xl">
-  <PageHead slot="head" title="Authors" />
-  <Breadcrumbs items={[{ label: 'Authors', icon: 'lucide:users' }]} />
+<Layout class="max-w-6xl">
+  <PageHead slot="head" title="作者" />
+  <Breadcrumbs items={[{ label: '作者', icon: 'lucide:users' }]} />
+  <PageHeader
+    label="CONTRIBUTORS / LAB MEMBERS"
+    title="研究成员"
+    description="写下实验、制作与观察过程的人。"
+  />
   {
     authors.length > 0 ? (
-      <ul class="flex flex-col gap-4">
+      <div class="author-register">
         {authors.map((author) => (
-          <li>
-            <AuthorCard author={author} />
-          </li>
+          <AuthorCard author={author} />
         ))}
-      </ul>
+      </div>
     ) : (
-      <p class="text-muted-foreground text-center">No authors found.</p>
+      <div class="empty-signal">
+        <p class="signal-label">NO PUBLIC PROFILES</p>
+        <p class="text-muted-foreground mt-4">暂时没有公开的作者资料。</p>
+      </div>
     )
   }
 </Layout>
+
+<style>
+  .author-register {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
+    gap: 1rem;
+  }
+</style>

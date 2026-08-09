@@ -26,12 +26,12 @@ const base = import.meta.env.BASE_URL
 
   <meta
     name="theme-color"
-    content="#121212"
+    content="#0d1014"
     media="(prefers-color-scheme: dark)"
   />
   <meta
     name="theme-color"
-    content="#121212"
+    content="#f4f6f3"
     media="(prefers-color-scheme: light)"
   />
 
@@ -45,6 +45,13 @@ const base = import.meta.env.BASE_URL
   />
 
   <Favicons />
+  <script is:inline>
+    try {
+      if (sessionStorage.getItem('fgl-boot-seen') === '1') {
+        document.documentElement.dataset.boot = 'seen'
+      }
+    } catch {}
+  </script>
   <ClientRouter />
 
   <slot />

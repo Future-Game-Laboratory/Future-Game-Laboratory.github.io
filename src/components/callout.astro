@@ -5,7 +5,7 @@ import { cva, type VariantProps } from 'class-variance-authority'
 
 const calloutConfig = {
   note: {
-    style: 'border-blue-500 dark:bg-blue-950/5',
+    style: 'border-blue-500/70 dark:bg-blue-950/5',
     textColor: 'text-blue-700 dark:text-blue-300',
     icon: 'lucide:info',
   },
@@ -128,16 +128,22 @@ const calloutConfig = {
 
 const capitalize = (str: string) => str.charAt(0).toUpperCase() + str.slice(1)
 
-const calloutVariants = cva('relative px-4 py-3 my-6 border-l-4 text-sm', {
-  variants: {
-    variant: Object.fromEntries(
-      Object.entries(calloutConfig).map(([key, config]) => [key, config.style]),
-    ),
+const calloutVariants = cva(
+  'relative my-6 border px-4 py-3 text-sm rounded-[4px]',
+  {
+    variants: {
+      variant: Object.fromEntries(
+        Object.entries(calloutConfig).map(([key, config]) => [
+          key,
+          config.style,
+        ]),
+      ),
+    },
+    defaultVariants: {
+      variant: 'note',
+    },
   },
-  defaultVariants: {
-    variant: 'note',
-  },
-})
+)
 
 interface Props extends VariantProps<typeof calloutVariants> {
   title?: string

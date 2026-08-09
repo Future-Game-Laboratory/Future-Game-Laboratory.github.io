@@ -1,0 +1,238 @@
+<figure class="signal-field">
+  <svg
+    viewBox="0 0 760 860"
+    role="img"
+    aria-labelledby="signal-field-title signal-field-description"
+  >
+    <title id="signal-field-title">Future Game Laboratory 研究观测场</title>
+    <desc id="signal-field-description">
+      系统、玩家与文化三个研究向量围绕实验原型相互连接。
+    </desc>
+    <defs>
+      <pattern
+        id="field-grid"
+        width="38"
+        height="38"
+        patternUnits="userSpaceOnUse"
+      >
+        <path
+          d="M 38 0 L 0 0 0 38"
+          fill="none"
+          stroke="#2b3037"
+          stroke-width="1"></path>
+      </pattern>
+      <clipPath id="field-clip"><rect width="760" height="860"></rect></clipPath
+      >
+    </defs>
+
+    <g clip-path="url(#field-clip)">
+      <rect width="760" height="860" fill="#0d1014"></rect>
+      <rect width="760" height="860" fill="url(#field-grid)" opacity=".72"
+      ></rect>
+
+      <g class="field-frame" fill="none" stroke="#69717c" stroke-width="1">
+        <path d="M48 54H712V806H48Z"></path>
+        <path d="M48 116H712M48 744H712M112 54V806M648 54V806"></path>
+        <path d="M380 54V806M48 430H712" stroke-dasharray="4 8" opacity=".72"
+        ></path>
+      </g>
+
+      <g class="field-orbit" fill="none">
+        <circle
+          cx="410"
+          cy="408"
+          r="246"
+          stroke="#f0f3ef"
+          stroke-width="1.2"
+          opacity=".82"></circle>
+        <circle
+          cx="410"
+          cy="408"
+          r="176"
+          stroke="#69717c"
+          stroke-width="1"
+          stroke-dasharray="8 10"></circle>
+        <ellipse
+          cx="410"
+          cy="408"
+          rx="302"
+          ry="116"
+          stroke="#69717c"
+          stroke-width="1"
+          transform="rotate(-24 410 408)"></ellipse>
+        <path
+          class="field-path field-path--cyan"
+          d="M156 559C252 389 350 254 612 221"></path>
+        <path
+          class="field-path field-path--magenta"
+          d="M163 565C259 395 357 260 619 227"></path>
+        <path
+          class="field-path field-path--main"
+          d="M160 562C256 392 354 257 616 224"></path>
+      </g>
+
+      <g class="field-core">
+        <circle cx="410" cy="408" r="75" fill="#f0f3ef"></circle>
+        <circle cx="410" cy="408" r="58" fill="#0d1014"></circle>
+        <circle cx="410" cy="408" r="5" fill="#00c6d7"></circle>
+        <path
+          d="M410 314V350M410 466V502M316 408H352M468 408H504"
+          stroke="#f0f3ef"
+          stroke-width="1"></path>
+      </g>
+
+      <g class="field-nodes" font-family="Geist Mono, monospace">
+        <g transform="translate(156 562)">
+          <circle r="11" fill="#00c6d7"></circle>
+          <circle r="4" fill="#0d1014"></circle>
+          <text x="20" y="-8" fill="#f0f3ef" font-size="12" letter-spacing="1.4"
+            >SYSTEM</text
+          >
+          <text x="20" y="12" fill="#a8afb8" font-size="9"
+            >MECHANICS / TOOLS</text
+          >
+        </g>
+        <g transform="translate(616 224)">
+          <circle r="11" fill="#e2007a"></circle>
+          <circle r="4" fill="#0d1014"></circle>
+          <text
+            x="-20"
+            y="-14"
+            text-anchor="end"
+            fill="#f0f3ef"
+            font-size="12"
+            letter-spacing="1.4">CULTURE</text
+          >
+          <text x="-20" y="6" text-anchor="end" fill="#a8afb8" font-size="9"
+            >MEMORY / SOCIETY</text
+          >
+        </g>
+        <g transform="translate(624 596)">
+          <circle r="11" fill="#f0f3ef"></circle>
+          <circle r="4" fill="#0d1014"></circle>
+          <text
+            x="-20"
+            y="-14"
+            text-anchor="end"
+            fill="#f0f3ef"
+            font-size="12"
+            letter-spacing="1.4">PLAY</text
+          >
+          <text x="-20" y="6" text-anchor="end" fill="#a8afb8" font-size="9"
+            >PLAYER / EXPERIENCE</text
+          >
+        </g>
+      </g>
+
+      <g class="field-type" font-family="Geist Mono, monospace">
+        <text x="74" y="91" fill="#a8afb8" font-size="10" letter-spacing="1.8"
+          >FGL / OBSERVATION FIELD 01</text
+        >
+        <text
+          x="686"
+          y="91"
+          text-anchor="end"
+          fill="#73e6ef"
+          font-size="10"
+          letter-spacing="1.2">LIVE</text
+        >
+        <text x="74" y="781" fill="#a8afb8" font-size="9"
+          >31.2304 N / 121.4737 E</text
+        >
+        <text x="686" y="781" text-anchor="end" fill="#a8afb8" font-size="9"
+          >T+2026 / OPEN RESEARCH</text
+        >
+      </g>
+
+      <text class="field-monogram field-monogram--cyan" x="372" y="704"
+        >FGL</text
+      >
+      <text class="field-monogram field-monogram--magenta" x="380" y="708"
+        >FGL</text
+      >
+      <text class="field-monogram" x="376" y="706">FGL</text>
+    </g>
+  </svg>
+</figure>
+
+<style>
+  .signal-field {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    overflow: hidden;
+    background: #0d1014;
+  }
+
+  svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+    min-height: inherit;
+    object-fit: cover;
+  }
+
+  .field-path {
+    fill: none;
+    stroke-width: 2;
+  }
+
+  .field-path--cyan {
+    stroke: #00c6d7;
+    opacity: 0.8;
+  }
+
+  .field-path--magenta {
+    stroke: #e2007a;
+    opacity: 0.8;
+  }
+
+  .field-path--main {
+    stroke: #f0f3ef;
+    stroke-dasharray: 4 7;
+  }
+
+  .field-monogram {
+    fill: #f0f3ef;
+    font-family: Geist, sans-serif;
+    font-size: 146px;
+    font-weight: 820;
+    letter-spacing: -12px;
+  }
+
+  .field-monogram--cyan {
+    fill: #00c6d7;
+    opacity: 0.72;
+  }
+
+  .field-monogram--magenta {
+    fill: #e2007a;
+    opacity: 0.72;
+  }
+
+  .field-orbit,
+  .field-core {
+    transform-origin: 410px 408px;
+    animation: field-breathe 8s var(--ease-signal) infinite alternate;
+  }
+
+  .field-core {
+    animation-duration: 5.5s;
+  }
+
+  @keyframes field-breathe {
+    from {
+      transform: scale(0.985);
+    }
+    to {
+      transform: scale(1.015);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .field-orbit,
+    .field-core {
+      animation: none;
+    }
+  }
+</style>

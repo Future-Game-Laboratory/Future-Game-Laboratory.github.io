@@ -2,6 +2,7 @@
 import BlogCard from '@/components/blog-card.astro'
 import Link from '@/components/link.astro'
 import PageHead from '@/components/page-head.astro'
+import SignalField from '@/components/signal-field.astro'
 import { buttonVariants } from '@/components/ui/button'
 import { SITE } from '@/consts'
 import Layout from '@/layouts/layout.astro'
@@ -10,46 +11,112 @@ import { getRecentPosts } from '@/lib/data-utils'
 const blog = await getRecentPosts(SITE.featuredPostCount)
 ---
 
-<Layout class="max-w-3xl">
-  <PageHead slot="head" title="Home" />
-  <section class="rounded-xl border px-6 py-10 sm:px-10 sm:py-14">
-    <p class="text-muted-foreground mb-4 font-mono text-sm">Future Game Laboratory</p>
-    <h1 class="max-w-2xl text-4xl leading-tight font-semibold tracking-tight sm:text-5xl">
-      记录游戏如何被构思、制作与理解。
-    </h1>
-    <p class="text-muted-foreground mt-6 max-w-2xl text-base leading-7">
-      这里收录实验室的研究笔记、开发复盘与创作实践。我们关心游戏背后的系统、技术和人，也公开尚未完成的探索过程。
-    </p>
-    <div class="mt-8 flex flex-wrap gap-3">
-      <Link href="/blog" class={buttonVariants()}>阅读文章</Link>
-      <Link href="/about" class={buttonVariants({ variant: 'outline' })}>
-        了解实验室
-      </Link>
+<Layout class="home-shell">
+  <PageHead slot="head" title="游戏研究与创作实验" />
+
+  <section class="home-hero">
+    <div class="hero-copy">
+      <p class="signal-label" data-signal-label>
+        OBSERVATION LOG / OPEN CHANNEL
+      </p>
+      <p class="hero-wordmark" aria-hidden="true">FGL</p>
+      <h1 class="hero-title">观察游戏尚未抵达的可能性。</h1>
+      <p class="hero-description">
+        Future Game Laboratory
+        记录游戏如何被构思、制作与理解。这里公开研究笔记、开发复盘、原型实验，以及尚未成为答案的过程。
+      </p>
+      <div class="hero-actions">
+        <Link href="/blog" class={buttonVariants({ size: 'lg' })}>
+          进入观测记录 <span aria-hidden="true">↗</span>
+        </Link>
+        <Link
+          href="/about"
+          class={buttonVariants({ variant: 'outline', size: 'lg' })}
+        >
+          实验室说明
+        </Link>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <SignalField />
     </div>
   </section>
-  <section class="flex flex-col gap-y-4">
-    <h2 class="text-2xl font-medium">最新文章</h2>
+
+  <div class="status-rail" aria-label="实验室观测状态">
+    <strong>Signal receiving</strong>
+    <span>Vectors: System / Play / Culture</span>
+    <span>UTC +08:00</span>
+  </div>
+
+  <section class="home-section" aria-labelledby="latest-heading">
+    <div class="section-intro">
+      <div>
+        <p class="signal-label" data-signal-label>LATEST OBSERVATIONS</p>
+        <h2 class="section-heading" id="latest-heading">最近观测</h2>
+      </div>
+      <p>研究不会以完整答案开始。先保留现场，再让结论在记录中逐步显影。</p>
+    </div>
+
     {
       blog.length > 0 ? (
         <>
-          <ul class="flex flex-col gap-y-4">
+          <div class="article-list">
             {blog.map((post) => (
-              <li><BlogCard entry={post} /></li>
+              <BlogCard entry={post} />
             ))}
-          </ul>
-          <div class="flex justify-center">
-            <Link href="/blog" class={buttonVariants({ variant: 'ghost' }) + ' group'}>
-              查看全部 <span class="ml-1.5 transition-transform group-hover:translate-x-1">&rarr;</span>
+          </div>
+          <div class="mt-8 flex justify-end">
+            <Link href="/blog" class={buttonVariants({ variant: 'outline' })}>
+              查看完整档案 <span aria-hidden="true">→</span>
             </Link>
           </div>
         </>
       ) : (
-        <div class="rounded-lg border border-dashed px-6 py-10 text-center">
-          <p class="font-medium">第一篇文章正在路上</p>
-          <p class="text-muted-foreground mt-2 text-sm">内容编辑器已经就绪，可以从一次研究记录或开发复盘开始。</p>
-          <Link href="/editor" class={buttonVariants({ variant: 'outline' }) + ' mt-5'}>开始写作</Link>
+        <div class="empty-signal">
+          <p class="signal-label">NO SIGNAL YET</p>
+          <h3 class="mt-4 text-2xl font-semibold">第一篇观测记录正在路上</h3>
+          <p class="text-muted-foreground mx-auto mt-3 max-w-xl leading-7">
+            内容编辑器已经就绪，可以从一次研究记录或开发复盘开始。
+          </p>
+          <Link
+            href="/editor"
+            class={buttonVariants({ variant: 'outline' }) + ' mt-6'}
+          >
+            开始写作
+          </Link>
         </div>
       )
     }
+  </section>
+
+  <section class="home-section manifesto" aria-labelledby="manifesto-heading">
+    <div>
+      <p class="signal-label" data-signal-label>RESEARCH IS A LIVE SYSTEM</p>
+      <h2 class="manifesto-copy" id="manifesto-heading">
+        把未完成的过程，也当作证据。
+      </h2>
+    </div>
+    <div>
+      <div class="research-lines">
+        <div class="research-line">
+          <strong>SYSTEM</strong>
+          <p>拆解机制、工具与工程决策，记录系统为何以某种方式运转。</p>
+        </div>
+        <div class="research-line">
+          <strong>PLAY</strong>
+          <p>观察手感、体验和玩家行为，让测试中的偏差成为新的问题。</p>
+        </div>
+        <div class="research-line">
+          <strong>CULTURE</strong>
+          <p>把游戏放回社会、记忆与表达中，理解作品如何被共同塑造。</p>
+        </div>
+      </div>
+      <Link
+        href="/about"
+        class="mt-8 inline-flex items-center gap-2 font-mono text-sm text-white underline decoration-[#73e6ef] underline-offset-4"
+      >
+        阅读实验室说明 <span aria-hidden="true">↗</span>
+      </Link>
+    </div>
   </section>
 </Layout>

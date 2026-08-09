@@ -13,37 +13,28 @@ interface Props {
 const { project } = Astro.props
 ---
 
-<div
-  class="hover:bg-muted/50 rounded-xl border p-4 transition-colors duration-300 ease-in-out"
->
-  <Link
-    href={project.data.link}
-    class="flex flex-col gap-4 sm:flex-row"
-    external
-  >
+<article class="project-record">
+  <Link href={project.data.link} class="project-record__link" external>
     {
       project.data.image && (
-        <div class="w-full sm:max-w-3xs sm:shrink-0">
+        <div class="project-record__media">
           <Image
             src={project.data.image}
             alt={project.data.name}
             width={1200}
             height={630}
-            class="object-cover"
+            class="size-full object-cover"
           />
         </div>
       )
     }
-    <div class="grow">
-      <h3 class="mb-1 text-lg font-medium">
-        {project.data.name}
-      </h3>
-      <p class="text-muted-foreground mb-2 text-sm">
-        {project.data.description}
-      </p>
+    <div class="project-record__body">
+      <p class="signal-label">PROJECT / EXTERNAL</p>
+      <h3>{project.data.name}</h3>
+      <p>{project.data.description}</p>
       {
         project.data.startDate && (
-          <p class="text-muted-foreground/70 mb-2 flex items-center gap-x-1.5 text-xs">
+          <p class="project-record__date">
             <span class="flex items-center gap-x-1.5">
               <Icon name="lucide:calendar" class="size-3" />
               <span>
@@ -58,7 +49,7 @@ const { project } = Astro.props
       }
       {
         project.data.tags && (
-          <div class="flex flex-wrap gap-2">
+          <div class="mt-4 flex flex-wrap gap-2">
             {project.data.tags.map((tag: string) => (
               <Badge variant="muted">{tag}</Badge>
             ))}
@@ -67,4 +58,67 @@ const { project } = Astro.props
       }
     </div>
   </Link>
-</div>
+</article>
+
+<style>
+  .project-record {
+    border-top: 1px solid var(--foreground);
+    border-bottom: 1px solid var(--foreground);
+  }
+
+  .project-record__link {
+    display: grid;
+    grid-template-columns: minmax(11rem, 0.65fr) minmax(0, 1.35fr);
+    gap: clamp(1.25rem, 4vw, 3rem);
+    padding: 1.25rem 0;
+  }
+
+  .project-record__media {
+    min-height: 12rem;
+    overflow: hidden;
+    border: 1px solid var(--foreground);
+    filter: grayscale(0.8) contrast(1.05);
+    transition: filter 200ms var(--ease-signal);
+  }
+
+  .project-record:hover .project-record__media {
+    filter: grayscale(0.2) contrast(1.02);
+  }
+
+  .project-record__body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .project-record h3 {
+    margin-top: 0.85rem;
+    font-family: var(--font-display);
+    font-size: clamp(1.5rem, 3vw, 2.5rem);
+    font-weight: 660;
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+  }
+
+  .project-record__body > p:not(.signal-label, .project-record__date) {
+    margin-top: 0.75rem;
+    color: var(--muted-foreground);
+    line-height: 1.7;
+  }
+
+  .project-record__date {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-top: 1rem;
+    color: var(--muted-foreground);
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+  }
+
+  @media (max-width: 640px) {
+    .project-record__link {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

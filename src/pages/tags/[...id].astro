@@ -2,51 +2,42 @@
 import BlogCard from '@/components/blog-card.astro'
 import Breadcrumbs from '@/components/breadcrumbs.astro'
 import PageHead from '@/components/page-head.astro'
+import PageHeader from '@/components/page-header.astro'
 import Layout from '@/layouts/layout.astro'
 import { getAllTags, getPostsByTag } from '@/lib/data-utils'
 
 export async function getStaticPaths() {
   const tagMap = await getAllTags()
-  const uniqueTags = Array.from(tagMap.keys())
-
   return Promise.all(
-    uniqueTags.map(async (tag) => {
-      const posts = await getPostsByTag(tag)
-      return {
-        params: { id: tag },
-        props: {
-          tag,
-          posts,
-        },
-      }
-    }),
+    Array.from(tagMap.keys()).map(async (tag) => ({
+      params: { id: tag },
+      props: { tag, posts: await getPostsByTag(tag) },
+    })),
   )
 }
 
 const { tag, posts } = Astro.props
 ---
 
-<Layout class="max-w-3xl">
+<Layout class="max-w-6xl">
   <PageHead
     slot="head"
-    title={`Posts tagged with "${tag}"`}
-    description={`A collection of posts tagged with ${tag}.`}
+    title={`标签：${tag}`}
+    description={`标记为 ${tag} 的文章集合。`}
     noindex
   />
   <Breadcrumbs
     items={[
-      { href: '/tags', label: 'Tags', icon: 'lucide:tags' },
+      { href: '/tags', label: '标签', icon: 'lucide:tags' },
       { label: tag, icon: 'lucide:tag' },
     ]}
   />
-
-  <ul class="flex flex-col gap-y-4">
-    {
-      posts.map((post) => (
-        <li>
-          <BlogCard entry={post} />
-        </li>
-      ))
-    }
-  </ul>
+  <PageHeader
+    label={`FILTER / ${String(posts.length).padStart(2, '0')} RECORDS`}
+    title={`# ${tag}`}
+    description="当前标签下的全部公开观测记录。"
+  />
+  <div class="article-list">
+    {posts.map((post) => <BlogCard entry={post} />)}
+  </div>
 </Layout>

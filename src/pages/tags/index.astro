@@ -2,32 +2,91 @@
 import Breadcrumbs from '@/components/breadcrumbs.astro'
 import Link from '@/components/link.astro'
 import PageHead from '@/components/page-head.astro'
-import { badgeVariants } from '@/components/ui/badge'
+import PageHeader from '@/components/page-header.astro'
 import Layout from '@/layouts/layout.astro'
 import { getSortedTags } from '@/lib/data-utils'
-import { Icon } from 'astro-icon/components'
-
-const sortedTags = await getSortedTags()
 ---
 
-<Layout class="max-w-3xl">
-  <PageHead slot="head" title="Tags" />
-  <Breadcrumbs items={[{ label: 'Tags', icon: 'lucide:tags' }]} />
+<Layout class="max-w-6xl">
+  <PageHead slot="head" title="标签" />
+  <Breadcrumbs items={[{ label: '标签', icon: 'lucide:tags' }]} />
+  <PageHeader
+    label="INDEX / RESEARCH VECTORS"
+    title="标签索引"
+    description="沿着研究主题、工具和项目线索重新进入观测记录。数字表示当前公开文章数量。"
+  />
 
-  <div class="flex flex-col gap-4">
-    <div class="flex flex-wrap gap-2">
+  <nav class="tag-index" aria-label="文章标签">
+    <ul>
       {
-        sortedTags.map(({ tag, count }) => (
-          <Link
-            href={`/tags/${tag}`}
-            class={badgeVariants({ variant: 'muted' })}
-          >
-            <Icon name="lucide:hash" class="size-3" />
-            {tag}
-            <span class="text-muted-foreground ml-1.5">({count})</span>
-          </Link>
+        (await getSortedTags()).map(({ tag, count }) => (
+          <li>
+            <Link href={`/tags/${tag}`}>
+              <span># {tag}</span>
+              <strong>{String(count).padStart(2, '0')}</strong>
+              <i aria-hidden="true">↗</i>
+            </Link>
+          </li>
         ))
       }
-    </div>
-  </div>
+    </ul>
+  </nav>
 </Layout>
+
+<style>
+  .tag-index ul {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr));
+    margin: 0;
+    border-top: 1px solid var(--foreground);
+    border-left: 1px solid var(--foreground);
+    padding: 0;
+    list-style: none;
+  }
+
+  .tag-index li {
+    border-right: 1px solid var(--foreground);
+    border-bottom: 1px solid var(--foreground);
+  }
+
+  .tag-index a {
+    display: grid;
+    min-height: 9rem;
+    grid-template-columns: 1fr auto;
+    align-content: space-between;
+    gap: 1rem;
+    padding: 1.25rem;
+    transition:
+      background-color 160ms var(--ease-signal),
+      color 160ms var(--ease-signal);
+  }
+
+  .tag-index a:hover {
+    background: var(--foreground);
+    color: var(--background);
+  }
+
+  .tag-index span {
+    max-width: 16ch;
+    font-family: var(--font-display);
+    font-size: clamp(1.25rem, 3vw, 2rem);
+    font-weight: 650;
+    line-height: 1.1;
+    overflow-wrap: anywhere;
+  }
+
+  .tag-index strong {
+    color: var(--signal-cyan-ink);
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+  }
+
+  .tag-index a:hover strong {
+    color: var(--signal-cyan);
+  }
+
+  .tag-index i {
+    align-self: end;
+    font-style: normal;
+  }
+</style>

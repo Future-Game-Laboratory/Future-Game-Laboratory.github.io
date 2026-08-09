@@ -1,36 +1,461 @@
 ---
 import Link from '@/components/link.astro'
 import ThemeToggle from '@/components/theme-toggle.astro'
-import { NAV_LINKS, SITE } from '@/consts'
-import { Image } from 'astro:assets'
-import logo from '../../public/static/logo.svg'
+import { NAV_LINKS, SOCIAL_LINKS } from '@/consts'
+
+const pathname = Astro.url.pathname.replace(/\/$/, '') || '/'
+const isActive = (href: string) =>
+  href === '/'
+    ? pathname === '/'
+    : pathname === href || pathname.startsWith(`${href}/`)
 ---
 
-<div>
-  <div
-    class="mx-auto flex max-w-3xl items-center justify-between gap-4 px-4 py-3"
-  >
-    <Link href="/" class="flex shrink-0 items-center justify-center gap-3">
-      <Image src={logo} alt="Logo" class="size-5 sm:size-6" />
-      <span
-        class="hidden h-full text-lg leading-none font-medium min-[400px]:block"
-        >{SITE.title}</span
-      >
-    </Link>
-    <div class="flex items-center gap-4">
-      <nav class="flex items-center gap-4 text-sm sm:gap-6">
+<div class="site-nav-bar">
+  <Link href="/" class="brand-lockup" aria-label="Future Game Laboratory 首页">
+    <span class="brand-monogram chromatic-ink" aria-hidden="true">FGL</span>
+    <span class="brand-name">Future Game<br />Laboratory</span>
+  </Link>
+
+  <div class="desktop-navigation">
+    <nav aria-label="主要导航">
+      <ul>
         {
           NAV_LINKS.map((item) => (
-            <Link
-              href={item.href}
-              class="text-foreground/60 hover:text-foreground capitalize transition-colors"
-            >
-              {item.label}
-            </Link>
+            <li>
+              <Link
+                href={item.href}
+                class="nav-link"
+                aria-current={isActive(item.href) ? 'page' : undefined}
+              >
+                {item.label}
+              </Link>
+            </li>
           ))
         }
-      </nav>
-      <ThemeToggle transition:persist />
-    </div>
+      </ul>
+    </nav>
+  </div>
+
+  <div class="navigation-controls">
+    <ThemeToggle transition:persist />
+    <button
+      class="menu-trigger"
+      id="site-menu-open"
+      type="button"
+      aria-haspopup="dialog"
+      aria-controls="site-menu"
+    >
+      <span>MENU</span>
+      <i aria-hidden="true"></i>
+    </button>
   </div>
 </div>
+
+<dialog class="site-menu" id="site-menu" aria-label="网站导航">
+  <div class="site-menu__grid" aria-hidden="true"></div>
+  <header class="site-menu__header">
+    <span class="site-menu__mark chromatic-ink">FGL</span>
+    <span>OBSERVATION DIRECTORY / 01</span>
+    <button id="site-menu-close" type="button" aria-label="关闭导航">
+      <span>CLOSE</span>
+      <i aria-hidden="true"></i>
+    </button>
+  </header>
+  <nav class="site-menu__nav" aria-label="全屏导航">
+    <ul>
+      {
+        NAV_LINKS.map((item, index) => (
+          <li>
+            <span>{String(index + 1).padStart(2, '0')}</span>
+            <Link
+              href={item.href}
+              aria-current={isActive(item.href) ? 'page' : undefined}
+            >
+              {item.label}
+              <small>{item.href.replace('/', '') || 'home'}</small>
+            </Link>
+          </li>
+        ))
+      }
+    </ul>
+  </nav>
+  <footer class="site-menu__footer">
+    <span>Future Game Laboratory</span>
+    <ul>
+      {
+        SOCIAL_LINKS.map((item) => (
+          <li>
+            <Link href={item.href} external={item.href.startsWith('http')}>
+              {item.label}
+            </Link>
+          </li>
+        ))
+      }
+    </ul>
+  </footer>
+</dialog>
+
+<style>
+  .site-nav-bar {
+    display: flex;
+    width: min(100%, var(--site-max));
+    height: var(--header-height);
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+    margin-inline: auto;
+    padding: 0 clamp(1rem, 3.3vw, 3rem);
+  }
+
+  .brand-lockup {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.85rem;
+    color: var(--foreground);
+  }
+
+  .brand-monogram {
+    font-family: var(--font-display);
+    font-size: 1.55rem;
+    font-weight: 820;
+    line-height: 0.8;
+    letter-spacing: -0.06em;
+  }
+
+  .brand-name {
+    font-family: var(--font-mono);
+    font-size: 0.58rem;
+    font-weight: 580;
+    line-height: 1.2;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .desktop-navigation,
+  .desktop-navigation nav ul {
+    display: flex;
+    align-items: center;
+  }
+
+  .desktop-navigation nav ul {
+    gap: clamp(1.25rem, 3vw, 2.5rem);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .nav-link {
+    position: relative;
+    color: color-mix(in srgb, var(--foreground) 68%, var(--background));
+    font-family: var(--font-mono);
+    font-size: 0.73rem;
+    font-weight: 580;
+    letter-spacing: 0.06em;
+  }
+
+  .nav-link::after {
+    position: absolute;
+    right: 0;
+    bottom: -1.65rem;
+    left: 0;
+    height: 3px;
+    background: var(--foreground);
+    content: '';
+    box-shadow:
+      2px 0 var(--signal-magenta),
+      -2px 0 var(--signal-cyan);
+    transform: scaleX(0);
+    transform-origin: center;
+    transition: transform 180ms var(--ease-signal);
+  }
+
+  .nav-link:hover,
+  .nav-link[aria-current='page'] {
+    color: var(--foreground);
+  }
+
+  .nav-link:hover::after,
+  .nav-link[aria-current='page']::after {
+    transform: scaleX(1);
+  }
+
+  .navigation-controls {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+  }
+
+  .menu-trigger {
+    display: none;
+    height: 2.65rem;
+    align-items: center;
+    gap: 0.7rem;
+    border: 1px solid var(--foreground);
+    border-radius: 3px;
+    background: transparent;
+    color: var(--foreground);
+    padding: 0 0.75rem;
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.07em;
+  }
+
+  .menu-trigger i,
+  .site-menu__header button i {
+    position: relative;
+    width: 1rem;
+    height: 8px;
+  }
+
+  .menu-trigger i::before,
+  .menu-trigger i::after,
+  .site-menu__header button i::before,
+  .site-menu__header button i::after {
+    position: absolute;
+    right: 0;
+    left: 0;
+    height: 1px;
+    background: currentColor;
+    content: '';
+  }
+
+  .menu-trigger i::before {
+    top: 0;
+  }
+
+  .menu-trigger i::after {
+    bottom: 0;
+  }
+
+  .site-menu {
+    width: 100%;
+    max-width: none;
+    height: 100%;
+    max-height: none;
+    margin: 0;
+    overflow: hidden auto;
+    border: 0;
+    background: #0d1014;
+    color: #f0f3ef;
+    padding: 0;
+    opacity: 0;
+    transform: scale(1.025);
+    transition:
+      opacity 260ms var(--ease-signal),
+      transform 480ms var(--ease-reveal),
+      display 260ms allow-discrete,
+      overlay 260ms allow-discrete;
+  }
+
+  .site-menu[open] {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  @starting-style {
+    .site-menu[open] {
+      opacity: 0;
+      transform: scale(1.025);
+    }
+  }
+
+  .site-menu::backdrop {
+    background: #0d1014;
+  }
+
+  .site-menu__grid {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background-image:
+      linear-gradient(rgb(255 255 255 / 6%) 1px, transparent 1px),
+      linear-gradient(90deg, rgb(255 255 255 / 6%) 1px, transparent 1px);
+    background-size: 42px 42px;
+    mask-image: linear-gradient(to bottom right, black, transparent 88%);
+  }
+
+  .site-menu__header,
+  .site-menu__footer {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1.25rem clamp(1rem, 4vw, 3rem);
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.08em;
+  }
+
+  .site-menu__header {
+    border-bottom: 1px solid #4b515a;
+  }
+
+  .site-menu__mark {
+    font-family: var(--font-display);
+    font-size: 1.7rem;
+    font-weight: 820;
+    letter-spacing: -0.06em;
+  }
+
+  .site-menu__header button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.65rem;
+    border: 1px solid #69717c;
+    border-radius: 3px;
+    background: transparent;
+    color: #f0f3ef;
+    padding: 0.65rem 0.75rem;
+    font: inherit;
+  }
+
+  .site-menu__header button i::before {
+    top: 3px;
+    transform: rotate(45deg);
+  }
+
+  .site-menu__header button i::after {
+    bottom: 4px;
+    transform: rotate(-45deg);
+  }
+
+  .site-menu__nav {
+    position: relative;
+    display: grid;
+    min-height: calc(100svh - 9rem);
+    place-items: center;
+    padding: clamp(3rem, 7vw, 7rem) clamp(1rem, 7vw, 7rem);
+  }
+
+  .site-menu__nav ul {
+    width: min(100%, 64rem);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .site-menu__nav li {
+    display: grid;
+    grid-template-columns: 3.5rem 1fr;
+    align-items: baseline;
+    border-bottom: 1px solid #4b515a;
+  }
+
+  .site-menu__nav li > span {
+    color: #73e6ef;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+  }
+
+  .site-menu__nav a {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: clamp(1rem, 2.5vw, 1.7rem) 0;
+    font-family: var(--font-display);
+    font-size: clamp(2.4rem, 7vw, 5.3rem);
+    font-weight: 700;
+    line-height: 0.94;
+    letter-spacing: -0.045em;
+  }
+
+  .site-menu__nav a:hover,
+  .site-menu__nav a[aria-current='page'] {
+    text-shadow:
+      3px 0 #e2007a,
+      -3px 0 #00c6d7;
+  }
+
+  .site-menu__nav small {
+    color: #a8afb8;
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+  }
+
+  .site-menu__footer {
+    border-top: 1px solid #4b515a;
+    color: #a8afb8;
+  }
+
+  .site-menu__footer ul {
+    display: flex;
+    gap: 1rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  :global(html[data-menu='open']) {
+    overflow: hidden;
+  }
+
+  @media (max-width: 860px) {
+    .desktop-navigation {
+      display: none;
+    }
+
+    .menu-trigger {
+      display: inline-flex;
+    }
+  }
+
+  @media (max-width: 520px) {
+    .brand-name,
+    .site-menu__header > span:nth-child(2),
+    .site-menu__nav small {
+      display: none;
+    }
+
+    .site-menu__nav li {
+      grid-template-columns: 2.5rem 1fr;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .site-menu {
+      transform: none;
+    }
+  }
+</style>
+
+<script>
+  function setupSiteMenu() {
+    const dialog = document.getElementById('site-menu')
+    const open = document.getElementById('site-menu-open')
+    const close = document.getElementById('site-menu-close')
+    if (
+      !(dialog instanceof HTMLDialogElement) ||
+      !(open instanceof HTMLElement)
+    )
+      return
+
+    open.onclick = () => {
+      dialog.showModal()
+      document.documentElement.dataset.menu = 'open'
+      close?.focus()
+    }
+    const closeMenu = () => {
+      dialog.close()
+      delete document.documentElement.dataset.menu
+      open.focus()
+    }
+    if (close instanceof HTMLElement) close.onclick = closeMenu
+    dialog.onclick = (event) => {
+      if (event.target === dialog) closeMenu()
+    }
+    dialog.onclose = () => delete document.documentElement.dataset.menu
+    dialog.querySelectorAll('a').forEach((link) => {
+      ;(link as HTMLAnchorElement).onclick = () => {
+        if (dialog.open) dialog.close()
+        delete document.documentElement.dataset.menu
+      }
+    })
+  }
+
+  setupSiteMenu()
+  document.addEventListener('astro:page-load', setupSiteMenu)
+</script>

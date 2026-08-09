@@ -3,6 +3,7 @@ import AuthorCard from '@/components/author-card.astro'
 import BlogCard from '@/components/blog-card.astro'
 import Breadcrumbs from '@/components/breadcrumbs.astro'
 import PageHead from '@/components/page-head.astro'
+import PageHeader from '@/components/page-header.astro'
 import Layout from '@/layouts/layout.astro'
 import { getAllAuthors, getPostsByAuthor } from '@/lib/data-utils'
 
@@ -16,42 +17,46 @@ export async function getStaticPaths() {
 
 const { author } = Astro.props
 const authorPosts = await getPostsByAuthor(author.id)
+const publicPosts = authorPosts.filter((post) => !post.data.draft)
 ---
 
-<Layout class="max-w-3xl">
+<Layout class="max-w-6xl">
   <PageHead
     slot="head"
-    title={`${author.data.name} (Author)`}
-    description={author.data.bio || `Profile of ${author.data.name}.`}
+    title={`${author.data.name} / 作者`}
+    description={author.data.bio || `${author.data.name} 的作者资料。`}
     noindex
   />
   <Breadcrumbs
     items={[
-      { href: '/authors', label: 'Authors', icon: 'lucide:users' },
+      { href: '/authors', label: '作者', icon: 'lucide:users' },
       { label: author.data.name, icon: 'lucide:user' },
     ]}
   />
+  <PageHeader
+    label={`CONTRIBUTOR / ${String(publicPosts.length).padStart(2, '0')} RECORDS`}
+    title={author.data.name}
+    description={author.data.bio}
+  />
 
-  <section>
-    <AuthorCard author={author} />
-  </section>
-  <section class="flex flex-col gap-y-4">
-    <h2 class="text-2xl font-medium">Posts by {author.data.name}</h2>
+  <AuthorCard author={author} />
+
+  <section aria-labelledby="author-posts-heading">
+    <div class="section-intro">
+      <div>
+        <p class="signal-label">AUTHORED OBSERVATIONS</p>
+        <h2 class="section-heading" id="author-posts-heading">公开记录</h2>
+      </div>
+    </div>
     {
-      authorPosts.length > 0 ? (
-        <ul class="flex flex-col gap-4">
-          {authorPosts
-            .filter((post) => !post.data.draft)
-            .map((post) => (
-              <li>
-                <BlogCard entry={post} />
-              </li>
-            ))}
-        </ul>
+      publicPosts.length > 0 ? (
+        <div class="article-list">
+          {publicPosts.map((post) => (
+            <BlogCard entry={post} />
+          ))}
+        </div>
       ) : (
-        <p class="text-muted-foreground">
-          No posts available from this author.
-        </p>
+        <p class="text-muted-foreground">这位作者暂时没有公开文章。</p>
       )
     }
   </section>

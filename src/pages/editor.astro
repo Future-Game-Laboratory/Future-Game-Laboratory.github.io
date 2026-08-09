@@ -2,6 +2,7 @@
 import Breadcrumbs from '@/components/breadcrumbs.astro'
 import ContentEditor from '@/components/content-editor'
 import PageHead from '@/components/page-head.astro'
+import PageHeader from '@/components/page-header.astro'
 import Layout from '@/layouts/layout.astro'
 ---
 
@@ -12,15 +13,11 @@ import Layout from '@/layouts/layout.astro'
     description="编写、预览并发布 Future Game Laboratory 的文章。"
     noindex
   />
-  <div class="mx-auto w-full max-w-7xl space-y-6">
-    <Breadcrumbs items={[{ label: '内容编辑器', icon: 'lucide:pencil-line' }]} />
-    <header class="max-w-3xl">
-      <h1 class="text-3xl font-semibold tracking-tight sm:text-4xl">内容编辑器</h1>
-      <p class="text-muted-foreground mt-3 text-sm leading-6 sm:text-base">
-        在浏览器中编写 MDX，实时检查文章结构，并直接提交到 GitHub
-        触发站点构建。内容会自动保存在这台设备上。
-      </p>
-    </header>
-    <ContentEditor client:load />
-  </div>
+  <Breadcrumbs items={[{ label: '内容编辑器', icon: 'lucide:pencil-line' }]} />
+  <PageHeader
+    label="AUTHORING CONSOLE / PRIVATE SURFACE"
+    title="内容编辑器"
+    description="编写 MDX、实时检查文章结构，并直接提交到 GitHub 触发站点构建。内容会自动保存在这台设备上。"
+  />
+  <ContentEditor client:load />
 </Layout>

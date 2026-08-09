@@ -27,14 +27,18 @@
 
 @layer components {
   .prose {
-    @apply text-foreground text-base leading-7;
+    @apply text-foreground text-base leading-8;
+    max-width: var(--reading-max);
 
     :where(p):not(:where(.not-prose, .not-prose *)) {
-      @apply text-foreground/80 my-5;
+      @apply text-foreground/85 my-6;
     }
 
     :where(h1, h2, h3, h4, h5, h6):not(:where(.not-prose, .not-prose *)) {
-      @apply text-foreground scroll-mt-32 font-medium xl:scroll-mt-20;
+      @apply text-foreground scroll-mt-32 xl:scroll-mt-24;
+      font-family: var(--font-display);
+      font-weight: 650;
+      letter-spacing: -0.025em;
     }
 
     :first-child:not(:where(.not-prose, .not-prose *)) {
@@ -43,15 +47,15 @@
 
     /* Don't use an <h1> in your posts, one is already generated in blog/[...id].astro */
     :where(h1):not(:where(.not-prose, .not-prose *)) {
-      @apply mt-8 mb-6 text-4xl;
+      @apply mt-12 mb-7 text-4xl;
     }
 
     :where(h2):not(:where(.not-prose, .not-prose *)) {
-      @apply mt-8 mb-4 text-2xl;
+      @apply mt-12 mb-5 border-b pb-3 text-3xl;
     }
 
     :where(h3):not(:where(.not-prose, .not-prose *)) {
-      @apply mt-8 mb-4 text-xl;
+      @apply mt-10 mb-4 text-2xl;
     }
 
     :where(h4):not(:where(.not-prose, .not-prose *)) {
@@ -63,7 +67,13 @@
     }
 
     :where(a):not(:where(.not-prose, .not-prose *)) {
-      @apply text-foreground decoration-muted-foreground hover:decoration-foreground font-medium wrap-break-word underline underline-offset-[3px] transition-colors;
+      @apply font-medium wrap-break-word underline underline-offset-[3px] transition-colors;
+      color: var(--signal-cyan-ink);
+      text-decoration-color: color-mix(
+        in srgb,
+        var(--signal-cyan-ink) 45%,
+        transparent
+      );
     }
 
     :where(strong):not(:where(.not-prose, .not-prose *)) {
@@ -104,7 +114,8 @@
     }
 
     :where(blockquote):not(:where(.not-prose, .not-prose *)) {
-      @apply **:text-muted-foreground small my-6 border-l-2 pl-6;
+      @apply **:text-muted-foreground small my-8 border px-5 py-4;
+      border-radius: 4px;
     }
 
     :where(hr):not(:where(.not-prose, .not-prose *)) {
@@ -134,8 +145,8 @@
     }
 
     :where(img, video, figure, .expressive-code):not(
-        :where(.not-prose, .not-prose *)
-      ) {
+      :where(.not-prose, .not-prose *)
+    ) {
       @apply mx-auto my-6;
     }
 

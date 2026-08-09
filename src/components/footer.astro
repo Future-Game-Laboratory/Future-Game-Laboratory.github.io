@@ -1,26 +1,81 @@
 ---
-import { Separator } from '@/components/ui/separator'
 import { SOCIAL_LINKS } from '@/consts'
 import Link from './link.astro'
-import SocialIcons from './social-icons.astro'
 ---
 
-<footer
-  class="mx-auto mb-8 flex w-full max-w-3xl flex-col items-center justify-center gap-y-2 px-4 sm:mb-4 sm:flex-row sm:justify-between"
->
-  <div class="flex flex-wrap items-center justify-center gap-x-2 text-center">
-    <span class="text-muted-foreground text-sm">
-      &copy; {new Date().getFullYear()} Future Game Laboratory
-    </span>
-    <Separator orientation="vertical" className="hidden h-4! sm:block" />
-    <p class="text-muted-foreground text-sm">
-      Built in the open on <Link
-        href="https://github.com/Future-Game-Laboratory/Future-Game-Laboratory.github.io"
-        class="text-foreground"
-        external
-        underline>GitHub</Link
-      >
-    </p>
+<footer class="site-footer">
+  <div class="footer-status">
+    <p class="signal-label">END OF TRANSMISSION</p>
+    <p>保持观测，公开过程。</p>
   </div>
-  <SocialIcons links={SOCIAL_LINKS} />
+  <div class="footer-meta">
+    <span>&copy; {new Date().getFullYear()} Future Game Laboratory</span>
+    <span>31.2304° N / 121.4737° E</span>
+    <ul aria-label="外部链接">
+      {
+        SOCIAL_LINKS.map(({ href, label }) => (
+          <li>
+            <Link href={href} external={href.startsWith('http')}>
+              {label} ↗
+            </Link>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
 </footer>
+
+<style>
+  .footer-status,
+  .footer-meta,
+  .footer-meta ul {
+    display: flex;
+    align-items: center;
+  }
+
+  .footer-status {
+    justify-content: space-between;
+    gap: 1.5rem;
+    padding-bottom: 1.25rem;
+  }
+
+  .footer-status > p:last-child {
+    color: var(--muted-foreground);
+    font-size: 0.85rem;
+  }
+
+  .footer-meta {
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 0.85rem 1.5rem;
+    border-top: 1px solid var(--border);
+    padding-top: 1rem;
+    color: var(--muted-foreground);
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.04em;
+  }
+
+  .footer-meta ul {
+    gap: 1rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .footer-meta a:hover {
+    color: var(--foreground);
+  }
+
+  @media (max-width: 640px) {
+    .footer-status {
+      align-items: flex-start;
+      flex-direction: column;
+    }
+
+    .footer-meta {
+      align-items: flex-start;
+      flex-direction: column;
+    }
+  }
+</style>

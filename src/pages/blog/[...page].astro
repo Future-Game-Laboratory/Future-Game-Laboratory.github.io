@@ -2,6 +2,7 @@
 import BlogCard from '@/components/blog-card.astro'
 import Breadcrumbs from '@/components/breadcrumbs.astro'
 import PageHead from '@/components/page-head.astro'
+import PageHeader from '@/components/page-header.astro'
 import PaginationComponent from '@/components/ui/pagination'
 import { SITE } from '@/consts'
 import Layout from '@/layouts/layout.astro'
@@ -18,33 +19,40 @@ export async function getStaticPaths({
 }
 
 const { page } = Astro.props
-
 const postsByYear = groupPostsByYear(page.data)
 const years = Object.keys(postsByYear).sort((a, b) => parseInt(b) - parseInt(a))
 const base = import.meta.env.BASE_URL.replace(/\/$/, '')
 ---
 
-<Layout class="max-w-3xl">
-  <PageHead slot="head" title="Blog" />
+<Layout class="max-w-6xl">
+  <PageHead slot="head" title="文章档案" />
   <Breadcrumbs
     items={[
-      { label: 'Blog', href: '/blog', icon: 'lucide:library-big' },
-      { label: `Page ${page.currentPage}`, icon: 'lucide:book-copy' },
+      { label: '文章', href: '/blog', icon: 'lucide:library-big' },
+      { label: `第 ${page.currentPage} 页`, icon: 'lucide:book-copy' },
     ]}
   />
+  <PageHeader
+    label={`ARCHIVE / PAGE ${String(page.currentPage).padStart(2, '0')}`}
+    title="观测记录"
+    description="研究笔记、开发复盘与创作实验，按公开时间归档。每一条记录都保留问题发生时的上下文。"
+  />
 
-  <div class="flex min-h-[calc(100vh-18rem)] flex-col gap-y-8">
+  <div class="archive-years">
     {
       years.map((year) => (
-        <section class="flex flex-col gap-y-4">
-          <div class="font-medium">{year}</div>
-          <ul class="flex flex-col gap-4">
+        <section class="archive-year" aria-labelledby={`year-${year}`}>
+          <header>
+            <h2 id={`year-${year}`}>{year}</h2>
+            <span>
+              {String(postsByYear[year].length).padStart(2, '0')} RECORDS
+            </span>
+          </header>
+          <div class="article-list">
             {postsByYear[year].map((post) => (
-              <li>
-                <BlogCard entry={post} />
-              </li>
+              <BlogCard entry={post} />
             ))}
-          </ul>
+          </div>
         </section>
       ))
     }
@@ -57,3 +65,33 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '')
     client:load
   />
 </Layout>
+
+<style>
+  .archive-years {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(3.5rem, 8vw, 7rem);
+  }
+
+  .archive-year > header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .archive-year h2 {
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 5vw, 4rem);
+    font-weight: 720;
+    letter-spacing: -0.04em;
+  }
+
+  .archive-year header span {
+    color: var(--muted-foreground);
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.06em;
+  }
+</style>

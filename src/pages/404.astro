@@ -1,29 +1,118 @@
 ---
-import Breadcrumbs from '@/components/breadcrumbs.astro'
 import Link from '@/components/link.astro'
 import PageHead from '@/components/page-head.astro'
 import { buttonVariants } from '@/components/ui/button'
 import Layout from '@/layouts/layout.astro'
-import { cn } from '@/lib/utils'
 ---
 
-<Layout class="max-w-3xl">
-  <PageHead slot="head" title="404" noindex />
-  <Breadcrumbs items={[{ label: '???', icon: 'lucide:circle-help' }]} />
-
-  <section
-    class="flex flex-col items-center justify-center gap-y-4 text-center"
-  >
-    <div class="max-w-md">
-      <h1 class="mb-4 text-3xl font-medium">404: Page not found</h1>
-      <p class="prose">Oops! The page you're looking for doesn't exist.</p>
+<Layout class="max-w-6xl">
+  <PageHead slot="head" title="404 / 信号丢失" noindex />
+  <section class="lost-signal">
+    <div class="lost-signal__code" aria-hidden="true">
+      <span>4</span><i></i><span>4</span>
     </div>
-    <Link
-      href="/"
-      class={cn(buttonVariants({ variant: 'outline' }), 'flex gap-x-1.5 group')}
-    >
-      <span class="transition-transform group-hover:-translate-x-1">&larr;</span
-      > Go to home page
-    </Link>
+    <div class="lost-signal__copy">
+      <p class="signal-label" data-signal-label>
+        ERROR / COORDINATES UNRESOLVED
+      </p>
+      <h1>这一页没有出现在观测范围内。</h1>
+      <p>
+        链接可能已经移动，或者这条记录尚未公开。你可以回到首页，或进入文章档案重新定位。
+      </p>
+      <div>
+        <Link href="/" class={buttonVariants()}>返回首页</Link>
+        <Link href="/blog" class={buttonVariants({ variant: 'outline' })}
+          >浏览文章</Link
+        >
+      </div>
+    </div>
   </section>
 </Layout>
+
+<style>
+  .lost-signal {
+    display: grid;
+    min-height: 62vh;
+    grid-template-columns: minmax(18rem, 0.9fr) minmax(0, 1.1fr);
+    align-items: center;
+    gap: clamp(3rem, 9vw, 8rem);
+  }
+
+  .lost-signal__code {
+    position: relative;
+    display: flex;
+    min-height: 25rem;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    overflow: hidden;
+    border: 1px solid var(--foreground);
+    background: #0d1014;
+    color: #f0f3ef;
+  }
+
+  .lost-signal__code::before {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgb(255 255 255 / 7%) 1px, transparent 1px),
+      linear-gradient(90deg, rgb(255 255 255 / 7%) 1px, transparent 1px);
+    background-size: 30px 30px;
+    content: '';
+  }
+
+  .lost-signal__code span {
+    position: relative;
+    font-family: var(--font-display);
+    font-size: clamp(7rem, 19vw, 13rem);
+    font-weight: 820;
+    line-height: 1;
+    text-shadow:
+      3px 0 #e2007a,
+      -3px 0 #00c6d7;
+  }
+
+  .lost-signal__code i {
+    position: relative;
+    width: 2rem;
+    height: 2rem;
+    border: 2px solid #f0f3ef;
+    border-top-color: #00c6d7;
+    border-right-color: #e2007a;
+    border-radius: 50%;
+  }
+
+  .lost-signal__copy h1 {
+    max-width: 12ch;
+    margin-top: 1.5rem;
+    font-family: var(--font-display);
+    font-size: clamp(2.5rem, 6vw, 5rem);
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -0.04em;
+  }
+
+  .lost-signal__copy > p:not(.signal-label) {
+    max-width: 38rem;
+    margin-top: 1.5rem;
+    color: var(--muted-foreground);
+    line-height: 1.8;
+  }
+
+  .lost-signal__copy > div {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 2rem;
+  }
+
+  @media (max-width: 760px) {
+    .lost-signal {
+      grid-template-columns: 1fr;
+    }
+
+    .lost-signal__code {
+      min-height: 18rem;
+    }
+  }
+</style>

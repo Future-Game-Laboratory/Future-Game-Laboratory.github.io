@@ -1,31 +1,174 @@
 ---
 import Breadcrumbs from '@/components/breadcrumbs.astro'
+import Link from '@/components/link.astro'
 import PageHead from '@/components/page-head.astro'
+import PageHeader from '@/components/page-header.astro'
+import { buttonVariants } from '@/components/ui/button'
 import Layout from '@/layouts/layout.astro'
 ---
 
-<Layout class="max-w-3xl">
+<Layout class="max-w-6xl">
   <PageHead slot="head" title="关于" />
   <Breadcrumbs items={[{ label: '关于', icon: 'lucide:info' }]} />
+  <PageHeader
+    label="LABORATORY / OPEN PROTOCOL"
+    title="把游戏作为系统、媒介与观察方法。"
+    description="Future Game Laboratory 是围绕游戏研究与创作实践展开的开放实验室。我们公开值得被验证、复用或反驳的过程。"
+  />
 
-  <section>
-    <div class="min-w-full">
-      <div class="prose mb-8">
-        <h1>关于 Future Game Laboratory</h1>
-        <p>
-          Future Game Laboratory 是一个围绕游戏研究与创作实践展开的开放实验室。我们把游戏视为技术系统、表达媒介，也是理解人与社会的一种方法。
-        </p>
-        <p>
-          这个 Blog 用来保存那些值得公开的过程：设计决策、工程问题、实验记录、失败复盘，以及仍在生长中的想法。文章不必伪装成最终答案；可验证的过程本身就有价值。
-        </p>
-        <h2>我们关注什么</h2>
-        <ul>
-          <li>游戏机制、叙事与玩家体验的研究</li>
-          <li>游戏开发工具、工程方法与技术实验</li>
-          <li>原型、项目和创作过程的复盘</li>
-          <li>与游戏文化相关的观察和讨论</li>
-        </ul>
+  <section class="about-grid" aria-labelledby="why-heading">
+    <div>
+      <p class="signal-label">WHY THIS LAB EXISTS</p>
+      <h2 class="section-heading" id="why-heading">
+        答案之前，先保存问题发生的现场。
+      </h2>
+    </div>
+    <div class="prose">
+      <p>
+        游戏很少从一个完整结论开始。它更常起源于不稳定的手感、没有按计划发生的测试，或一个暂时无法被命名的问题。
+      </p>
+      <p>
+        这个 Blog
+        用来保存这些容易在项目结束后消失的过程：设计决策、工程问题、实验记录、失败复盘，以及仍在生长中的想法。文章不必伪装成最终答案；可验证的过程本身就有价值。
+      </p>
+    </div>
+  </section>
+
+  <section class="focus-register" aria-labelledby="focus-heading">
+    <header>
+      <p class="signal-label">CURRENT VECTORS</p>
+      <h2 id="focus-heading">研究向量</h2>
+      <p>这些方向彼此交叉，不是互相隔离的栏目。</p>
+    </header>
+    <dl>
+      <div>
+        <dt>SYSTEM</dt>
+        <dd>游戏机制、叙事结构、开发工具与工程方法。</dd>
       </div>
+      <div>
+        <dt>PLAY</dt>
+        <dd>玩家体验、手感、测试方法与行为观察。</dd>
+      </div>
+      <div>
+        <dt>CULTURE</dt>
+        <dd>游戏文化、表达方式，以及作品与社会之间的关系。</dd>
+      </div>
+      <div>
+        <dt>PROCESS</dt>
+        <dd>原型、项目、创作现场与失败路径的公开复盘。</dd>
+      </div>
+    </dl>
+  </section>
+
+  <section class="about-cta">
+    <p>观测记录对所有人开放；写作系统为实验室成员保留。</p>
+    <div>
+      <Link href="/blog" class={buttonVariants()}>阅读文章</Link>
+      <Link href="/editor" class={buttonVariants({ variant: 'outline' })}
+        >打开编辑器</Link
+      >
     </div>
   </section>
 </Layout>
+
+<style>
+  .about-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+    gap: clamp(3rem, 9vw, 9rem);
+    align-items: start;
+  }
+
+  .about-grid h2 {
+    max-width: 14ch;
+    margin-top: 1.25rem;
+  }
+
+  .focus-register {
+    display: grid;
+    grid-template-columns: minmax(14rem, 0.65fr) minmax(0, 1.35fr);
+    gap: clamp(2.5rem, 7vw, 7rem);
+    background: #0d1014;
+    color: #f0f3ef;
+    padding: clamp(2rem, 6vw, 5rem);
+  }
+
+  .focus-register .signal-label {
+    color: #a8afb8;
+  }
+
+  .focus-register h2 {
+    margin-top: 1rem;
+    font-family: var(--font-display);
+    font-size: clamp(2.2rem, 5vw, 4.2rem);
+    font-weight: 680;
+    letter-spacing: -0.04em;
+  }
+
+  .focus-register header > p:last-child {
+    max-width: 25rem;
+    margin-top: 1.2rem;
+    color: #a8afb8;
+    line-height: 1.7;
+  }
+
+  .focus-register dl {
+    margin: 0;
+    border-top: 1px solid #4b515a;
+  }
+
+  .focus-register dl > div {
+    display: grid;
+    grid-template-columns: 7.5rem 1fr;
+    gap: 1rem;
+    border-bottom: 1px solid #4b515a;
+    padding: 1.25rem 0;
+  }
+
+  .focus-register dt {
+    color: #73e6ef;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.07em;
+  }
+
+  .focus-register dd {
+    color: #c9ced3;
+    line-height: 1.65;
+  }
+
+  .about-cta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+    border-top: 1px solid var(--foreground);
+    border-bottom: 1px solid var(--foreground);
+    padding: 1.5rem 0;
+  }
+
+  .about-cta > div {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  @media (max-width: 760px) {
+    .about-grid,
+    .focus-register {
+      grid-template-columns: 1fr;
+    }
+
+    .about-cta {
+      align-items: flex-start;
+      flex-direction: column;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .focus-register dl > div {
+      grid-template-columns: 1fr;
+      gap: 0.4rem;
+    }
+  }
+</style>

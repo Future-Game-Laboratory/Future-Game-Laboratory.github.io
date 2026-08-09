@@ -1,7 +1,5 @@
 ---
-import AvatarComponent from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
-import { Separator } from '@/components/ui/separator'
 import {
   getCombinedReadingTime,
   getSubpostCount,
@@ -23,83 +21,153 @@ const formattedDate = formatDate(entry.data.date)
 const readTime = await getCombinedReadingTime(entry.id)
 const authors = await parseAuthors(entry.data.authors ?? [])
 const subpostCount = !isSubpost(entry.id) ? await getSubpostCount(entry.id) : 0
+const year = entry.data.date.getFullYear()
 ---
 
-<div
-  class="hover:bg-muted/50 rounded-xl border p-4 transition-colors duration-300 ease-in-out"
->
+<article class="article-record">
   <Link
     href={`/${entry.collection}/${entry.id}`}
-    class="flex flex-col gap-4 sm:flex-row"
+    aria-label={`阅读：${entry.data.title}`}
   >
-    {
-      entry.data.image && (
-        <div class="w-full sm:max-w-3xs sm:shrink-0">
+    <div class="article-record__media">
+      {
+        entry.data.image ? (
           <Image
             src={entry.data.image}
-            alt={entry.data.title}
+            alt=""
             width={1200}
             height={630}
-            class="object-cover"
+            loading="lazy"
           />
-        </div>
-      )
-    }
-
-    <div class="grow">
-      <h3 class="mb-1 text-lg font-medium">{entry.data.title}</h3>
-      <p class="text-muted-foreground mb-2 text-sm">{entry.data.description}</p>
-
-      <div
-        class="text-muted-foreground mb-2 flex flex-wrap items-center gap-x-2 text-xs"
-      >
-        {
-          authors.length > 0 && (
-            <>
-              {authors.map((author) => (
-                <div class="flex items-center gap-x-1.5">
-                  <AvatarComponent
-                    client:load
-                    src={author.avatar}
-                    alt={author.name}
-                    fallback={author.name[0]}
-                    className="size-5 rounded-full"
-                  />
-                  <span>{author.name}</span>
-                </div>
-              ))}
-              <Separator orientation="vertical" className="h-4!" />
-            </>
-          )
-        }
-        <span>{formattedDate}</span>
-        <Separator orientation="vertical" className="h-4!" />
-        <span>{readTime}</span>
-        {
-          subpostCount > 0 && (
-            <>
-              <Separator orientation="vertical" className="h-4!" />
-              <span class="flex items-center gap-1">
-                <Icon name="lucide:file-text" class="size-3" />
-                {subpostCount} subpost{subpostCount === 1 ? '' : 's'}
-              </span>
-            </>
-          )
-        }
-      </div>
-
-      {
-        entry.data.tags && (
-          <div class="flex flex-wrap gap-2">
-            {entry.data.tags.map((tag) => (
-              <Badge variant="muted" className="flex items-center gap-x-1">
-                <Icon name="lucide:hash" class="size-3" />
-                {tag}
-              </Badge>
-            ))}
+        ) : (
+          <div class="article-record__placeholder" aria-hidden="true">
+            <span>OBS / {year}</span>
+            <strong>FGL</strong>
+            <i />
           </div>
         )
       }
     </div>
+
+    <div class="article-record__body">
+      <div class="article-record__meta">
+        <span>{formattedDate}</span>
+        <span>{readTime}</span>
+        {
+          authors.length > 0 && (
+            <span>{authors.map((author) => author.name).join(' / ')}</span>
+          )
+        }
+        {subpostCount > 0 && <span>{subpostCount} 个子记录</span>}
+      </div>
+
+      <h3 class="article-record__title">{entry.data.title}</h3>
+      <p class="article-record__description">{entry.data.description}</p>
+
+      <div class="article-record__footer">
+        {
+          entry.data.tags && (
+            <div class="article-record__tags">
+              {entry.data.tags.map((tag) => (
+                <Badge variant="muted">
+                  <Icon name="lucide:hash" class="size-3" />
+                  {tag}
+                </Badge>
+              ))}
+            </div>
+          )
+        }
+        <span class="article-record__arrow" aria-hidden="true">↗</span>
+      </div>
+    </div>
   </Link>
-</div>
+</article>
+
+<style>
+  .article-record__placeholder {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background: #0d1014;
+    color: #f0f3ef;
+    padding: 1rem;
+  }
+
+  .article-record__placeholder::before {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgb(255 255 255 / 8%) 1px, transparent 1px),
+      linear-gradient(90deg, rgb(255 255 255 / 8%) 1px, transparent 1px);
+    background-size: 24px 24px;
+    content: '';
+    mask-image: linear-gradient(to bottom right, black, transparent);
+  }
+
+  .article-record__placeholder span {
+    position: relative;
+    color: #a8afb8;
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.08em;
+  }
+
+  .article-record__placeholder strong {
+    position: relative;
+    align-self: flex-end;
+    font-family: var(--font-display);
+    font-size: clamp(3.5rem, 8vw, 7rem);
+    font-weight: 820;
+    line-height: 0.7;
+    letter-spacing: -0.07em;
+    text-shadow:
+      2px 0 #e2007a,
+      -2px 0 #00c6d7;
+  }
+
+  .article-record__placeholder i {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 38%;
+    aspect-ratio: 1;
+    border: 1px solid #69717c;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  .article-record__footer {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .article-record__arrow {
+    display: grid;
+    width: 2.5rem;
+    height: 2.5rem;
+    flex: 0 0 auto;
+    place-items: center;
+    border: 1px solid var(--foreground);
+    border-radius: 50%;
+    transition:
+      background-color 160ms var(--ease-signal),
+      color 160ms var(--ease-signal),
+      transform 160ms var(--ease-signal);
+  }
+
+  .article-record:hover .article-record__arrow {
+    background: var(--foreground);
+    color: var(--background);
+    transform: rotate(45deg);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .article-record:hover .article-record__arrow {
+      transform: none;
+    }
+  }
+</style>
