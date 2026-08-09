@@ -106,9 +106,15 @@ test('generated pages keep the single white theme and omit breadcrumbs', () => {
 
 test('homepage keeps the cover and a single announcement entry point', () => {
   const homepage = readFileSync(join(dist, 'index.html'), 'utf8')
+  const footer = homepage.match(
+    /<footer class="site-footer"[\s\S]*?<\/footer>/,
+  )?.[0]
   assert.match(homepage, /\/static\/forked-light-cover\.webp/)
   assert.match(homepage, /class="announcement-panel"/)
   assert.match(homepage, /data-title-reveal/)
+  assert.ok(footer)
+  assert.doesNotMatch(footer, /<nav|href=/)
+  assert.doesNotMatch(footer, /持续研究|公开过程/)
   for (const label of ['HOME', 'INFORMATION', 'WORKS', 'ABOUT', 'CONTACT']) {
     assert.match(homepage, new RegExp(`>${label}<`))
   }

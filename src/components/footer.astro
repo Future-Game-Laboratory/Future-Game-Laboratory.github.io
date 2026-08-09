@@ -1,66 +1,23 @@
----
-import Link from './link.astro'
----
-
 <footer class="site-footer">
-  <div class="footer-status">
-    <p class="signal-label">FUTURE GAME LABORATORY</p>
-    <p>未来游戏研究所 · 持续研究，公开过程。</p>
-  </div>
   <div class="footer-meta">
+    <p class="signal-label">FUTURE GAME LABORATORY</p>
     <span>&copy; {new Date().getFullYear()} 未来游戏研究所</span>
-    <nav aria-label="页脚导航">
-      <Link href="/blog">INFORMATION</Link>
-      <Link href="/works">WORKS</Link>
-      <Link href="/about">ABOUT</Link>
-      <Link href="/contact">CONTACT</Link>
-      <Link href="/edits">EDITS</Link>
-    </nav>
   </div>
 </footer>
 
 <style>
-  .footer-status,
-  .footer-meta,
-  .footer-meta nav {
+  .footer-meta {
     display: flex;
     align-items: center;
-  }
-
-  .footer-status {
     justify-content: space-between;
-    gap: 1.5rem;
-    padding-bottom: 1.25rem;
-  }
-
-  .footer-status > p:last-child {
-    color: var(--muted-foreground);
-    font-size: 0.85rem;
-  }
-
-  .footer-meta {
-    flex-wrap: wrap;
-    justify-content: space-between;
-    gap: 0.85rem 1.5rem;
-    border-top: 1px solid var(--border);
-    padding-top: 1rem;
+    gap: 1rem 2rem;
     color: var(--muted-foreground);
     font-family: var(--font-mono);
     font-size: 0.65rem;
     letter-spacing: 0.04em;
   }
 
-  .footer-meta nav {
-    flex-wrap: wrap;
-    gap: 1rem;
-  }
-
-  .footer-meta a:hover {
-    color: var(--foreground);
-  }
-
   @media (max-width: 640px) {
-    .footer-status,
     .footer-meta {
       align-items: flex-start;
       flex-direction: column;
