@@ -115,14 +115,14 @@
         "purpose": "内页标题的黑白遮罩显影。"
       },
       {
-        "name": "theme-reveal",
-        "value": "480ms cubic-bezier(.16,1,.3,1)",
-        "purpose": "以主题按钮为圆心揭示新主题。"
+        "name": "title-resolve",
+        "value": "374ms linear",
+        "purpose": "以 0 / 1 / × / · 字符解析全大写英文标题。"
       },
       {
         "name": "boot-sequence",
         "value": "1860ms cubic-bezier(.22,1,.36,1)",
-        "purpose": "可跳过的 XX.XXXXXX 八管冷阴极启动动画。"
+        "purpose": "只显示 XX.XXXXXX 管体的八管冷阴极启动动画。"
       }
     ],
     "breakpoints": [
@@ -159,14 +159,14 @@
     {
       "name": "Editorial Navigation",
       "kind": "nav",
-      "description": "以社团中文标识开头、中文名称与英文代码并列的目录导航。",
-      "html": "<nav class=\"ds-nav\"><strong>未来游戏研究所</strong><a class=\"is-active\" href=\"#\">首页 <small>TOP</small></a><a href=\"#\">资讯 <small>INFO</small></a><a href=\"#\">项目 <small>WORKS</small></a><a href=\"#\">研究所 <small>ABOUT</small></a><a href=\"#\">联系 <small>CONTACT</small></a></nav>",
-      "css": ".ds-nav{display:flex;align-items:center;gap:24px;border-bottom:1px solid #090909;padding:14px 0;color:#090909}.ds-nav strong{margin-right:auto;font:700 18px/1 'Songti SC',serif}.ds-nav a{color:inherit;text-decoration:none}.ds-nav small{display:block;font:560 10px/1.4 'Geist Mono',monospace;letter-spacing:.08em}.ds-nav a.is-active{text-shadow:1px 0 #E2007A,-1px 0 #00C6D7}.ds-nav a:focus-visible{outline:2px solid #00646D;outline-offset:4px}"
+      "description": "以社团中文标识开头、只显示全大写英文栏目名称的纯白目录导航。",
+      "html": "<nav class=\"ds-nav\"><strong>未来游戏研究所</strong><a class=\"is-active\" href=\"#\">HOME</a><a href=\"#\">INFORMATION</a><a href=\"#\">WORKS</a><a href=\"#\">ABOUT</a><a href=\"#\">CONTACT</a></nav>",
+      "css": ".ds-nav{display:flex;align-items:center;gap:24px;border-bottom:1px solid #090909;background:#fff;padding:14px 0;color:#090909}.ds-nav strong{margin-right:auto;font:700 18px/1 'Songti SC',serif}.ds-nav a{color:inherit;font:700 12px/1 'Geist',sans-serif;letter-spacing:.07em;text-decoration:none}.ds-nav a.is-active{text-shadow:1px 0 #E2007A,-1px 0 #00C6D7}.ds-nav a:focus-visible{outline:2px solid #00646D;outline-offset:4px}"
     },
     {
       "name": "Nixie Boot Sequence",
       "kind": "custom",
-      "description": "纯白环境中的八管冷阴极计数器；真实感来自玻璃反光、阳极网、层叠电极、胶木管座和短暂阴极辉光。",
+      "description": "纯白环境中只显示八枚细长冷阴极管体；真实感来自玻璃反光、冷色阳极网、层叠电极、浅色陶瓷管座和短暂阴极辉光。",
       "html": "<div class=\"ds-nixie\" role=\"progressbar\" aria-valuetext=\"加载进度 00.000000%\"><span>0</span><span>0</span><b>.</b><span>0</span><span>0</span><span>0</span><span>0</span><span>0</span><span>0</span></div>",
       "css": ".ds-nixie{display:flex;align-items:center;gap:8px;background:#fff;color:#FF7A1A;padding:24px}.ds-nixie span{display:grid;place-items:center;width:48px;height:88px;border:1px solid #596066;border-radius:45% 45% 18% 18%/18% 18% 10% 10%;background:linear-gradient(96deg,rgba(255,255,255,.88),rgba(190,200,205,.12),rgba(255,255,255,.7));font:300 46px/1 'Arial Narrow',sans-serif;-webkit-text-stroke:1px #FF8A2B;color:rgba(255,121,31,.1);text-shadow:0 0 4px rgba(255,111,23,.98),0 0 18px rgba(255,91,0,.42)}@media(prefers-reduced-motion:reduce){.ds-nixie *{animation:none!important;transition:none!important}}"
     }
@@ -179,13 +179,13 @@
       "中文书宋标题",
       "单一封面与公告入口",
       "稀少的青洋红套色",
-      "自然主题揭示",
+      "全大写英文导航与标题",
       "XX.XXXXXX 八管冷阴极启动动画"
     ],
     "rules": [
       {
         "name": "True White Rule",
-        "body": "浅色主题的主要画布和表面必须是 #FFFFFF。",
+        "body": "全站唯一画布与界面表面必须是 #FFFFFF，不提供深色主题。",
         "section": "colors"
       },
       {

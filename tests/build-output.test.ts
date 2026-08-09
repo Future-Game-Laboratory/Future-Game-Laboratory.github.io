@@ -72,7 +72,7 @@ test('private editor is noindex and absent from sitemap', () => {
 
 test('editor page contains its hydrated app and publishing controls', () => {
   const editor = readFileSync(join(dist, 'edits/index.html'), 'utf8')
-  assert.match(editor, /内容编辑器/)
+  assert.match(editor, /data-title-text="EDITS"/)
   assert.match(editor, /正文（Markdown \/ MDX）/)
   assert.match(editor, /提交并触发构建/)
   assert.match(editor, /content-editor\.[^"']+\.js/)
@@ -87,13 +87,31 @@ test('nixie loader renders an eight-tube six-decimal progress display', () => {
   assert.equal(cathodes?.length, 80)
   assert.match(homepage, /role="progressbar"/)
   assert.match(homepage, /aria-valuetext="加载进度 00\.000000%"/)
-  assert.doesNotMatch(homepage, /nixie-loader__track|nixie-timecode/)
+  assert.doesNotMatch(
+    homepage,
+    /nixie-loader__(?:header|telemetry|skip|rail|track)|nixie-timecode/,
+  )
+})
+
+test('generated pages keep the single white theme and omit breadcrumbs', () => {
+  const pages = walk(dist).filter((file) => file.endsWith('.html'))
+
+  for (const page of pages) {
+    const source = readFileSync(page, 'utf8')
+    assert.doesNotMatch(source, /id="theme-toggle"/)
+    assert.doesNotMatch(source, /data-slot="breadcrumb"/)
+    assert.doesNotMatch(source, /data-theme="dark"/)
+  }
 })
 
 test('homepage keeps the cover and a single announcement entry point', () => {
   const homepage = readFileSync(join(dist, 'index.html'), 'utf8')
   assert.match(homepage, /\/static\/forked-light-cover\.webp/)
   assert.match(homepage, /class="announcement-panel"/)
+  assert.match(homepage, /data-title-reveal/)
+  for (const label of ['HOME', 'INFORMATION', 'WORKS', 'ABOUT', 'CONTACT']) {
+    assert.match(homepage, new RegExp(`>${label}<`))
+  }
   assert.doesNotMatch(
     homepage,
     /class="(?:front-hero|front-directory|front-sidebar|front-closing)"/,
@@ -105,8 +123,10 @@ test('contact hides unconfigured SNS links and about renders Markdown', () => {
   const about = readFileSync(join(dist, 'about/index.html'), 'utf8')
   assert.doesNotMatch(contact, /href=""/)
   assert.doesNotMatch(contact, /class="social-buttons"/)
-  assert.match(about, /<h1 id="关于">关于<\/h1>/)
-  assert.match(about, /<h2 id="-成员">■ 成员<\/h2>/)
+  assert.match(about, /data-title-text="ABOUT"/)
+  assert.match(about, /<h2 id="institute">INSTITUTE<\/h2>/)
+  assert.match(about, /<h2 id="members">MEMBERS<\/h2>/)
+  assert.match(about, /<h2 id="links">LINKS<\/h2>/)
 })
 
 test('template author and draft template posts are not generated', () => {

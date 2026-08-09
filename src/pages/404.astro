@@ -1,19 +1,20 @@
 ---
 import Link from '@/components/link.astro'
 import PageHead from '@/components/page-head.astro'
+import TitleReveal from '@/components/title-reveal.astro'
 import { buttonVariants } from '@/components/ui/button'
 import Layout from '@/layouts/layout.astro'
 ---
 
 <Layout class="max-w-6xl">
-  <PageHead slot="head" title="404 / 页面不存在" noindex />
+  <PageHead slot="head" title="404 / PAGE NOT FOUND" noindex />
   <section class="lost-signal">
     <div class="lost-signal__code" aria-hidden="true">
       <span>4</span><i></i><span>4</span>
     </div>
     <div class="lost-signal__copy">
       <p class="signal-label" data-signal-label>ERROR / PAGE NOT FOUND</p>
-      <h1>这一页暂时不存在。</h1>
+      <TitleReveal text="PAGE NOT FOUND" />
       <p>
         链接可能已经移动，或者这条记录尚未公开。你可以回到首页，或进入文章档案重新定位。
       </p>
@@ -45,8 +46,8 @@ import Layout from '@/layouts/layout.astro'
     gap: 1rem;
     overflow: hidden;
     border: 1px solid var(--foreground);
-    background: #090909;
-    color: #ffffff;
+    background: #ffffff;
+    color: #0b0d10;
   }
 
   .lost-signal__code span {
@@ -64,13 +65,13 @@ import Layout from '@/layouts/layout.astro'
     position: relative;
     width: 2rem;
     height: 2rem;
-    border: 2px solid #ffffff;
+    border: 2px solid #0b0d10;
     border-top-color: #00c6d7;
     border-right-color: #e2007a;
     border-radius: 50%;
   }
 
-  .lost-signal__copy h1 {
+  .lost-signal__copy :global(h1) {
     max-width: 12ch;
     margin-top: 1.5rem;
     font-family: var(--font-display);

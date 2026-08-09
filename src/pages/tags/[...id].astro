@@ -1,6 +1,5 @@
 ---
 import BlogCard from '@/components/blog-card.astro'
-import Breadcrumbs from '@/components/breadcrumbs.astro'
 import PageHead from '@/components/page-head.astro'
 import PageHeader from '@/components/page-header.astro'
 import Layout from '@/layouts/layout.astro'
@@ -22,15 +21,9 @@ const { tag, posts } = Astro.props
 <Layout class="max-w-6xl">
   <PageHead
     slot="head"
-    title={`标签：${tag}`}
+    title={`TAG: ${tag}`}
     description={`标记为 ${tag} 的文章集合。`}
     noindex
-  />
-  <Breadcrumbs
-    items={[
-      { href: '/tags', label: '标签', icon: 'lucide:tags' },
-      { label: tag, icon: 'lucide:tag' },
-    ]}
   />
   <PageHeader
     label={`FILTER / ${String(posts.length).padStart(2, '0')} ARTICLES`}

@@ -1,5 +1,4 @@
 ---
-import Breadcrumbs from '@/components/breadcrumbs.astro'
 import Link from '@/components/link.astro'
 import PostHead from '@/components/post-head.astro'
 import PostNavigation from '@/components/post-navigation.astro'
@@ -7,6 +6,7 @@ import SubpostsHeader from '@/components/subposts-header.astro'
 import SubpostsSidebar from '@/components/subposts-sidebar.astro'
 import TOCHeader from '@/components/toc-header.astro'
 import TOCSidebar from '@/components/toc-sidebar.astro'
+import TitleReveal from '@/components/title-reveal.astro'
 import { badgeVariants } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import Layout from '@/layouts/layout.astro'
@@ -15,7 +15,6 @@ import {
   getAllPostsAndSubposts,
   getCombinedReadingTime,
   getParentId,
-  getParentPost,
   getPostReadingTime,
   getSubpostCount,
   getTOCSections,
@@ -43,8 +42,6 @@ const authors = await parseAuthors(post.data.authors ?? [])
 
 const isCurrentSubpost = isSubpost(currentPostId)
 const navigation = await getAdjacentPosts(currentPostId)
-const parentPost = isCurrentSubpost ? await getParentPost(currentPostId) : null
-
 const hasChildPosts = await hasSubposts(currentPostId)
 const subpostCount = !isCurrentSubpost
   ? await getSubpostCount(currentPostId)
@@ -78,34 +75,6 @@ const tocSections = await getTOCSections(currentPostId)
   }
 
   <section class="post-grid">
-    <div class="col-start-2">
-      <Breadcrumbs
-        items={[
-          { href: '/blog', label: 'Blog', icon: 'lucide:library-big' },
-          ...(isCurrentSubpost && parentPost
-            ? [
-                {
-                  href: `/blog/${parentPost.id}`,
-                  label: parentPost.data.title,
-                  icon: 'lucide:book-open',
-                },
-                {
-                  href: `/blog/${currentPostId}`,
-                  label: post.data.title,
-                  icon: 'lucide:file-text',
-                },
-              ]
-            : [
-                {
-                  href: `/blog/${currentPostId}`,
-                  label: post.data.title,
-                  icon: 'lucide:book-open-text',
-                },
-              ]),
-        ]}
-      />
-    </div>
-
     {
       post.data.image && (
         <Image
@@ -123,9 +92,12 @@ const tocSections = await getTOCSections(currentPostId)
         <p class="signal-label mb-5" data-signal-label>
           ARTICLE / {currentPostId}
         </p>
-        <h1 class="scroll-mt-31" id="post-title">
-          {post.data.title}
-        </h1>
+        <TitleReveal
+          text={post.data.title}
+          id="post-title"
+          class="scroll-mt-31"
+          uppercase={false}
+        />
 
         <p class="article-deck">{post.data.description}</p>
 
@@ -294,7 +266,6 @@ const tocSections = await getTOCSections(currentPostId)
     min-width: 0;
   }
 
-  .post-grid > :global([data-slot='breadcrumb']),
   .post-grid > :global(.article-header),
   .post-grid > :global(.article-body) {
     grid-column: 2;
@@ -317,7 +288,7 @@ const tocSections = await getTOCSections(currentPostId)
     text-align: center;
   }
 
-  .article-header h1 {
+  .article-header :global(h1) {
     max-width: 20ch;
     font-family: var(--font-display);
     font-size: clamp(2.4rem, 6vw, 5rem);
@@ -373,7 +344,6 @@ const tocSections = await getTOCSections(currentPostId)
     }
 
     .post-grid > :global(*),
-    .post-grid > :global([data-slot='breadcrumb']),
     .post-grid > :global(.article-header),
     .post-grid > :global(.article-body),
     .post-cover {

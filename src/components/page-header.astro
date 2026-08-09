@@ -1,6 +1,8 @@
 ---
+import TitleReveal from '@/components/title-reveal.astro'
+
 interface Props {
-  label: string
+  label?: string
   title: string
   description?: string
 }
@@ -9,84 +11,14 @@ const { label, title, description } = Astro.props
 ---
 
 <header class="page-hero">
-  <p class="signal-label" data-signal-label>{label}</p>
-  <h1><span class="page-title-mask"><span>{title}</span></span></h1>
+  {
+    label && (
+      <p class="signal-label" data-signal-label>
+        {label}
+      </p>
+    )
+  }
+  <TitleReveal text={title} />
   {description && <p>{description}</p>}
   <slot />
 </header>
-
-<style>
-  .page-title-mask {
-    position: relative;
-    display: block;
-    width: fit-content;
-    overflow: hidden;
-  }
-
-  .page-title-mask::before,
-  .page-title-mask::after {
-    position: absolute;
-    inset: 0 -1px;
-    z-index: 1;
-    content: '';
-    transform: scaleX(0);
-    transform-origin: left;
-    pointer-events: none;
-  }
-
-  .page-title-mask::before {
-    background: var(--foreground);
-    animation: title-wipe 760ms var(--ease-reveal) 80ms both;
-  }
-
-  .page-title-mask::after {
-    background: var(--background);
-    animation: title-wipe 760ms var(--ease-reveal) 210ms both;
-  }
-
-  .page-title-mask > span {
-    display: block;
-    animation: title-copy-in 620ms var(--ease-reveal) 260ms both;
-  }
-
-  @keyframes title-wipe {
-    0% {
-      transform: scaleX(0);
-      transform-origin: left;
-    }
-    48% {
-      transform: scaleX(1);
-      transform-origin: left;
-    }
-    52% {
-      transform: scaleX(1);
-      transform-origin: right;
-    }
-    100% {
-      transform: scaleX(0);
-      transform-origin: right;
-    }
-  }
-
-  @keyframes title-copy-in {
-    from {
-      transform: translateY(22%);
-      opacity: 0;
-    }
-    to {
-      transform: translateY(0);
-      opacity: 1;
-    }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .page-title-mask::before,
-    .page-title-mask::after {
-      animation: none;
-    }
-
-    .page-title-mask > span {
-      animation: none;
-    }
-  }
-</style>

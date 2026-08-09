@@ -1,6 +1,5 @@
 ---
 import BlogCard from '@/components/blog-card.astro'
-import Breadcrumbs from '@/components/breadcrumbs.astro'
 import PageHead from '@/components/page-head.astro'
 import PageHeader from '@/components/page-header.astro'
 import PaginationComponent from '@/components/ui/pagination'
@@ -25,16 +24,10 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '')
 ---
 
 <Layout class="max-w-6xl">
-  <PageHead slot="head" title="资讯归档" />
-  <Breadcrumbs
-    items={[
-      { label: '文章', href: '/blog', icon: 'lucide:library-big' },
-      { label: `第 ${page.currentPage} 页`, icon: 'lucide:book-copy' },
-    ]}
-  />
+  <PageHead slot="head" title="INFORMATION" />
   <PageHeader
     label={`ARCHIVE / PAGE ${String(page.currentPage).padStart(2, '0')}`}
-    title="资讯与文章"
+    title="INFORMATION"
     description="研究笔记、开发复盘与创作实验，按公开时间归档。每一篇文章都尽量保留问题发生时的上下文。"
   />
 

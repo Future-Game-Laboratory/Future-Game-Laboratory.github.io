@@ -1,7 +1,6 @@
 ---
 import AuthorCard from '@/components/author-card.astro'
 import BlogCard from '@/components/blog-card.astro'
-import Breadcrumbs from '@/components/breadcrumbs.astro'
 import PageHead from '@/components/page-head.astro'
 import PageHeader from '@/components/page-header.astro'
 import Layout from '@/layouts/layout.astro'
@@ -23,15 +22,9 @@ const publicPosts = authorPosts.filter((post) => !post.data.draft)
 <Layout class="max-w-6xl">
   <PageHead
     slot="head"
-    title={`${author.data.name} / 作者`}
+    title={`${author.data.name} / AUTHOR`}
     description={author.data.bio || `${author.data.name} 的作者资料。`}
     noindex
-  />
-  <Breadcrumbs
-    items={[
-      { href: '/authors', label: '作者', icon: 'lucide:users' },
-      { label: author.data.name, icon: 'lucide:user' },
-    ]}
   />
   <PageHeader
     label={`CONTRIBUTOR / ${String(publicPosts.length).padStart(2, '0')} ARTICLES`}

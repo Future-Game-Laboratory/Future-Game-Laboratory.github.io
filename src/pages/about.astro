@@ -1,5 +1,6 @@
 ---
 import PageHead from '@/components/page-head.astro'
+import TitleReveal from '@/components/title-reveal.astro'
 import Layout from '@/layouts/layout.astro'
 import { getEntry, render } from 'astro:content'
 
@@ -15,6 +16,10 @@ const { Content } = await render(about)
     description={about.data.description}
   />
 
+  <header class="about-heading">
+    <TitleReveal text="ABOUT" />
+  </header>
+
   <article class="prose about-document">
     <Content />
   </article>
@@ -27,13 +32,15 @@ const { Content } = await render(about)
     padding-bottom: clamp(3rem, 8vw, 7rem);
   }
 
-  .about-document :global(h1) {
-    margin: 0 0 2.5rem;
+  .about-heading {
     border-bottom: 2px solid var(--foreground);
     padding-bottom: 0.45rem;
-    font-family: var(--font-sans);
+  }
+
+  .about-heading :global(h1) {
+    margin: 0;
     font-size: clamp(2.4rem, 6vw, 4.8rem);
-    font-weight: 730;
+    font-weight: 760;
     line-height: 1;
     letter-spacing: -0.04em;
   }
@@ -42,10 +49,11 @@ const { Content } = await render(about)
     margin-top: clamp(3rem, 7vw, 5.5rem);
     border: 0;
     padding: 0;
-    font-family: var(--font-sans);
+    font-family: var(--font-display);
     font-size: 1.25rem;
     font-weight: 700;
-    letter-spacing: 0;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
   }
 
   .about-document :global(p) {

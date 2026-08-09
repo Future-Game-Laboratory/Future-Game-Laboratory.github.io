@@ -1,6 +1,5 @@
 ---
 import AuthorCard from '@/components/author-card.astro'
-import Breadcrumbs from '@/components/breadcrumbs.astro'
 import PageHead from '@/components/page-head.astro'
 import PageHeader from '@/components/page-header.astro'
 import Layout from '@/layouts/layout.astro'
@@ -10,11 +9,10 @@ const authors = await getAllAuthors()
 ---
 
 <Layout class="max-w-6xl">
-  <PageHead slot="head" title="作者" />
-  <Breadcrumbs items={[{ label: '作者', icon: 'lucide:users' }]} />
+  <PageHead slot="head" title="AUTHORS" />
   <PageHeader
     label="CONTRIBUTORS / LAB MEMBERS"
-    title="研究成员"
+    title="AUTHORS"
     description="写下实验、制作与观察过程的人。"
   />
   {

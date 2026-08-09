@@ -1,6 +1,5 @@
 ---
 import Link from '@/components/link.astro'
-import ThemeToggle from '@/components/theme-toggle.astro'
 import { NAV_LINKS } from '@/consts'
 import { withBase } from '@/lib/paths'
 
@@ -10,13 +9,6 @@ const isActive = (href: string) =>
     ? pathname === '/'
     : pathname === href || pathname.startsWith(`${href}/`)
 const logo = withBase('/static/future-game-institute.png')
-const navCodes: Record<string, string> = {
-  '/': 'TOP',
-  '/blog': 'INFO',
-  '/works': 'WORKS',
-  '/about': 'ABOUT',
-  '/contact': 'CONTACT',
-}
 ---
 
 <div class="site-nav-bar">
@@ -38,7 +30,6 @@ const navCodes: Record<string, string> = {
                 aria-current={isActive(item.href) ? 'page' : undefined}
               >
                 <span>{item.label}</span>
-                <small>{navCodes[item.href]}</small>
               </Link>
             </li>
           ))
@@ -48,7 +39,6 @@ const navCodes: Record<string, string> = {
   </div>
 
   <div class="navigation-controls">
-    <ThemeToggle transition:persist />
     <button
       class="menu-trigger"
       id="site-menu-open"
@@ -67,7 +57,6 @@ const navCodes: Record<string, string> = {
     <span class="site-menu__logo" aria-hidden="true">
       <img src={logo} alt="" width="225" height="225" />
     </span>
-    <span>PAGE DIRECTORY / 未来游戏研究所</span>
     <button id="site-menu-close" type="button" aria-label="关闭导航">
       <span>CLOSE</span>
       <i aria-hidden="true"></i>
@@ -83,7 +72,6 @@ const navCodes: Record<string, string> = {
               aria-current={isActive(item.href) ? 'page' : undefined}
             >
               {item.label}
-              <small>{navCodes[item.href]}</small>
             </Link>
           </li>
         ))
@@ -92,7 +80,7 @@ const navCodes: Record<string, string> = {
   </nav>
   <footer class="site-menu__footer">
     <span>&copy; {new Date().getFullYear()} 未来游戏研究所</span>
-    <Link href="/edits">内容编辑器 / EDITS ↗</Link>
+    <Link href="/edits">EDITS ↗</Link>
   </footer>
 </dialog>
 
@@ -147,23 +135,17 @@ const navCodes: Record<string, string> = {
 
   .nav-link {
     position: relative;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    display: block;
     color: color-mix(in srgb, var(--foreground) 66%, var(--background));
     line-height: 1.1;
   }
 
   .nav-link span {
-    font-size: 0.82rem;
-    font-weight: 600;
-  }
-
-  .nav-link small {
-    margin-top: 0.22rem;
-    font-family: var(--font-mono);
-    font-size: 0.5rem;
-    letter-spacing: 0.08em;
+    font-family: var(--font-display);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.075em;
+    text-transform: uppercase;
   }
 
   .nav-link::after {
@@ -245,8 +227,8 @@ const navCodes: Record<string, string> = {
     margin: 0;
     overflow: hidden auto;
     border: 0;
-    background: #090909;
-    color: #fff;
+    background: #ffffff;
+    color: #0b0d10;
     padding: 0;
     opacity: 0;
     transform: scale(1.025);
@@ -270,7 +252,7 @@ const navCodes: Record<string, string> = {
   }
 
   .site-menu::backdrop {
-    background: #090909;
+    background: rgb(255 255 255 / 96%);
   }
 
   .site-menu__header,
@@ -287,7 +269,7 @@ const navCodes: Record<string, string> = {
   }
 
   .site-menu__header {
-    border-bottom: 1px solid #444;
+    border-bottom: 1px solid #b8bec4;
   }
 
   .site-menu__logo {
@@ -303,17 +285,17 @@ const navCodes: Record<string, string> = {
     top: -3.25rem;
     width: 10.5rem;
     height: auto;
-    filter: invert(1);
+    filter: none;
   }
 
   .site-menu__header button {
     display: inline-flex;
     align-items: center;
     gap: 0.65rem;
-    border: 1px solid #666;
+    border: 1px solid #7d8387;
     border-radius: 3px;
     background: transparent;
-    color: #fff;
+    color: #0b0d10;
     padding: 0.65rem 0.75rem;
     font: inherit;
   }
@@ -344,7 +326,7 @@ const navCodes: Record<string, string> = {
   }
 
   .site-menu__nav li {
-    border-bottom: 1px solid #444;
+    border-bottom: 1px solid #b8bec4;
   }
 
   .site-menu__nav a {
@@ -353,11 +335,12 @@ const navCodes: Record<string, string> = {
     justify-content: space-between;
     gap: 1rem;
     padding: clamp(0.85rem, 2vw, 1.45rem) 0;
-    font-family: var(--font-serif);
+    font-family: var(--font-display);
     font-size: clamp(2.2rem, 6vw, 4.8rem);
     font-weight: 700;
     line-height: 0.94;
-    letter-spacing: -0.045em;
+    letter-spacing: -0.03em;
+    text-transform: uppercase;
   }
 
   .site-menu__nav a:hover,
@@ -367,21 +350,13 @@ const navCodes: Record<string, string> = {
       -3px 0 #00c6d7;
   }
 
-  .site-menu__nav small {
-    color: #aaa;
-    font-family: var(--font-mono);
-    font-size: 0.62rem;
-    font-weight: 500;
-    letter-spacing: 0.06em;
-  }
-
   .site-menu__footer {
-    border-top: 1px solid #444;
-    color: #aaa;
+    border-top: 1px solid #b8bec4;
+    color: #575b60;
   }
 
   .site-menu__footer a:hover {
-    color: #fff;
+    color: #0b0d10;
   }
 
   :global(html[data-menu='open']) {
@@ -407,11 +382,6 @@ const navCodes: Record<string, string> = {
     .brand-logo-window img {
       top: -2.9rem;
       width: 9.4rem;
-    }
-
-    .site-menu__header > span:nth-child(2),
-    .site-menu__nav small {
-      display: none;
     }
 
     .site-menu__footer {

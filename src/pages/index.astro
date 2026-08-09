@@ -1,6 +1,7 @@
 ---
 import Link from '@/components/link.astro'
 import PageHead from '@/components/page-head.astro'
+import TitleReveal from '@/components/title-reveal.astro'
 import { SITE } from '@/consts'
 import Layout from '@/layouts/layout.astro'
 import { getRecentPosts } from '@/lib/data-utils'
@@ -27,10 +28,10 @@ const cover = withBase('/static/forked-light-cover.webp')
     <section class="announcement-panel" aria-labelledby="announcement-title">
       <header class="announcement-heading">
         <div>
-          <h1 id="announcement-title">Information</h1>
-          <p>公告与站点更新</p>
+          <TitleReveal text="INFORMATION" id="announcement-title" />
+          <p>ANNOUNCEMENTS / SITE UPDATES</p>
         </div>
-        <Link href="/blog">全部公告 <span aria-hidden="true">→</span></Link>
+        <Link href="/blog">VIEW ALL <span aria-hidden="true">→</span></Link>
       </header>
 
       {
@@ -98,7 +99,7 @@ const cover = withBase('/static/forked-light-cover.webp')
     padding-bottom: 1rem;
   }
 
-  .announcement-heading h1 {
+  .announcement-heading :global(h1) {
     font-family: var(--font-display);
     font-size: clamp(2.6rem, 7vw, 5.6rem);
     font-weight: 760;

@@ -1,0 +1,173 @@
+---
+interface Props {
+  text: string
+  as?: 'h1' | 'h2'
+  id?: string
+  class?: string
+  uppercase?: boolean
+}
+
+const {
+  text,
+  as: Tag = 'h1',
+  id,
+  class: className,
+  uppercase = true,
+}: Props = Astro.props
+---
+
+<Tag
+  id={id}
+  class:list={['title-reveal-heading', className]}
+  aria-label={text}
+  data-title-uppercase={uppercase ? 'true' : 'false'}
+>
+  <span class="title-reveal-mask">
+    <span aria-hidden="true" data-title-reveal data-title-text={text}>
+      {text}
+    </span>
+  </span>
+</Tag>
+
+<style>
+  .title-reveal-heading {
+    font-family: var(--font-display);
+    text-transform: uppercase;
+  }
+
+  .title-reveal-heading[data-title-uppercase='false'] {
+    text-transform: none;
+  }
+
+  .title-reveal-mask {
+    position: relative;
+    display: block;
+    width: fit-content;
+    overflow: hidden;
+  }
+
+  .title-reveal-mask::before,
+  .title-reveal-mask::after {
+    position: absolute;
+    inset: 0 -1px;
+    z-index: 1;
+    content: '';
+    transform: scaleX(0);
+    transform-origin: left;
+    pointer-events: none;
+  }
+
+  .title-reveal-mask::before {
+    background: var(--foreground);
+  }
+
+  .title-reveal-mask::after {
+    background: var(--background);
+  }
+
+  .title-reveal-mask > span {
+    display: block;
+  }
+
+  .title-reveal-heading[data-title-ready='true'] .title-reveal-mask::before {
+    animation: title-reveal-wipe 720ms var(--ease-reveal) 70ms both;
+  }
+
+  .title-reveal-heading[data-title-ready='true'] .title-reveal-mask::after {
+    animation: title-reveal-wipe 720ms var(--ease-reveal) 190ms both;
+  }
+
+  .title-reveal-heading[data-title-ready='true'] .title-reveal-mask > span {
+    animation: title-reveal-copy 560ms var(--ease-reveal) 240ms both;
+  }
+
+  @keyframes title-reveal-wipe {
+    0% {
+      transform: scaleX(0);
+      transform-origin: left;
+    }
+    48% {
+      transform: scaleX(1);
+      transform-origin: left;
+    }
+    52% {
+      transform: scaleX(1);
+      transform-origin: right;
+    }
+    100% {
+      transform: scaleX(0);
+      transform-origin: right;
+    }
+  }
+
+  @keyframes title-reveal-copy {
+    from {
+      opacity: 0;
+      transform: translateY(22%);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .title-reveal-mask::before,
+    .title-reveal-mask::after,
+    .title-reveal-mask > span {
+      animation: none;
+    }
+  }
+</style>
+
+<script>
+  function resolveTitle(title: HTMLElement) {
+    if (title.dataset.titleResolved === 'true') return
+    const finalText = title.dataset.titleText ?? title.textContent ?? ''
+    const heading = title.closest<HTMLElement>('.title-reveal-heading')
+    title.dataset.titleResolved = 'true'
+    if (heading) heading.dataset.titleReady = 'true'
+
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      title.textContent = finalText
+      return
+    }
+
+    const glyphs = ['0', '1', '×', '/', '·']
+    let frame = 0
+    const totalFrames = 11
+    const interval = window.setInterval(() => {
+      frame += 1
+      const resolved = Math.floor((frame / totalFrames) * finalText.length)
+      title.textContent = Array.from(finalText)
+        .map((character, index) => {
+          if (index < resolved || /[\s#&/·.-]/.test(character)) return character
+          return glyphs[Math.floor(Math.random() * glyphs.length)]
+        })
+        .join('')
+
+      if (frame >= totalFrames) {
+        window.clearInterval(interval)
+        title.textContent = finalText
+      }
+    }, 34)
+  }
+
+  function setupTitleReveals() {
+    document
+      .querySelectorAll<HTMLElement>('[data-title-reveal]')
+      .forEach((title) => {
+        if (title.dataset.titleResolved === 'true') return
+        if (document.documentElement.dataset.boot === 'seen') {
+          window.requestAnimationFrame(() => resolveTitle(title))
+          return
+        }
+        document.addEventListener('nixie:complete', () => resolveTitle(title), {
+          once: true,
+        })
+      })
+  }
+
+  setupTitleReveals()
+  document.addEventListener('astro:page-load', setupTitleReveals)
+</script>

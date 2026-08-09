@@ -1,6 +1,7 @@
 ---
 import Link from '@/components/link.astro'
 import PageHead from '@/components/page-head.astro'
+import TitleReveal from '@/components/title-reveal.astro'
 import { CONTACT } from '@/consts'
 import Layout from '@/layouts/layout.astro'
 import { Icon } from 'astro-icon/components'
@@ -11,18 +12,20 @@ const socialLinks = CONTACT.socials.filter((channel) => channel.href.trim())
 <Layout class="max-w-5xl">
   <PageHead
     slot="head"
-    title="联系"
+    title="CONTACT"
     description="联系未来游戏研究所，提出合作、内容纠错或加入意向。"
   />
 
   <article class="contact-document">
-    <h1>取得联系</h1>
+    <header class="contact-heading">
+      <TitleReveal text="CONTACT" />
+    </header>
     <p class="contact-intro">
       研究合作、内容纠错、活动邀请与加入意向，都可以通过以下方式与未来游戏研究所联系。
     </p>
 
     <section aria-labelledby="email-heading">
-      <h2 id="email-heading">■ 邮箱</h2>
+      <h2 id="email-heading">EMAIL</h2>
       {
         CONTACT.email ? (
           <Link class="contact-email" href={`mailto:${CONTACT.email}`} external>
@@ -37,7 +40,7 @@ const socialLinks = CONTACT.socials.filter((channel) => channel.href.trim())
     {
       socialLinks.length > 0 && (
         <section aria-labelledby="sns-heading">
-          <h2 id="sns-heading">■ SNS</h2>
+          <h2 id="sns-heading">SNS</h2>
           <nav class="social-buttons" aria-label="社交平台">
             {socialLinks.map((channel) => (
               <Link
@@ -66,11 +69,15 @@ const socialLinks = CONTACT.socials.filter((channel) => channel.href.trim())
     padding-bottom: clamp(3rem, 8vw, 7rem);
   }
 
-  .contact-document h1 {
+  .contact-heading {
     border-bottom: 2px solid var(--foreground);
     padding-bottom: 0.45rem;
+  }
+
+  .contact-heading :global(h1) {
+    margin: 0;
     font-size: clamp(2.4rem, 6vw, 4.8rem);
-    font-weight: 730;
+    font-weight: 760;
     line-height: 1;
     letter-spacing: -0.04em;
   }
@@ -90,6 +97,8 @@ const socialLinks = CONTACT.socials.filter((channel) => channel.href.trim())
     margin-bottom: 1.25rem;
     font-size: 1.25rem;
     font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
   }
 
   .contact-email {

@@ -78,23 +78,6 @@
   --z-loader: 80;
 }
 
-[data-theme='dark'] {
-  --background: #090909;
-  --foreground: #ffffff;
-  --primary: #ffffff;
-  --primary-foreground: #090909;
-  --muted: #1a1a1a;
-  --muted-foreground: #b3b3b3;
-  --destructive: #ff547b;
-  --destructive-foreground: #090909;
-  --border: #424951;
-  --ring: #45d9e5;
-  --signal-cyan-ink: #73e6ef;
-  --signal-magenta-ink: #ff72b7;
-  --surface-raised: #111111;
-  --brand-logo-filter: invert(1);
-}
-
 @layer base {
   *,
   ::after,
@@ -112,10 +95,6 @@
     scroll-behavior: smooth;
     scrollbar-color: var(--foreground) var(--background);
     background: var(--background);
-  }
-
-  html[data-theme='dark'] {
-    color-scheme: dark;
   }
 
   body {
@@ -287,11 +266,12 @@
   .page-hero h1,
   .display-heading {
     max-width: 15ch;
-    font-family: var(--font-serif);
+    font-family: var(--font-display);
     font-size: clamp(2.5rem, 7vw, 5.5rem);
-    font-weight: 720;
+    font-weight: 760;
     line-height: 0.96;
     letter-spacing: -0.04em;
+    text-transform: uppercase;
     text-wrap: balance;
   }
 
@@ -574,26 +554,6 @@
 
   .editor-alert {
     background: color-mix(in srgb, var(--muted) 48%, transparent);
-  }
-
-  [data-slot='breadcrumb'] {
-    overflow: hidden;
-  }
-
-  [data-slot='breadcrumb-list'] {
-    flex-wrap: nowrap;
-    overflow: hidden;
-  }
-
-  [data-slot='breadcrumb-item'] {
-    min-width: 0;
-  }
-
-  [data-slot='breadcrumb-page'] {
-    display: block;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
   }
 
   #mobile-toc-container,

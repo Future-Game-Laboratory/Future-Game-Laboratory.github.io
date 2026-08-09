@@ -13,23 +13,23 @@ export const SITE: Site = {
 export const NAV_LINKS: SocialLink[] = [
   {
     href: '/',
-    label: '首页',
+    label: 'HOME',
   },
   {
     href: '/blog',
-    label: '资讯',
+    label: 'INFORMATION',
   },
   {
     href: '/works',
-    label: '项目',
+    label: 'WORKS',
   },
   {
     href: '/about',
-    label: '研究所',
+    label: 'ABOUT',
   },
   {
     href: '/contact',
-    label: '联系',
+    label: 'CONTACT',
   },
 ]
 
