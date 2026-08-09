@@ -1,0 +1,114 @@
+---
+import Breadcrumbs from '@/components/breadcrumbs.astro'
+import Link from '@/components/link.astro'
+import PageHead from '@/components/page-head.astro'
+import PageHeader from '@/components/page-header.astro'
+import { buttonVariants } from '@/components/ui/button'
+import Layout from '@/layouts/layout.astro'
+---
+
+<Layout class="max-w-6xl">
+  <PageHead
+    slot="head"
+    title="联系"
+    description="联系未来游戏研究所，提出合作、内容纠错或加入意向。"
+  />
+  <Breadcrumbs items={[{ label: '联系', icon: 'lucide:mail' }]} />
+  <PageHeader
+    label="CONTACT / INQUIRY"
+    title="与研究所取得联系。"
+    description="研究合作、内容纠错、活动邀请与加入意向，都可以通过公开仓库与我们建立联系。"
+  />
+
+  <section class="contact-sheet">
+    <header>
+      <p>INQUIRY</p>
+      <h2>提交一条联系事项</h2>
+    </header>
+    <div>
+      <p>
+        当前统一使用 GitHub Issues
+        接收联系事项。请在标题中注明“合作”“纠错”或“加入”，并避免提交不应公开的个人信息。
+      </p>
+      <dl>
+        <div><dt>合作</dt><dd>联合研究、项目协作与活动邀请</dd></div>
+        <div><dt>纠错</dt><dd>文章问题、引用补充与站点反馈</dd></div>
+        <div><dt>加入</dt><dd>研究兴趣、技能背景与希望参与的方向</dd></div>
+      </dl>
+      <Link
+        href="https://github.com/Future-Game-Laboratory/Future-Game-Laboratory.github.io/issues/new"
+        external
+        class={buttonVariants()}
+      >
+        前往联系入口 <span aria-hidden="true">↗</span>
+      </Link>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .contact-sheet {
+    display: grid;
+    grid-template-columns: minmax(13rem, 0.65fr) minmax(0, 1.35fr);
+    gap: clamp(2.5rem, 8vw, 8rem);
+    background: var(--foreground);
+    color: var(--background);
+    padding: clamp(2rem, 6vw, 5rem);
+  }
+
+  .contact-sheet header > p {
+    color: var(--signal-cyan);
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.08em;
+  }
+
+  .contact-sheet h2 {
+    max-width: 8ch;
+    margin-top: 1rem;
+    font-family: var(--font-serif);
+    font-size: clamp(2rem, 5vw, 3.8rem);
+    font-weight: 700;
+    line-height: 1.08;
+  }
+
+  .contact-sheet > div > p {
+    max-width: 40rem;
+    color: color-mix(in srgb, var(--background) 76%, var(--foreground));
+    line-height: 1.8;
+  }
+
+  .contact-sheet dl {
+    margin: 2rem 0;
+    border-top: 1px solid color-mix(in srgb, var(--background) 28%, transparent);
+  }
+
+  .contact-sheet dl > div {
+    display: grid;
+    grid-template-columns: 6rem 1fr;
+    gap: 1rem;
+    border-bottom: 1px solid
+      color-mix(in srgb, var(--background) 28%, transparent);
+    padding: 1rem 0;
+  }
+
+  .contact-sheet dt {
+    font-weight: 650;
+  }
+
+  .contact-sheet dd {
+    color: color-mix(in srgb, var(--background) 72%, var(--foreground));
+  }
+
+  .contact-sheet :global([data-slot='button']) {
+    border-color: var(--background);
+    background: var(--background);
+    color: var(--foreground);
+  }
+
+  @media (max-width: 720px) {
+    .contact-sheet {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

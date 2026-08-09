@@ -1,23 +1,20 @@
 ---
-import Breadcrumbs from '@/components/breadcrumbs.astro'
-import ContentEditor from '@/components/content-editor'
-import PageHead from '@/components/page-head.astro'
-import PageHeader from '@/components/page-header.astro'
-import Layout from '@/layouts/layout.astro'
+import { withBase } from '@/lib/paths'
+
+const target = withBase('/edits/')
 ---
 
-<Layout class="max-w-7xl">
-  <PageHead
-    slot="head"
-    title="内容编辑器"
-    description="编写、预览并发布 Future Game Laboratory 的文章。"
-    noindex
-  />
-  <Breadcrumbs items={[{ label: '内容编辑器', icon: 'lucide:pencil-line' }]} />
-  <PageHeader
-    label="AUTHORING CONSOLE / PRIVATE SURFACE"
-    title="内容编辑器"
-    description="编写 MDX、实时检查文章结构，并直接提交到 GitHub 触发站点构建。内容会自动保存在这台设备上。"
-  />
-  <ContentEditor client:load />
-</Layout>
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <meta http-equiv="refresh" content={`0;url=${target}`} />
+    <link rel="canonical" href={new URL(target, Astro.site)} />
+    <title>内容编辑器已迁移</title>
+  </head>
+  <body>
+    <p>内容编辑器已迁移至 <a href={target}>/edits/</a>。</p>
+  </body>
+</html>

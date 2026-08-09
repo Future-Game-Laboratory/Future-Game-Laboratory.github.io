@@ -25,7 +25,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '')
 ---
 
 <Layout class="max-w-6xl">
-  <PageHead slot="head" title="文章档案" />
+  <PageHead slot="head" title="资讯归档" />
   <Breadcrumbs
     items={[
       { label: '文章', href: '/blog', icon: 'lucide:library-big' },
@@ -34,8 +34,8 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '')
   />
   <PageHeader
     label={`ARCHIVE / PAGE ${String(page.currentPage).padStart(2, '0')}`}
-    title="观测记录"
-    description="研究笔记、开发复盘与创作实验，按公开时间归档。每一条记录都保留问题发生时的上下文。"
+    title="资讯与文章"
+    description="研究笔记、开发复盘与创作实验，按公开时间归档。每一篇文章都尽量保留问题发生时的上下文。"
   />
 
   <div class="archive-years">
@@ -45,7 +45,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '')
           <header>
             <h2 id={`year-${year}`}>{year}</h2>
             <span>
-              {String(postsByYear[year].length).padStart(2, '0')} RECORDS
+              {String(postsByYear[year].length).padStart(2, '0')} ARTICLES
             </span>
           </header>
           <div class="article-list">

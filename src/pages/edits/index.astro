@@ -1,0 +1,23 @@
+---
+import Breadcrumbs from '@/components/breadcrumbs.astro'
+import ContentEditor from '@/components/content-editor'
+import PageHead from '@/components/page-head.astro'
+import PageHeader from '@/components/page-header.astro'
+import Layout from '@/layouts/layout.astro'
+---
+
+<Layout class="max-w-7xl">
+  <PageHead
+    slot="head"
+    title="内容编辑器"
+    description="编写、预览并发布未来游戏研究所的文章。"
+    noindex
+  />
+  <Breadcrumbs items={[{ label: '内容编辑器', icon: 'lucide:pencil-line' }]} />
+  <PageHeader
+    label="EDITS / AUTHORING CONSOLE"
+    title="内容编辑器"
+    description="编写 MDX、实时检查文章结构，并直接提交到 GitHub 触发站点构建。内容会自动保存在这台设备上。"
+  />
+  <ContentEditor client:load />
+</Layout>

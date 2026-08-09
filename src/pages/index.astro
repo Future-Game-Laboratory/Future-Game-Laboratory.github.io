@@ -1,122 +1,643 @@
 ---
-import BlogCard from '@/components/blog-card.astro'
 import Link from '@/components/link.astro'
 import PageHead from '@/components/page-head.astro'
-import SignalField from '@/components/signal-field.astro'
 import { buttonVariants } from '@/components/ui/button'
 import { SITE } from '@/consts'
 import Layout from '@/layouts/layout.astro'
 import { getRecentPosts } from '@/lib/data-utils'
+import { withBase } from '@/lib/paths'
+import { formatDate } from '@/lib/utils'
 
-const blog = await getRecentPosts(SITE.featuredPostCount)
+const information = await getRecentPosts(SITE.featuredPostCount)
+const logo = withBase('/static/future-game-institute.png')
+const heroLines = [
+  '记录游戏被创造的过程。',
+  '研究规则如何成为体验。',
+  '让未完成的想法留下证据。',
+]
 ---
 
 <Layout class="home-shell">
-  <PageHead slot="head" title="游戏研究与创作实验" />
+  <PageHead slot="head" title="未来游戏研究所" />
 
-  <section class="home-hero">
-    <div class="hero-copy">
-      <p class="signal-label" data-signal-label>
-        OBSERVATION LOG / OPEN CHANNEL
-      </p>
-      <p class="hero-wordmark" aria-hidden="true">FGL</p>
-      <h1 class="hero-title">观察游戏尚未抵达的可能性。</h1>
-      <p class="hero-description">
-        Future Game Laboratory
-        记录游戏如何被构思、制作与理解。这里公开研究笔记、开发复盘、原型实验，以及尚未成为答案的过程。
-      </p>
-      <div class="hero-actions">
-        <Link href="/blog" class={buttonVariants({ size: 'lg' })}>
-          进入观测记录 <span aria-hidden="true">↗</span>
-        </Link>
-        <Link
-          href="/about"
-          class={buttonVariants({ variant: 'outline', size: 'lg' })}
-        >
-          实验室说明
-        </Link>
-      </div>
-    </div>
-    <div class="hero-visual">
-      <SignalField />
-    </div>
-  </section>
-
-  <div class="status-rail" aria-label="实验室观测状态">
-    <strong>Signal receiving</strong>
-    <span>Vectors: System / Play / Culture</span>
-    <span>UTC +08:00</span>
-  </div>
-
-  <section class="home-section" aria-labelledby="latest-heading">
-    <div class="section-intro">
-      <div>
-        <p class="signal-label" data-signal-label>LATEST OBSERVATIONS</p>
-        <h2 class="section-heading" id="latest-heading">最近观测</h2>
-      </div>
-      <p>研究不会以完整答案开始。先保留现场，再让结论在记录中逐步显影。</p>
-    </div>
-
-    {
-      blog.length > 0 ? (
-        <>
-          <div class="article-list">
-            {blog.map((post) => (
-              <BlogCard entry={post} />
-            ))}
-          </div>
-          <div class="mt-8 flex justify-end">
-            <Link href="/blog" class={buttonVariants({ variant: 'outline' })}>
-              查看完整档案 <span aria-hidden="true">→</span>
-            </Link>
-          </div>
-        </>
-      ) : (
-        <div class="empty-signal">
-          <p class="signal-label">NO SIGNAL YET</p>
-          <h3 class="mt-4 text-2xl font-semibold">第一篇观测记录正在路上</h3>
-          <p class="text-muted-foreground mx-auto mt-3 max-w-xl leading-7">
-            内容编辑器已经就绪，可以从一次研究记录或开发复盘开始。
-          </p>
-          <Link
-            href="/editor"
-            class={buttonVariants({ variant: 'outline' }) + ' mt-6'}
+  <div class="front-page">
+    <section class="front-hero" aria-labelledby="front-title">
+      <div class="front-hero__copy">
+        <p class="front-hero__brand">FUTURE GAME LABORATORY</p>
+        <h1 id="front-title" aria-label={heroLines[0]}>
+          <span
+            aria-hidden="true"
+            data-text-switch
+            data-lines={JSON.stringify(heroLines)}>{heroLines[0]}</span
           >
-            开始写作
+        </h1>
+        <p class="front-hero__description">
+          我们关注游戏的机制、技术、表达与文化。这里公开研究笔记、项目资讯、开发复盘，以及尚未成为答案的过程。
+        </p>
+        <div class="front-hero__actions">
+          <Link href="/blog" class={buttonVariants({ size: 'lg' })}>
+            阅读最新资讯 <span aria-hidden="true">↗</span>
+          </Link>
+          <Link
+            href="/works"
+            class={buttonVariants({ variant: 'outline', size: 'lg' })}
+          >
+            查看项目
           </Link>
         </div>
-      )
-    }
-  </section>
-
-  <section class="home-section manifesto" aria-labelledby="manifesto-heading">
-    <div>
-      <p class="signal-label" data-signal-label>RESEARCH IS A LIVE SYSTEM</p>
-      <h2 class="manifesto-copy" id="manifesto-heading">
-        把未完成的过程，也当作证据。
-      </h2>
-    </div>
-    <div>
-      <div class="research-lines">
-        <div class="research-line">
-          <strong>SYSTEM</strong>
-          <p>拆解机制、工具与工程决策，记录系统为何以某种方式运转。</p>
-        </div>
-        <div class="research-line">
-          <strong>PLAY</strong>
-          <p>观察手感、体验和玩家行为，让测试中的偏差成为新的问题。</p>
-        </div>
-        <div class="research-line">
-          <strong>CULTURE</strong>
-          <p>把游戏放回社会、记忆与表达中，理解作品如何被共同塑造。</p>
-        </div>
       </div>
-      <Link
-        href="/about"
-        class="mt-8 inline-flex items-center gap-2 font-mono text-sm text-white underline decoration-[#73e6ef] underline-offset-4"
-      >
-        阅读实验室说明 <span aria-hidden="true">↗</span>
-      </Link>
+
+      <div class="front-hero__mark">
+        <div class="front-hero__meta">
+          <span>OPEN PROCESS / 2026</span>
+          <span>SCROLL ↓</span>
+        </div>
+        <div class="front-hero__orbit" aria-hidden="true"></div>
+        <img
+          src={logo}
+          width="225"
+          height="225"
+          alt="未来游戏研究所，Future Game Laboratory"
+        />
+        <p aria-hidden="true">未来 · 游戏 · 研究</p>
+      </div>
+    </section>
+
+    <nav class="front-directory" aria-label="首页栏目">
+      <Link href="/blog"><strong>资讯</strong><span>INFORMATION</span></Link>
+      <Link href="/works"><strong>项目</strong><span>WORKS</span></Link>
+      <Link href="/about"><strong>研究所</strong><span>ABOUT</span></Link>
+      <Link href="/contact"><strong>联系</strong><span>CONTACT</span></Link>
+    </nav>
+
+    <div class="front-content" id="information">
+      <section class="information-panel" aria-labelledby="information-title">
+        <header class="information-heading">
+          <div>
+            <h2 id="information-title">Information</h2>
+            <p>研究记录、开发复盘与站点更新</p>
+          </div>
+          <Link href="/blog">全部资讯 <span aria-hidden="true">→</span></Link>
+        </header>
+
+        {
+          information.length > 0 ? (
+            <ol class="information-list">
+              {information.map((post) => (
+                <li>
+                  <Link
+                    href={`/${post.collection}/${post.id}`}
+                    aria-label={`阅读：${post.data.title}`}
+                  >
+                    <time datetime={post.data.date.toISOString()}>
+                      {formatDate(post.data.date)}
+                    </time>
+                    <div>
+                      <h3>{post.data.title}</h3>
+                      <p>{post.data.description}</p>
+                    </div>
+                    <span aria-hidden="true">↗</span>
+                  </Link>
+                </li>
+              ))}
+            </ol>
+          ) : (
+            <div class="information-empty">
+              <h3>第一篇资讯正在路上</h3>
+              <p>内容编辑器已经就绪，可以从一次研究记录或开发复盘开始。</p>
+              <Link
+                href="/edits"
+                class={buttonVariants({ variant: 'outline' })}
+              >
+                开始写作
+              </Link>
+            </div>
+          )
+        }
+      </section>
+
+      <aside class="front-sidebar" aria-label="研究所栏目入口">
+        <section>
+          <header><h2>Works</h2><span>项目</span></header>
+          <h3>首批项目档案正在整理。</h3>
+          <p>公开目标、原型、阶段成果，以及它们背后的选择与失败。</p>
+          <Link href="/works">进入项目页 <span aria-hidden="true">↗</span></Link
+          >
+        </section>
+
+        <section>
+          <header><h2>About</h2><span>研究所</span></header>
+          <p>
+            围绕游戏研究与创作实践展开的社团。我们保存问题发生的现场，也公开能够继续被讨论的过程。
+          </p>
+          <Link href="/about">了解我们 <span aria-hidden="true">↗</span></Link>
+        </section>
+
+        <section>
+          <header><h2>Contact</h2><span>联系</span></header>
+          <p>研究合作、内容纠错、活动邀请与加入意向。</p>
+          <Link href="/contact"
+            >联系研究所 <span aria-hidden="true">↗</span></Link
+          >
+        </section>
+      </aside>
     </div>
+  </div>
+
+  <section class="front-closing" aria-labelledby="front-closing-title">
+    <div>
+      <h2 id="front-closing-title">把未完成的过程，也当作证据。</h2>
+      <p>
+        研究、制作、记录不是互相隔离的栏目。它们共同描述一个想法如何被提出、测试、修正并留下来。
+      </p>
+    </div>
+    <Link href="/about">阅读研究所介绍 <span aria-hidden="true">↗</span></Link>
   </section>
 </Layout>
+
+<style>
+  .front-page {
+    width: min(100%, var(--site-max));
+    margin-inline: auto;
+    padding: clamp(1rem, 3vw, 2.5rem) clamp(1rem, 3.3vw, 3rem)
+      clamp(4rem, 8vw, 8rem);
+  }
+
+  .front-hero {
+    display: grid;
+    min-height: min(46rem, calc(100svh - var(--header-height) - 3rem));
+    grid-template-columns: minmax(0, 1.08fr) minmax(24rem, 0.92fr);
+    border-top: 1px solid var(--foreground);
+    border-bottom: 1px solid var(--foreground);
+  }
+
+  .front-hero__copy {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: clamp(3rem, 7vw, 7rem) clamp(0rem, 5vw, 5rem)
+      clamp(3rem, 7vw, 7rem) 0;
+  }
+
+  .front-hero__brand,
+  .front-hero__meta,
+  .front-directory span,
+  .information-heading > a,
+  .information-list time,
+  .front-sidebar header span {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.07em;
+  }
+
+  .front-hero__brand {
+    margin-bottom: clamp(2rem, 6vw, 5rem);
+    color: var(--muted-foreground);
+  }
+
+  .front-hero h1 {
+    max-width: 12ch;
+    min-height: 3.15em;
+    font-family: var(--font-serif);
+    font-size: clamp(2.8rem, 6vw, 5.7rem);
+    font-weight: 700;
+    line-height: 1.05;
+    letter-spacing: -0.04em;
+    text-wrap: balance;
+  }
+
+  .front-hero__description {
+    max-width: 39rem;
+    margin-top: 1.5rem;
+    color: var(--muted-foreground);
+    font-size: clamp(1rem, 1.5vw, 1.1rem);
+    line-height: 1.85;
+    text-wrap: pretty;
+  }
+
+  .front-hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+    margin-top: 2rem;
+  }
+
+  .front-hero__mark {
+    position: relative;
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+    border-left: 1px solid var(--foreground);
+  }
+
+  .front-hero__mark::before {
+    position: absolute;
+    inset: 8%;
+    border: 1px solid var(--foreground);
+    content: '';
+  }
+
+  .front-hero__mark img {
+    position: relative;
+    z-index: 2;
+    width: min(48%, 17rem);
+    height: auto;
+    filter: var(--brand-logo-filter, none);
+  }
+
+  .front-hero__meta {
+    position: absolute;
+    top: 11%;
+    right: 11%;
+    left: 11%;
+    z-index: 2;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .front-hero__orbit {
+    position: absolute;
+    width: min(67%, 29rem);
+    aspect-ratio: 1;
+    border: 1px solid var(--foreground);
+    border-radius: 50%;
+    box-shadow:
+      4px 0 0 -2px var(--signal-magenta),
+      -4px 0 0 -2px var(--signal-cyan);
+  }
+
+  .front-hero__mark > p {
+    position: absolute;
+    right: 12%;
+    bottom: 11%;
+    z-index: 2;
+    font-family: var(--font-serif);
+    font-size: clamp(1rem, 2vw, 1.5rem);
+    font-weight: 700;
+    letter-spacing: 0.12em;
+  }
+
+  .front-directory {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    border-bottom: 1px solid var(--foreground);
+  }
+
+  .front-directory a {
+    display: flex;
+    min-width: 0;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.75rem;
+    border-right: 1px solid var(--foreground);
+    padding: 1.05rem 1.2rem;
+    transition:
+      background-color 180ms var(--ease-signal),
+      color 180ms var(--ease-signal);
+  }
+
+  .front-directory a:first-child {
+    border-left: 1px solid var(--foreground);
+  }
+
+  .front-directory a:hover {
+    background: var(--foreground);
+    color: var(--background);
+  }
+
+  .front-directory strong {
+    font-family: var(--font-serif);
+    font-size: 1.15rem;
+  }
+
+  .front-directory span {
+    color: var(--muted-foreground);
+  }
+
+  .front-directory a:hover span {
+    color: inherit;
+  }
+
+  .front-content {
+    display: grid;
+    grid-template-columns: minmax(0, 1.58fr) minmax(18rem, 0.62fr);
+    gap: clamp(2.5rem, 6vw, 6rem);
+    align-items: start;
+    padding-top: clamp(4rem, 8vw, 8rem);
+  }
+
+  .information-heading {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    gap: 2rem;
+    border-bottom: 2px solid var(--foreground);
+    padding-bottom: 1rem;
+  }
+
+  .information-heading h2 {
+    font-family: var(--font-display);
+    font-size: clamp(2.5rem, 6vw, 5.4rem);
+    font-weight: 760;
+    line-height: 0.9;
+    letter-spacing: -0.04em;
+  }
+
+  .information-heading p {
+    margin-top: 0.85rem;
+    color: var(--muted-foreground);
+  }
+
+  .information-heading > a {
+    flex: 0 0 auto;
+    padding-bottom: 0.2rem;
+    text-decoration: underline;
+    text-underline-offset: 0.35rem;
+  }
+
+  .information-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .information-list li {
+    border-bottom: 1px solid var(--foreground);
+  }
+
+  .information-list a {
+    display: grid;
+    grid-template-columns: 8rem minmax(0, 1fr) auto;
+    gap: clamp(1rem, 3vw, 2rem);
+    align-items: baseline;
+    padding: clamp(1.35rem, 3vw, 2.1rem) 0;
+    transition: padding-left 180ms var(--ease-signal);
+  }
+
+  .information-list a:hover {
+    padding-left: 0.6rem;
+  }
+
+  .information-list time {
+    color: var(--signal-magenta-ink);
+    white-space: nowrap;
+  }
+
+  .information-list h3 {
+    font-family: var(--font-serif);
+    font-size: clamp(1.3rem, 2.5vw, 2rem);
+    font-weight: 700;
+    line-height: 1.25;
+    text-wrap: balance;
+  }
+
+  .information-list p {
+    max-width: 62ch;
+    margin-top: 0.65rem;
+    color: var(--muted-foreground);
+    line-height: 1.7;
+  }
+
+  .information-list a > span {
+    transition: transform 180ms var(--ease-signal);
+  }
+
+  .information-list a:hover > span {
+    transform: translate(0.2rem, -0.2rem);
+  }
+
+  .information-empty {
+    border-bottom: 1px solid var(--foreground);
+    padding: 3rem 0;
+  }
+
+  .information-empty h3 {
+    font-family: var(--font-serif);
+    font-size: 2rem;
+    font-weight: 700;
+  }
+
+  .information-empty p {
+    margin: 0.8rem 0 1.5rem;
+    color: var(--muted-foreground);
+  }
+
+  .front-sidebar {
+    border-top: 2px solid var(--foreground);
+  }
+
+  .front-sidebar section {
+    border-bottom: 1px solid var(--foreground);
+    padding: 1.25rem 0 1.5rem;
+  }
+
+  .front-sidebar header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .front-sidebar header h2 {
+    font-family: var(--font-display);
+    font-size: clamp(1.75rem, 3vw, 2.6rem);
+    font-weight: 730;
+    letter-spacing: -0.035em;
+  }
+
+  .front-sidebar header span {
+    color: var(--muted-foreground);
+  }
+
+  .front-sidebar h3 {
+    max-width: 16ch;
+    margin-top: 2.5rem;
+    font-family: var(--font-serif);
+    font-size: clamp(1.45rem, 2.6vw, 2rem);
+    font-weight: 700;
+    line-height: 1.25;
+  }
+
+  .front-sidebar section > p {
+    margin-top: 1.25rem;
+    color: var(--muted-foreground);
+    line-height: 1.75;
+  }
+
+  .front-sidebar section > a {
+    display: inline-flex;
+    gap: 0.45rem;
+    margin-top: 1.35rem;
+    font-size: 0.85rem;
+    font-weight: 650;
+    text-decoration: underline;
+    text-underline-offset: 0.3rem;
+  }
+
+  .front-closing {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    gap: clamp(3rem, 8vw, 8rem);
+    background: #090909;
+    color: #ffffff;
+    padding: clamp(3rem, 8vw, 8rem)
+      max(clamp(1rem, 3.3vw, 3rem), calc((100vw - var(--site-max)) / 2 + 3rem));
+  }
+
+  .front-closing h2 {
+    max-width: 15ch;
+    font-family: var(--font-serif);
+    font-size: clamp(2.4rem, 5vw, 4.8rem);
+    font-weight: 700;
+    line-height: 1.08;
+    letter-spacing: -0.04em;
+    text-wrap: balance;
+  }
+
+  .front-closing p {
+    max-width: 42rem;
+    margin-top: 1.5rem;
+    color: #c9c9c9;
+    line-height: 1.8;
+  }
+
+  .front-closing > a {
+    flex: 0 0 auto;
+    color: #ffffff;
+    font-weight: 650;
+    text-decoration: underline;
+    text-decoration-color: #00c6d7;
+    text-underline-offset: 0.4rem;
+  }
+
+  @media (max-width: 860px) {
+    .front-hero,
+    .front-content {
+      grid-template-columns: 1fr;
+    }
+
+    .front-hero__copy {
+      min-height: 38rem;
+      padding-right: 0;
+    }
+
+    .front-hero__mark {
+      min-height: 31rem;
+      border-top: 1px solid var(--foreground);
+      border-left: 0;
+    }
+
+    .front-content {
+      gap: 4rem;
+    }
+
+    .front-closing {
+      align-items: flex-start;
+      flex-direction: column;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .front-directory {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .front-directory a:nth-child(2) {
+      border-right: 1px solid var(--foreground);
+    }
+
+    .front-directory a:nth-child(-n + 2) {
+      border-bottom: 1px solid var(--foreground);
+    }
+
+    .information-heading {
+      align-items: flex-start;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .information-list a {
+      grid-template-columns: 1fr auto;
+    }
+
+    .information-list time {
+      grid-column: 1 / -1;
+    }
+  }
+
+  @media (max-width: 420px) {
+    .front-directory {
+      grid-template-columns: 1fr;
+    }
+
+    .front-directory a,
+    .front-directory a:first-child {
+      border-right: 1px solid var(--foreground);
+      border-bottom: 1px solid var(--foreground);
+      border-left: 1px solid var(--foreground);
+    }
+
+    .front-directory a:last-child {
+      border-bottom: 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .front-hero h1 {
+      min-height: auto;
+    }
+
+    .information-list a:hover,
+    .information-list a:hover > span {
+      transform: none;
+    }
+  }
+</style>
+
+<script>
+  function setupHeroTextSwitch() {
+    const element = document.querySelector<HTMLElement>('[data-text-switch]')
+    const timedWindow = window as Window & { __instituteTextSwitch?: number }
+    if (timedWindow.__instituteTextSwitch) {
+      window.clearInterval(timedWindow.__instituteTextSwitch)
+      timedWindow.__instituteTextSwitch = undefined
+    }
+    if (
+      !element ||
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    )
+      return
+
+    const lines = JSON.parse(element.dataset.lines || '[]') as string[]
+    if (lines.length < 2) return
+    let lineIndex = 0
+
+    const switchLine = () => {
+      lineIndex = (lineIndex + 1) % lines.length
+      const next = lines[lineIndex]
+      let frame = 0
+      const frames = 10
+      const reveal = window.setInterval(() => {
+        frame += 1
+        const resolved = Math.floor((frame / frames) * next.length)
+        element.textContent = Array.from(next)
+          .map((character, index) => {
+            if (index < resolved || /[。，“”！？\s]/.test(character))
+              return character
+            return ['0', '1', '×', '·'][Math.floor(Math.random() * 4)]
+          })
+          .join('')
+        if (frame >= frames) {
+          window.clearInterval(reveal)
+          element.textContent = next
+        }
+      }, 42)
+    }
+
+    timedWindow.__instituteTextSwitch = window.setInterval(switchLine, 4200)
+  }
+
+  setupHeroTextSwitch()
+  document.addEventListener('astro:page-load', setupHeroTextSwitch)
+</script>

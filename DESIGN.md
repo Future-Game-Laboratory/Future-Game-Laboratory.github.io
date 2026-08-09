@@ -1,211 +1,134 @@
 ---
-name: Future Game Laboratory
-description: 未校准的未来信号——精密、实验性、神秘的游戏研究界面
+name: 未来游戏研究所
+description: 纯白标题页上的研究刊物——克制、戏剧化、带有轻微的未来错位
 colors:
-  observation-white: '#F4F6F3'
-  carbon-ink: '#0B0D10'
-  instrument-gray: '#5B626A'
-  structural-line: '#B8BEC4'
-  ion-cyan: '#00C6D7'
-  ion-cyan-ink: '#00646D'
-  anomaly-magenta: '#E2007A'
-  anomaly-magenta-ink: '#9C0055'
+  paper-white: '#FFFFFF'
+  ink-black: '#090909'
+  quiet-gray: '#575B60'
+  structural-gray: '#B8BEC4'
+  chromatic-cyan: '#00C6D7'
+  chromatic-magenta: '#E2007A'
   nixie-amber: '#FF7A1A'
-  chamber-black: '#0D1014'
-  chamber-white: '#F0F3EF'
-  chamber-muted: '#A8AFB8'
 typography:
   display:
-    fontFamily: 'Geist, Arial Black, sans-serif'
-    fontSize: 'clamp(3rem, 8vw, 6rem)'
-    fontWeight: 760
-    lineHeight: 0.9
+    fontFamily: 'Songti SC, STSong, Noto Serif SC, Source Han Serif SC, serif'
+    fontSize: 'clamp(2.5rem, 7vw, 5.5rem)'
+    fontWeight: 700
+    lineHeight: 0.98
     letterSpacing: '-0.04em'
-  headline:
-    fontFamily: 'Geist, PingFang SC, Noto Sans SC, sans-serif'
-    fontSize: 'clamp(2rem, 5vw, 4.5rem)'
-    fontWeight: 680
-    lineHeight: 1.02
-    letterSpacing: '-0.035em'
   body:
-    fontFamily: 'PingFang SC, Noto Sans SC, Microsoft YaHei, Geist, sans-serif'
+    fontFamily: 'PingFang SC, Noto Sans SC, Microsoft YaHei, sans-serif'
     fontSize: '1rem'
     fontWeight: 400
     lineHeight: 1.8
-    letterSpacing: 'normal'
+    letterSpacing: normal
   label:
     fontFamily: 'Geist Mono, SFMono-Regular, Consolas, monospace'
-    fontSize: '0.75rem'
+    fontSize: '0.72rem'
     fontWeight: 560
     lineHeight: 1.4
     letterSpacing: '0.08em'
 rounded:
   signal: '2px'
   control: '4px'
-  surface: '6px'
+  surface: '4px'
 spacing:
-  hairline: '4px'
   compact: '8px'
   control: '12px'
   content: '24px'
   section: '64px'
 components:
   button-primary:
-    backgroundColor: '{colors.carbon-ink}'
-    textColor: '{colors.observation-white}'
+    backgroundColor: '{colors.ink-black}'
+    textColor: '{colors.paper-white}'
     typography: '{typography.label}'
     rounded: '{rounded.control}'
     padding: '12px 18px'
   button-secondary:
-    backgroundColor: '{colors.observation-white}'
-    textColor: '{colors.carbon-ink}'
+    backgroundColor: '{colors.paper-white}'
+    textColor: '{colors.ink-black}'
     typography: '{typography.label}'
     rounded: '{rounded.control}'
     padding: '12px 18px'
   field:
-    backgroundColor: '{colors.observation-white}'
-    textColor: '{colors.carbon-ink}'
+    backgroundColor: '{colors.paper-white}'
+    textColor: '{colors.ink-black}'
     typography: '{typography.body}'
     rounded: '{rounded.control}'
     padding: '12px 14px'
-  signal-chip:
-    backgroundColor: '{colors.carbon-ink}'
-    textColor: '{colors.observation-white}'
-    typography: '{typography.label}'
-    rounded: '{rounded.signal}'
-    padding: '6px 9px'
 ---
 
-# Design System: Future Game Laboratory
+# Design System: 未来游戏研究所
 
 ## 1. Overview
 
-**Creative North Star: “未校准的未来信号”**
+**Creative North Star: “来自未来的白色标题页”**
 
-界面像一台正在运行、尚未完全校准的研究仪器：主体是强对比的冷白与碳黑，信息被细线、编号、坐标和明确的阅读宽度精密组织；离子青与异常洋红仅在关键状态发生轻微色差，让访客感到系统背后仍有未知变量。它借用复古科幻设备的物理感，但拒绝把页面装扮成影视道具。
+站点首先是一份可阅读的社团刊物，而不是一台仪器。真正的纯白画布、书宋体中文标题、冷静的黑色结构线与大面积留白构成主体；青与洋红像印刷套色偶尔偏移，只在文字切换、焦点和当前状态中短暂出现。社团提供的中文标识是唯一品牌主角，不以 `FGL` 字母或抽象技术图替代。
 
-首页允许不对称的大尺度构图，正文与编辑器则回到克制、稳定的工作表面。一次编排式首屏入场和少量滚动揭示负责建立气氛，内容始终默认可见。辉光管加载器是唯一的暖色仪式：短暂点亮后完全退出，不把琥珀色扩散为通用强调色。
-
-**Key Characteristics:**
-
-- 冷白画布、碳黑结构和 1px—1.5px 仪器线。
-- 青/洋红色差信号稀少且有明确语义。
-- 首页不对称，长文稳定，编辑器密集但不拥挤。
-- 小圆角、平面表面、状态驱动的物理位移。
-- 中等动效强度，完整支持减弱动效。
-
-**The Signal Budget Rule.** 每个视口只允许一个主要色差信号；当青与洋红同时出现时，它们必须属于同一交互或同一标题。
+界面借鉴 Steins;Gate 官网的排版张力、遮罩显影和字符切换方式，但不复制其人物、标志、图片、文案或纹理。栏目骨架参考晓 Records 的「品牌导航—主视觉—Information 时间流—独立侧栏」关系，并转译为 Top、Information、Works、About、Contact；Edits 是主导航之外的工具入口。不设置 Discography、Music 或 SNS。
 
 ## 2. Colors
 
-冷白与碳黑构成可信的观测环境；青与洋红标记失真，琥珀橙只属于辉光管启动阶段。
+- **Paper White `#FFFFFF`：** 浅色主题页面和主要表面。禁止用米白或灰白替代。
+- **Ink Black `#090909`：** 正文、边线、反色章节与深色主题底色。
+- **Quiet Gray `#575B60`：** 次要说明；深色主题使用足够对比度的浅灰。
+- **Structural Gray `#B8BEC4`：** 输入框和非关键分隔线。
+- **Chromatic Cyan `#00C6D7` / Magenta `#E2007A`：** 仅用于成对色差、焦点和短暂切换反馈。
+- **Nixie Amber `#FF7A1A`：** 只属于启动加载器，页面稳定后不作为常规强调色。
 
-### Primary
-
-- **碳墨黑 / Carbon Ink:** 主文字、主要按钮、技术分区与结构性大色块。
-- **观测白 / Observation White:** 主要画布与浅色表面；保持中性，不使用米黄纸张感。
-
-### Secondary
-
-- **离子青 / Ion Cyan:** 左向色差、焦点辅助信号和少量数据状态；正文链接使用更深的 Ion Cyan Ink。
-- **异常洋红 / Anomaly Magenta:** 右向色差、活动状态和错误之外的异常提示；白底文字使用更深的 Anomaly Magenta Ink。
-
-### Tertiary
-
-- **辉光琥珀 / Nixie Amber:** 仅用于加载器数字、玻璃管余辉和对应进度线。页面完成加载后不得作为常规 CTA 色。
-
-### Neutral
-
-- **仪器灰 / Instrument Gray:** 次要说明与元数据。
-- **结构线 / Structural Line:** 浅色主题分隔线、输入框边界与网格。
-- **腔体黑 / Chamber Black:** 深色主题底色与全屏导航。
-- **腔体白 / Chamber White:** 深色主题主文字。
-- **腔体灰 / Chamber Muted:** 深色主题次要信息。
-
-**The Warmth Is Temporal Rule.** 琥珀橙只在“系统正在启动”的时间段出现；如果页面静止后仍有橙色装饰，设计即不合格。
+每个视口只保留一个主要色差事件。静止内容以黑白为主，颜色必须有状态含义。
 
 ## 3. Typography
 
-**Display Font:** Geist（回退 Arial Black / sans-serif）
+- **中文展示字：** Songti SC / STSong / Noto Serif SC。用于首页命题、页面标题与关键章节，形成文学性和戏剧停顿。
+- **正文：** PingFang SC / Noto Sans SC / Microsoft YaHei。长文控制在约 68–72ch，行高 1.8。
+- **短标签：** Geist Mono。只用于英文导航代码、日期、编号和短状态，不把正文伪装成终端。
 
-**Body Font:** PingFang SC / Noto Sans SC / Microsoft YaHei（回退 Geist / sans-serif）
+首页命题每 4.2 秒切换一次，过渡中短暂使用 `0 / 1 / × / ·` 作为未解析字符。内页标题使用双层黑白遮罩显影。减弱动效模式直接显示第一条命题和最终标题。
 
-**Label/Mono Font:** Geist Mono（回退 SFMono-Regular / Consolas / monospace）
+## 4. Composition
 
-**Character:** 粗重、紧凑的拉丁显示字像仪器铭牌，中文正文则保持成熟的系统无衬线阅读体验。等宽字体只服务于坐标、编号、时间、代码与短标签，不把所有内容伪装成终端。
+- 首页顶部采用不对称双栏：一侧是中文命题与简介，一侧是社团标识和圆形排版骨架。
+- 主视觉之后用四格目录明确 Information、Works、About、Contact；正文再以日期驱动的 Information 主栏配合三个独立栏目侧栏。
+- 参考站的滚动公告、媒体和商店栏目不直接照搬；所有入口必须映射到本站真实内容和现有路由。
+- 信息页像杂志目录：大标题、非对称留白、横向规则和列表，不使用技术仪表板。
+- 文章归档以年份与横向条目组织；项目和联系页保持同一目录语言。
+- 卡片只在内容确实需要独立容器时使用；普通信息优先用分隔线和排版关系。
+- 圆角不超过 4px；常规表面无环境阴影。
 
-### Hierarchy
+## 5. Motion
 
-- **Display**（760，`clamp(3rem, 8vw, 6rem)`，0.9）：首页 FGL 标识和唯一的超大命题。
-- **Headline**（680，`clamp(2rem, 5vw, 4.5rem)`，1.02）：页面标题与文章标题。
-- **Title**（640，`clamp(1.25rem, 2vw, 1.75rem)`，1.2）：文章卡片和模块标题。
-- **Body**（400，1rem，1.8）：正文限定在 68ch—72ch，中文段落使用自然字距。
-- **Label**（560，0.75rem，0.08em）：仅用于短英文标签、时间、序号、状态和坐标。
+- **Text Scramble：** 约 420ms，只发生于首页命题更新。
+- **Title Wipe：** 约 760ms，黑白遮罩横向扫过内页标题。
+- **Theme Reveal：** 支持 View Transitions 时，从主题按钮中心以 480ms 圆形揭示；否则以约 240ms 同步淡变颜色、背景和边框。
+- **Nixie Boot：** 三枚辉光管显示 `001`，最长约 1.32 秒，可跳过，同一会话只出现一次。
 
-**The Two Voices Rule.** 显示字负责“观测系统的声音”，正文负责“研究者的声音”；不得把整页正文压缩成全大写或等宽文本。
+所有运动都必须可中断，不阻塞页面内容，并完整支持 `prefers-reduced-motion`。
 
-## 4. Elevation
+## 6. Components
 
-系统默认完全平面，以结构线、反色区块、错位色影和内容层级建立深度。常规卡片没有环境阴影；按钮和可点击文章在悬停或键盘聚焦时产生 2px 青/洋红反向错位，像打印套色短暂失准。辉光只属于辉光管加载器。
+- **Navigation：** 中文名称为主、英文代码为辅；移动端为深色全屏目录。Edits 仅出现在目录页脚和站点页脚。
+- **Homepage Directory：** 四个等权入口连接 Information、Works、About、Contact，移动端折为两列或单列。
+- **Information Feed：** 日期、标题、摘要和目标箭头组成紧凑横向条目；内容增长后仍保持按时间扫描。
+- **Section Sidebar：** 项目、研究所、联系各占一段，不用同尺寸圆角卡片，也不伪造媒体或商店内容。
+- **Buttons：** 4px 圆角，黑白反色。悬停可出现 1–2px 青/洋红套色偏移，但不持续发光。
+- **Article Lists：** 使用上下边线和图文节奏，不堆叠重复圆角卡片。
+- **Fields：** 纯白或纯黑表面、1px 边线、清晰焦点环，最小高度 44px。
+- **Brand Mark：** 只使用 `future-game-institute.png` 提供的「未来游戏研究所」标识；深色主题允许整体反相。
 
-### Shadow Vocabulary
+## 7. Do / Don't
 
-- **Signal Offset**（`2px 2px 0 rgba(226,0,122,.72), -2px -2px 0 rgba(0,198,215,.72)`）：主要交互的悬停与焦点反馈。
-- **Nixie Bloom**（`0 0 8px rgba(255,122,26,.85), 0 0 24px rgba(255,122,26,.38)`）：加载器发光数字，不得用于常规文本。
+### Do
 
-**The Flat Until Touched Rule.** 表面静止时保持平面；只有用户交互或系统状态变化才允许出现影子。
+- 保留清楚的信息层级、日期、来源与阅读宽度。
+- 让标题切换、遮罩和色差服务于叙事或状态。
+- 保留现有路由、RSS、内容模型、GitHub Pages 和编辑器发布功能。
+- 让浅色主题每个主要表面都保持真正的白色。
 
-## 5. Components
+### Don't
 
-### Buttons
-
-- **Shape:** 紧凑、近方形边缘（4px）。
-- **Primary:** 碳黑底、观测白字，标签字体，12px × 18px 内边距。
-- **Hover / Focus:** 轻微上移 1px，并出现 Signal Offset；焦点同时保留 2px 可见轮廓。
-- **Secondary / Ghost:** 透明或观测白底、1px 结构线；不得变成圆形胶囊。
-
-### Chips
-
-- **Style:** 2px 小圆角、1px 边线或碳黑反色，使用 `#`、计数或短状态文本。
-- **State:** 当前筛选使用反色并附带单侧 1px 色差信号；未选中状态保持平面。
-
-### Cards / Containers
-
-- **Corner Style:** 6px 或无圆角，取决于是否为可独立操作的容器。
-- **Background:** 与画布同色；深色专题区使用 Chamber Black。
-- **Shadow Strategy:** 静止无阴影；交互时才使用 Signal Offset。
-- **Border:** 1px—1.5px 碳黑/结构线完整边框，禁止彩色侧边条。
-- **Internal Padding:** 16px—24px；文章列表可用横向规则而不是重复卡片盒。
-
-### Inputs / Fields
-
-- **Style:** 冷白底、1px 结构线、4px 圆角，最小高度 44px。
-- **Focus:** 边界转为碳黑并出现外层青色焦点环，不删除浏览器可见焦点。
-- **Error / Disabled:** 错误使用文字、图标和边界共同表达；禁用状态仍保证文字可读。
-
-### Navigation
-
-桌面导航是细线结构的顶部仪器栏；活动页以实心文字和小型信号刻度标记。移动端展开为深色全屏导航，项目按大字级垂直排列并带短编号，支持 Escape、焦点管理和滚动锁定。
-
-### Nixie Boot Sequence
-
-由三组辉光管字符组成，显示 `FGL`、阶段编号和短时间码。加载层在文档解析时即出现，最长约 1.4 秒，可点击“跳过”；不锁住辅助技术，页面内容在其后已可用。`prefers-reduced-motion: reduce` 下不执行数字翻转和位移，仅做不超过 120ms 的淡出。
-
-## 6. Do's and Don'ts
-
-### Do:
-
-- **Do** 用不对称首页构图表达实验室品牌，用稳定的 68ch—72ch 阅读列承载长文。
-- **Do** 让青/洋红色差与导航、焦点、状态或标题揭示建立明确关系。
-- **Do** 保留现有路由、RSS、主题、内容模型、GitHub Pages 与编辑器发布行为。
-- **Do** 为所有动效提供 `prefers-reduced-motion` 替代，并保证内容默认可见。
-- **Do** 让辉光管加载器可跳过、短暂且只出现暖色时间信号。
-
-### Don't:
-
-- **Don't** 做成“通用 SaaS 落地页模板与可替换品牌名的卡片网格”。
-- **Don't** 使用“纯黑底、满屏霓虹与持续发光的廉价赛博朋克视觉”。
-- **Don't** 直接复刻“动漫角色官网、Steins;Gate 标志、角色、文案、图像或专有纹理”。
-- **Don't** 使用“为装饰而使用的玻璃拟态、渐变文字和无意义技术图表”。
-- **Don't** 使用渐变文字、彩色粗侧边条、重复小型大写眉题或无信息意义的章节编号。
-- **Don't** 让标题在任何视口溢出，或让加载动画阻塞阅读、键盘和辅助技术。
+- 不使用超大 `FGL` 字母、观测仪表、坐标网格或无意义技术图表。
+- 不添加 Discography、Music、SNS 导航或社交图标列表。
+- 不使用渐变文字、厚彩色侧边条、玻璃拟态和持续霓虹。
+- 不复刻 Steins;Gate 或其他参考站点的专有素材。

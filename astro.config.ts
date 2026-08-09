@@ -26,7 +26,9 @@ export default defineConfig({
   integrations: [
     mdx(),
     react(),
-    sitemap({ filter: (page) => !page.endsWith('/editor/') }),
+    sitemap({
+      filter: (page) => !page.endsWith('/editor/') && !page.endsWith('/edits/'),
+    }),
     icon(),
   ],
   vite: {

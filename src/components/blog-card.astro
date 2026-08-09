@@ -7,6 +7,7 @@ import {
   parseAuthors,
 } from '@/lib/data-utils'
 import { formatDate } from '@/lib/utils'
+import { withBase } from '@/lib/paths'
 import { Icon } from 'astro-icon/components'
 import { Image } from 'astro:assets'
 import type { CollectionEntry } from 'astro:content'
@@ -22,6 +23,7 @@ const readTime = await getCombinedReadingTime(entry.id)
 const authors = await parseAuthors(entry.data.authors ?? [])
 const subpostCount = !isSubpost(entry.id) ? await getSubpostCount(entry.id) : 0
 const year = entry.data.date.getFullYear()
+const instituteLogo = withBase('/static/future-game-institute.png')
 ---
 
 <article class="article-record">
@@ -42,7 +44,7 @@ const year = entry.data.date.getFullYear()
         ) : (
           <div class="article-record__placeholder" aria-hidden="true">
             <span>OBS / {year}</span>
-            <strong>FGL</strong>
+            <img src={instituteLogo} alt="" width="225" height="225" />
             <i />
           </div>
         )
@@ -90,8 +92,8 @@ const year = entry.data.date.getFullYear()
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    background: #0d1014;
-    color: #f0f3ef;
+    background: #090909;
+    color: #ffffff;
     padding: 1rem;
   }
 
@@ -114,17 +116,12 @@ const year = entry.data.date.getFullYear()
     letter-spacing: 0.08em;
   }
 
-  .article-record__placeholder strong {
+  .article-record__placeholder img {
     position: relative;
     align-self: flex-end;
-    font-family: var(--font-display);
-    font-size: clamp(3.5rem, 8vw, 7rem);
-    font-weight: 820;
-    line-height: 0.7;
-    letter-spacing: -0.07em;
-    text-shadow:
-      2px 0 #e2007a,
-      -2px 0 #00c6d7;
+    width: min(76%, 12rem);
+    height: auto;
+    filter: invert(1);
   }
 
   .article-record__placeholder i {

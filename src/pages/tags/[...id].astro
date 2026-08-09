@@ -33,9 +33,9 @@ const { tag, posts } = Astro.props
     ]}
   />
   <PageHeader
-    label={`FILTER / ${String(posts.length).padStart(2, '0')} RECORDS`}
+    label={`FILTER / ${String(posts.length).padStart(2, '0')} ARTICLES`}
     title={`# ${tag}`}
-    description="当前标签下的全部公开观测记录。"
+    description="当前标签下的全部公开文章。"
   />
   <div class="article-list">
     {posts.map((post) => <BlogCard entry={post} />)}

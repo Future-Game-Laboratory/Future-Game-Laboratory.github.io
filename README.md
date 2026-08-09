@@ -1,6 +1,6 @@
-# Future Game Laboratory Blog
+# 未来游戏研究所 Blog
 
-Future Game Laboratory 的研究、开发记录与游戏创作实践。
+未来游戏研究所的研究、开发记录与游戏创作实践。
 
 线上地址：<https://future-game-laboratory.github.io/>
 
@@ -30,7 +30,7 @@ npm run preview
 
 ## 内容编辑器
 
-访问 `/editor/` 可以编写、预览和发布文章。编辑器支持：
+访问 `/edits/` 可以编写、预览和发布文章。旧的 `/editor/` 会自动跳转到新地址。编辑器支持：
 
 - 文章元数据和 Markdown/MDX 正文编辑
 - 阅读视图与完整 MDX 源码预览
@@ -60,11 +60,11 @@ src/content/projects/<project-id>.md
 
 ```yaml
 ---
-title: "标题"
-description: "不超过 155 字的摘要"
+title: '标题'
+description: '不超过 155 字的摘要'
 date: 2026-08-08
-tags: ["game-design", "research"]
-authors: ["author-id"]
+tags: ['game-design', 'research']
+authors: ['author-id']
 draft: true
 ---
 ```

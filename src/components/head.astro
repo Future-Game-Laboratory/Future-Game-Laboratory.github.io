@@ -26,12 +26,12 @@ const base = import.meta.env.BASE_URL
 
   <meta
     name="theme-color"
-    content="#0d1014"
+    content="#090909"
     media="(prefers-color-scheme: dark)"
   />
   <meta
     name="theme-color"
-    content="#f4f6f3"
+    content="#ffffff"
     media="(prefers-color-scheme: light)"
   />
 
@@ -47,7 +47,7 @@ const base = import.meta.env.BASE_URL
   <Favicons />
   <script is:inline>
     try {
-      if (sessionStorage.getItem('fgl-boot-seen') === '1') {
+      if (sessionStorage.getItem('institute-boot-seen') === '1') {
         document.documentElement.dataset.boot = 'seen'
       }
     } catch {}

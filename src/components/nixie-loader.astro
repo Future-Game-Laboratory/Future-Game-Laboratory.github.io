@@ -3,16 +3,16 @@
   id="nixie-loader"
   role="status"
   aria-live="polite"
-  aria-label="Future Game Laboratory 正在启动"
+  aria-label="未来游戏研究所正在启动"
 >
   <div class="nixie-loader__frame" aria-hidden="true">
     <div class="nixie-loader__readout">
-      <span class="nixie-tube" data-final="F">F</span>
-      <span class="nixie-tube" data-final="G">G</span>
-      <span class="nixie-tube" data-final="L">L</span>
+      <span class="nixie-tube">0</span>
+      <span class="nixie-tube">0</span>
+      <span class="nixie-tube">1</span>
     </div>
     <div class="nixie-loader__telemetry">
-      <span>BOOT / OBSERVATION ARRAY</span>
+      <span>未来游戏研究所 / BOOT</span>
       <span id="nixie-timecode">00:00:00</span>
     </div>
     <div class="nixie-loader__track"><i></i></div>
@@ -39,7 +39,7 @@
     place-items: center;
     overflow: hidden;
     background: #090b0e;
-    color: #f0f3ef;
+    color: #ffffff;
     transition:
       opacity 380ms var(--ease-reveal),
       visibility 380ms step-end;
@@ -72,7 +72,7 @@
     border: 1px solid #4b2c1e;
     border-radius: 6px;
     padding: clamp(1.3rem, 5vw, 2.5rem);
-    background: #0d1014;
+    background: #090909;
     box-shadow: inset 0 0 0 1px rgb(255 255 255 / 4%);
   }
 
@@ -233,7 +233,7 @@
 
     let seen = root.dataset.boot === 'seen'
     try {
-      seen ||= sessionStorage.getItem('fgl-boot-seen') === '1'
+      seen ||= sessionStorage.getItem('institute-boot-seen') === '1'
     } catch {}
 
     if (seen) {
@@ -258,7 +258,7 @@
       loader.classList.add('is-closing')
       root.dataset.boot = 'seen'
       try {
-        sessionStorage.setItem('fgl-boot-seen', '1')
+        sessionStorage.setItem('institute-boot-seen', '1')
       } catch {}
       window.setTimeout(
         () => {

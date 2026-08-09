@@ -1,39 +1,35 @@
 import type { IconMap, SocialLink, Site } from '@/types'
 
 export const SITE: Site = {
-  title: 'Future Game Laboratory',
-  description:
-    'Future Game Laboratory 的研究、开发记录与游戏创作实践。',
+  title: '未来游戏研究所',
+  description: '未来游戏研究所的研究、开发记录与游戏创作实践。',
   href: 'https://future-game-laboratory.github.io/',
-  author: 'Future Game Laboratory',
+  author: '未来游戏研究所',
   locale: 'zh-CN',
-  featuredPostCount: 2,
-  postsPerPage: 3,
+  featuredPostCount: 6,
+  postsPerPage: 5,
 }
 
 export const NAV_LINKS: SocialLink[] = [
   {
+    href: '/',
+    label: '首页',
+  },
+  {
     href: '/blog',
-    label: '文章',
+    label: '资讯',
+  },
+  {
+    href: '/works',
+    label: '项目',
   },
   {
     href: '/about',
-    label: '关于',
+    label: '研究所',
   },
   {
-    href: '/editor',
-    label: '写作',
-  },
-]
-
-export const SOCIAL_LINKS: SocialLink[] = [
-  {
-    href: 'https://github.com/Future-Game-Laboratory',
-    label: 'GitHub',
-  },
-  {
-    href: '/rss.xml',
-    label: 'RSS',
+    href: '/contact',
+    label: '联系',
   },
 ]
 

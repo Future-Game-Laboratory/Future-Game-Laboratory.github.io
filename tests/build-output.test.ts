@@ -63,14 +63,15 @@ test('all generated internal links and assets resolve inside dist', () => {
 })
 
 test('private editor is noindex and absent from sitemap', () => {
-  const editor = readFileSync(join(dist, 'editor/index.html'), 'utf8')
+  const editor = readFileSync(join(dist, 'edits/index.html'), 'utf8')
   const sitemap = readFileSync(join(dist, 'sitemap-0.xml'), 'utf8')
   assert.match(editor, /<meta name="robots" content="noindex, nofollow">/)
   assert.doesNotMatch(sitemap, /\/editor\//)
+  assert.doesNotMatch(sitemap, /\/edits\//)
 })
 
 test('editor page contains its hydrated app and publishing controls', () => {
-  const editor = readFileSync(join(dist, 'editor/index.html'), 'utf8')
+  const editor = readFileSync(join(dist, 'edits/index.html'), 'utf8')
   assert.match(editor, /内容编辑器/)
   assert.match(editor, /正文（Markdown \/ MDX）/)
   assert.match(editor, /提交并触发构建/)
@@ -86,6 +87,12 @@ test('template author and draft template posts are not generated', () => {
 test('RSS and robots use the GitHub Pages production base', () => {
   const rss = readFileSync(join(dist, 'rss.xml'), 'utf8')
   const robots = readFileSync(join(dist, 'robots.txt'), 'utf8')
-  assert.match(rss, /https:\/\/future-game-laboratory\.github\.io\/blog\/welcome\//)
-  assert.match(robots, /https:\/\/future-game-laboratory\.github\.io\/sitemap-index\.xml/)
+  assert.match(
+    rss,
+    /https:\/\/future-game-laboratory\.github\.io\/blog\/welcome\//,
+  )
+  assert.match(
+    robots,
+    /https:\/\/future-game-laboratory\.github\.io\/sitemap-index\.xml/,
+  )
 })

@@ -1,8 +1,8 @@
 # 内容编辑器
 
-编辑器位于站点的 `/editor/` 路由。在当前 GitHub Pages 配置下，完整地址为：
+编辑器位于站点的 `/edits/` 路由。在当前 GitHub Pages 配置下，完整地址为：
 
-<https://future-game-laboratory.github.io/editor/>
+<https://future-game-laboratory.github.io/edits/>
 
 ## 写作与本地草稿
 

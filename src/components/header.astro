@@ -1,19 +1,29 @@
 ---
 import Link from '@/components/link.astro'
 import ThemeToggle from '@/components/theme-toggle.astro'
-import { NAV_LINKS, SOCIAL_LINKS } from '@/consts'
+import { NAV_LINKS } from '@/consts'
+import { withBase } from '@/lib/paths'
 
 const pathname = Astro.url.pathname.replace(/\/$/, '') || '/'
 const isActive = (href: string) =>
   href === '/'
     ? pathname === '/'
     : pathname === href || pathname.startsWith(`${href}/`)
+const logo = withBase('/static/future-game-institute.png')
+const navCodes: Record<string, string> = {
+  '/': 'TOP',
+  '/blog': 'INFO',
+  '/works': 'WORKS',
+  '/about': 'ABOUT',
+  '/contact': 'CONTACT',
+}
 ---
 
 <div class="site-nav-bar">
-  <Link href="/" class="brand-lockup" aria-label="Future Game Laboratory 首页">
-    <span class="brand-monogram chromatic-ink" aria-hidden="true">FGL</span>
-    <span class="brand-name">Future Game<br />Laboratory</span>
+  <Link href="/" class="brand-lockup" aria-label="未来游戏研究所首页">
+    <span class="brand-logo-window" aria-hidden="true">
+      <img src={logo} alt="" width="225" height="225" />
+    </span>
   </Link>
 
   <div class="desktop-navigation">
@@ -27,7 +37,8 @@ const isActive = (href: string) =>
                 class="nav-link"
                 aria-current={isActive(item.href) ? 'page' : undefined}
               >
-                {item.label}
+                <span>{item.label}</span>
+                <small>{navCodes[item.href]}</small>
               </Link>
             </li>
           ))
@@ -52,10 +63,11 @@ const isActive = (href: string) =>
 </div>
 
 <dialog class="site-menu" id="site-menu" aria-label="网站导航">
-  <div class="site-menu__grid" aria-hidden="true"></div>
   <header class="site-menu__header">
-    <span class="site-menu__mark chromatic-ink">FGL</span>
-    <span>OBSERVATION DIRECTORY / 01</span>
+    <span class="site-menu__logo" aria-hidden="true">
+      <img src={logo} alt="" width="225" height="225" />
+    </span>
+    <span>PAGE DIRECTORY / 未来游戏研究所</span>
     <button id="site-menu-close" type="button" aria-label="关闭导航">
       <span>CLOSE</span>
       <i aria-hidden="true"></i>
@@ -64,15 +76,14 @@ const isActive = (href: string) =>
   <nav class="site-menu__nav" aria-label="全屏导航">
     <ul>
       {
-        NAV_LINKS.map((item, index) => (
+        NAV_LINKS.map((item) => (
           <li>
-            <span>{String(index + 1).padStart(2, '0')}</span>
             <Link
               href={item.href}
               aria-current={isActive(item.href) ? 'page' : undefined}
             >
               {item.label}
-              <small>{item.href.replace('/', '') || 'home'}</small>
+              <small>{navCodes[item.href]}</small>
             </Link>
           </li>
         ))
@@ -80,18 +91,8 @@ const isActive = (href: string) =>
     </ul>
   </nav>
   <footer class="site-menu__footer">
-    <span>Future Game Laboratory</span>
-    <ul>
-      {
-        SOCIAL_LINKS.map((item) => (
-          <li>
-            <Link href={item.href} external={item.href.startsWith('http')}>
-              {item.label}
-            </Link>
-          </li>
-        ))
-      }
-    </ul>
+    <span>&copy; {new Date().getFullYear()} 未来游戏研究所</span>
+    <Link href="/edits">内容编辑器 / EDITS ↗</Link>
   </footer>
 </dialog>
 
@@ -102,43 +103,43 @@ const isActive = (href: string) =>
     height: var(--header-height);
     align-items: center;
     justify-content: space-between;
-    gap: 2rem;
+    gap: 1.5rem;
     margin-inline: auto;
     padding: 0 clamp(1rem, 3.3vw, 3rem);
   }
 
   .brand-lockup {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.85rem;
-    color: var(--foreground);
+    display: block;
+    flex: 0 0 auto;
   }
 
-  .brand-monogram {
-    font-family: var(--font-display);
-    font-size: 1.55rem;
-    font-weight: 820;
-    line-height: 0.8;
-    letter-spacing: -0.06em;
+  .brand-logo-window {
+    position: relative;
+    display: block;
+    width: 11.75rem;
+    height: 3.35rem;
+    overflow: hidden;
   }
 
-  .brand-name {
-    font-family: var(--font-mono);
-    font-size: 0.58rem;
-    font-weight: 580;
-    line-height: 1.2;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
+  .brand-logo-window img {
+    position: absolute;
+    top: -3.62rem;
+    left: 0;
+    width: 11.75rem;
+    max-width: none;
+    height: auto;
+    filter: var(--brand-logo-filter, none);
   }
 
   .desktop-navigation,
-  .desktop-navigation nav ul {
+  .desktop-navigation nav ul,
+  .navigation-controls {
     display: flex;
     align-items: center;
   }
 
   .desktop-navigation nav ul {
-    gap: clamp(1.25rem, 3vw, 2.5rem);
+    gap: clamp(1rem, 2.4vw, 2rem);
     margin: 0;
     padding: 0;
     list-style: none;
@@ -146,17 +147,29 @@ const isActive = (href: string) =>
 
   .nav-link {
     position: relative;
-    color: color-mix(in srgb, var(--foreground) 68%, var(--background));
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: color-mix(in srgb, var(--foreground) 66%, var(--background));
+    line-height: 1.1;
+  }
+
+  .nav-link span {
+    font-size: 0.82rem;
+    font-weight: 600;
+  }
+
+  .nav-link small {
+    margin-top: 0.22rem;
     font-family: var(--font-mono);
-    font-size: 0.73rem;
-    font-weight: 580;
-    letter-spacing: 0.06em;
+    font-size: 0.5rem;
+    letter-spacing: 0.08em;
   }
 
   .nav-link::after {
     position: absolute;
     right: 0;
-    bottom: -1.65rem;
+    bottom: -1.25rem;
     left: 0;
     height: 3px;
     background: var(--foreground);
@@ -165,7 +178,6 @@ const isActive = (href: string) =>
       2px 0 var(--signal-magenta),
       -2px 0 var(--signal-cyan);
     transform: scaleX(0);
-    transform-origin: center;
     transition: transform 180ms var(--ease-signal);
   }
 
@@ -180,14 +192,12 @@ const isActive = (href: string) =>
   }
 
   .navigation-controls {
-    display: flex;
-    align-items: center;
     gap: 0.55rem;
   }
 
   .menu-trigger {
     display: none;
-    height: 2.65rem;
+    height: 2.75rem;
     align-items: center;
     gap: 0.7rem;
     border: 1px solid var(--foreground);
@@ -235,8 +245,8 @@ const isActive = (href: string) =>
     margin: 0;
     overflow: hidden auto;
     border: 0;
-    background: #0d1014;
-    color: #f0f3ef;
+    background: #090909;
+    color: #fff;
     padding: 0;
     opacity: 0;
     transform: scale(1.025);
@@ -260,18 +270,7 @@ const isActive = (href: string) =>
   }
 
   .site-menu::backdrop {
-    background: #0d1014;
-  }
-
-  .site-menu__grid {
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
-    background-image:
-      linear-gradient(rgb(255 255 255 / 6%) 1px, transparent 1px),
-      linear-gradient(90deg, rgb(255 255 255 / 6%) 1px, transparent 1px);
-    background-size: 42px 42px;
-    mask-image: linear-gradient(to bottom right, black, transparent 88%);
+    background: #090909;
   }
 
   .site-menu__header,
@@ -281,31 +280,40 @@ const isActive = (href: string) =>
     align-items: center;
     justify-content: space-between;
     gap: 1rem;
-    padding: 1.25rem clamp(1rem, 4vw, 3rem);
+    padding: 1.15rem clamp(1rem, 4vw, 3rem);
     font-family: var(--font-mono);
-    font-size: 0.65rem;
-    letter-spacing: 0.08em;
+    font-size: 0.62rem;
+    letter-spacing: 0.07em;
   }
 
   .site-menu__header {
-    border-bottom: 1px solid #4b515a;
+    border-bottom: 1px solid #444;
   }
 
-  .site-menu__mark {
-    font-family: var(--font-display);
-    font-size: 1.7rem;
-    font-weight: 820;
-    letter-spacing: -0.06em;
+  .site-menu__logo {
+    position: relative;
+    display: block;
+    width: 10.5rem;
+    height: 3.25rem;
+    overflow: hidden;
+  }
+
+  .site-menu__logo img {
+    position: absolute;
+    top: -3.25rem;
+    width: 10.5rem;
+    height: auto;
+    filter: invert(1);
   }
 
   .site-menu__header button {
     display: inline-flex;
     align-items: center;
     gap: 0.65rem;
-    border: 1px solid #69717c;
+    border: 1px solid #666;
     border-radius: 3px;
     background: transparent;
-    color: #f0f3ef;
+    color: #fff;
     padding: 0.65rem 0.75rem;
     font: inherit;
   }
@@ -325,7 +333,7 @@ const isActive = (href: string) =>
     display: grid;
     min-height: calc(100svh - 9rem);
     place-items: center;
-    padding: clamp(3rem, 7vw, 7rem) clamp(1rem, 7vw, 7rem);
+    padding: clamp(2.5rem, 6vw, 6rem) clamp(1rem, 7vw, 7rem);
   }
 
   .site-menu__nav ul {
@@ -336,16 +344,7 @@ const isActive = (href: string) =>
   }
 
   .site-menu__nav li {
-    display: grid;
-    grid-template-columns: 3.5rem 1fr;
-    align-items: baseline;
-    border-bottom: 1px solid #4b515a;
-  }
-
-  .site-menu__nav li > span {
-    color: #73e6ef;
-    font-family: var(--font-mono);
-    font-size: 0.7rem;
+    border-bottom: 1px solid #444;
   }
 
   .site-menu__nav a {
@@ -353,9 +352,9 @@ const isActive = (href: string) =>
     align-items: baseline;
     justify-content: space-between;
     gap: 1rem;
-    padding: clamp(1rem, 2.5vw, 1.7rem) 0;
-    font-family: var(--font-display);
-    font-size: clamp(2.4rem, 7vw, 5.3rem);
+    padding: clamp(0.85rem, 2vw, 1.45rem) 0;
+    font-family: var(--font-serif);
+    font-size: clamp(2.2rem, 6vw, 4.8rem);
     font-weight: 700;
     line-height: 0.94;
     letter-spacing: -0.045em;
@@ -369,31 +368,27 @@ const isActive = (href: string) =>
   }
 
   .site-menu__nav small {
-    color: #a8afb8;
+    color: #aaa;
     font-family: var(--font-mono);
-    font-size: 0.65rem;
+    font-size: 0.62rem;
     font-weight: 500;
     letter-spacing: 0.06em;
   }
 
   .site-menu__footer {
-    border-top: 1px solid #4b515a;
-    color: #a8afb8;
+    border-top: 1px solid #444;
+    color: #aaa;
   }
 
-  .site-menu__footer ul {
-    display: flex;
-    gap: 1rem;
-    margin: 0;
-    padding: 0;
-    list-style: none;
+  .site-menu__footer a:hover {
+    color: #fff;
   }
 
   :global(html[data-menu='open']) {
     overflow: hidden;
   }
 
-  @media (max-width: 860px) {
+  @media (max-width: 940px) {
     .desktop-navigation {
       display: none;
     }
@@ -404,14 +399,24 @@ const isActive = (href: string) =>
   }
 
   @media (max-width: 520px) {
-    .brand-name,
+    .brand-logo-window {
+      width: 9.4rem;
+      height: 2.8rem;
+    }
+
+    .brand-logo-window img {
+      top: -2.9rem;
+      width: 9.4rem;
+    }
+
     .site-menu__header > span:nth-child(2),
     .site-menu__nav small {
       display: none;
     }
 
-    .site-menu__nav li {
-      grid-template-columns: 2.5rem 1fr;
+    .site-menu__footer {
+      align-items: flex-start;
+      flex-direction: column;
     }
   }
 

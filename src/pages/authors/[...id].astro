@@ -34,7 +34,7 @@ const publicPosts = authorPosts.filter((post) => !post.data.draft)
     ]}
   />
   <PageHeader
-    label={`CONTRIBUTOR / ${String(publicPosts.length).padStart(2, '0')} RECORDS`}
+    label={`CONTRIBUTOR / ${String(publicPosts.length).padStart(2, '0')} ARTICLES`}
     title={author.data.name}
     description={author.data.bio}
   />
@@ -44,8 +44,8 @@ const publicPosts = authorPosts.filter((post) => !post.data.draft)
   <section aria-labelledby="author-posts-heading">
     <div class="section-intro">
       <div>
-        <p class="signal-label">AUTHORED OBSERVATIONS</p>
-        <h2 class="section-heading" id="author-posts-heading">公开记录</h2>
+        <p class="signal-label">AUTHORED ARTICLES</p>
+        <h2 class="section-heading" id="author-posts-heading">公开文章</h2>
       </div>
     </div>
     {

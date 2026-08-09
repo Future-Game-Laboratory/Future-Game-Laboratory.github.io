@@ -1,29 +1,129 @@
 {
   "schemaVersion": 2,
   "generatedAt": "2026-08-09T00:00:00+08:00",
-  "title": "Design System: Future Game Laboratory",
+  "title": "Design System: 未来游戏研究所",
   "extensions": {
     "colorMeta": {
-      "observation-white": { "role": "neutral", "displayName": "观测白", "canonical": "#F4F6F3", "tonalRamp": ["#202320", "#3B3F3B", "#5A605A", "#7D847D", "#A4AAA4", "#C9CEC9", "#E4E8E4", "#F4F6F3"] },
-      "carbon-ink": { "role": "primary", "displayName": "碳墨黑", "canonical": "#0B0D10", "tonalRamp": ["#0B0D10", "#20242A", "#383D45", "#555B64", "#767D86", "#9EA4AB", "#CDD1D4", "#F2F3F4"] },
-      "ion-cyan": { "role": "secondary", "displayName": "离子青", "canonical": "#00C6D7", "tonalRamp": ["#00363B", "#00535A", "#00727B", "#00939F", "#00B7C6", "#45D9E5", "#96EDF3", "#E1FAFC"] },
-      "anomaly-magenta": { "role": "secondary", "displayName": "异常洋红", "canonical": "#E2007A", "tonalRamp": ["#3C001F", "#5E0033", "#820047", "#A9005C", "#D00071", "#F04C9E", "#FA9BC5", "#FDE3EF"] },
-      "nixie-amber": { "role": "tertiary", "displayName": "辉光琥珀", "canonical": "#FF7A1A", "tonalRamp": ["#471A00", "#6D2900", "#963A00", "#C14D00", "#EB6507", "#FF8E42", "#FFBB88", "#FFE9D6"] }
+      "paper-white": {
+        "role": "neutral",
+        "displayName": "纯白画布",
+        "canonical": "#FFFFFF",
+        "tonalRamp": [
+          "#090909",
+          "#2A2A2A",
+          "#575B60",
+          "#8C9094",
+          "#B8BEC4",
+          "#D9DCDE",
+          "#F2F2F2",
+          "#FFFFFF"
+        ]
+      },
+      "ink-black": {
+        "role": "primary",
+        "displayName": "墨黑",
+        "canonical": "#090909",
+        "tonalRamp": [
+          "#090909",
+          "#202020",
+          "#3B3B3B",
+          "#575757",
+          "#777777",
+          "#A0A0A0",
+          "#D1D1D1",
+          "#FFFFFF"
+        ]
+      },
+      "chromatic-cyan": {
+        "role": "secondary",
+        "displayName": "色差青",
+        "canonical": "#00C6D7",
+        "tonalRamp": [
+          "#00363B",
+          "#00535A",
+          "#00727B",
+          "#00939F",
+          "#00B7C6",
+          "#45D9E5",
+          "#96EDF3",
+          "#E1FAFC"
+        ]
+      },
+      "chromatic-magenta": {
+        "role": "secondary",
+        "displayName": "色差洋红",
+        "canonical": "#E2007A",
+        "tonalRamp": [
+          "#3C001F",
+          "#5E0033",
+          "#820047",
+          "#A9005C",
+          "#D00071",
+          "#F04C9E",
+          "#FA9BC5",
+          "#FDE3EF"
+        ]
+      },
+      "nixie-amber": {
+        "role": "tertiary",
+        "displayName": "辉光琥珀",
+        "canonical": "#FF7A1A",
+        "tonalRamp": [
+          "#471A00",
+          "#6D2900",
+          "#963A00",
+          "#C14D00",
+          "#EB6507",
+          "#FF8E42",
+          "#FFBB88",
+          "#FFE9D6"
+        ]
+      }
     },
     "typographyMeta": {
-      "display": { "displayName": "观测显示字", "purpose": "首页唯一的大尺度品牌命题。" },
-      "headline": { "displayName": "研究标题", "purpose": "页面与文章标题。" },
+      "display": {
+        "displayName": "中文标题",
+        "purpose": "首页命题、页面标题与章节标题。"
+      },
       "body": { "displayName": "阅读正文", "purpose": "中文长文与界面说明。" },
-      "label": { "displayName": "仪器标签", "purpose": "时间、坐标、状态、代码与短标签。" }
+      "label": {
+        "displayName": "目录标签",
+        "purpose": "英文代码、日期、编号和短状态。"
+      }
     },
     "shadows": [
-      { "name": "signal-offset", "value": "2px 2px 0 rgba(226,0,122,.72), -2px -2px 0 rgba(0,198,215,.72)", "purpose": "可交互元素悬停与聚焦时的套色偏移。" },
-      { "name": "nixie-bloom", "value": "0 0 8px rgba(255,122,26,.85), 0 0 24px rgba(255,122,26,.38)", "purpose": "仅用于加载动画中的辉光管字符。" }
+      {
+        "name": "chromatic-offset",
+        "value": "2px 2px 0 rgba(226,0,122,.72), -2px -2px 0 rgba(0,198,215,.72)",
+        "purpose": "可交互元素悬停与聚焦时的短暂套色偏移。"
+      },
+      {
+        "name": "nixie-bloom",
+        "value": "0 0 8px rgba(255,122,26,.85), 0 0 24px rgba(255,122,26,.38)",
+        "purpose": "仅用于启动动画中的辉光管数字。"
+      }
     ],
     "motion": [
-      { "name": "signal-fast", "value": "160ms cubic-bezier(.22,1,.36,1)", "purpose": "按钮、链接和焦点反馈。" },
-      { "name": "reveal", "value": "720ms cubic-bezier(.16,1,.3,1)", "purpose": "标题遮罩与首屏编排。" },
-      { "name": "boot-sequence", "value": "1400ms cubic-bezier(.22,1,.36,1)", "purpose": "可跳过的辉光管启动仪式。" }
+      {
+        "name": "interaction",
+        "value": "160ms cubic-bezier(.22,1,.36,1)",
+        "purpose": "按钮、链接和焦点反馈。"
+      },
+      {
+        "name": "title-wipe",
+        "value": "760ms cubic-bezier(.16,1,.3,1)",
+        "purpose": "内页标题的黑白遮罩显影。"
+      },
+      {
+        "name": "theme-reveal",
+        "value": "480ms cubic-bezier(.16,1,.3,1)",
+        "purpose": "以主题按钮为圆心揭示新主题。"
+      },
+      {
+        "name": "boot-sequence",
+        "value": "1320ms cubic-bezier(.22,1,.36,1)",
+        "purpose": "可跳过的 001 辉光管启动动画。"
+      }
     ],
     "breakpoints": [
       { "name": "compact", "value": "640px" },
@@ -36,60 +136,84 @@
       "name": "Primary Button",
       "kind": "button",
       "refersTo": "button-primary",
-      "description": "碳黑反色按钮，交互时出现受控色差。",
-      "html": "<button class=\"ds-btn-primary\">READ SIGNAL <span aria-hidden=\"true\">↗</span></button>",
-      "css": ".ds-btn-primary{border:1px solid #0B0D10;border-radius:4px;background:#0B0D10;color:#F4F6F3;padding:12px 18px;font:560 12px/1.4 'Geist Mono',monospace;letter-spacing:.08em;transition:transform 160ms cubic-bezier(.22,1,.36,1),box-shadow 160ms}.ds-btn-primary:hover{transform:translateY(-1px);box-shadow:2px 2px 0 rgba(226,0,122,.72),-2px -2px 0 rgba(0,198,215,.72)}.ds-btn-primary:focus-visible{outline:2px solid #00646D;outline-offset:3px}"
+      "description": "墨黑反色按钮，交互时出现克制的套色偏移。",
+      "html": "<button class=\"ds-btn-primary\">阅读资讯 <span aria-hidden=\"true\">↗</span></button>",
+      "css": ".ds-btn-primary{border:1px solid #090909;border-radius:4px;background:#090909;color:#fff;padding:12px 18px;font:560 12px/1.4 'Geist Mono',monospace;letter-spacing:.06em;transition:transform 160ms cubic-bezier(.22,1,.36,1),box-shadow 160ms}.ds-btn-primary:hover{transform:translateY(-1px);box-shadow:2px 2px 0 rgba(226,0,122,.72),-2px -2px 0 rgba(0,198,215,.72)}.ds-btn-primary:focus-visible{outline:2px solid #00646D;outline-offset:3px}"
     },
     {
       "name": "Secondary Button",
       "kind": "button",
       "refersTo": "button-secondary",
-      "description": "平面描边按钮，用于次级操作。",
-      "html": "<button class=\"ds-btn-secondary\">OPEN ARCHIVE</button>",
-      "css": ".ds-btn-secondary{border:1px solid #0B0D10;border-radius:4px;background:#F4F6F3;color:#0B0D10;padding:12px 18px;font:560 12px/1.4 'Geist Mono',monospace;letter-spacing:.08em;transition:background 160ms,color 160ms}.ds-btn-secondary:hover{background:#0B0D10;color:#F4F6F3}.ds-btn-secondary:focus-visible{outline:2px solid #00646D;outline-offset:3px}"
+      "description": "纯白平面描边按钮，用于次级操作。",
+      "html": "<button class=\"ds-btn-secondary\">关于研究所</button>",
+      "css": ".ds-btn-secondary{border:1px solid #090909;border-radius:4px;background:#fff;color:#090909;padding:12px 18px;font:560 12px/1.4 'Geist Mono',monospace;letter-spacing:.06em;transition:background 160ms,color 160ms}.ds-btn-secondary:hover{background:#090909;color:#fff}.ds-btn-secondary:focus-visible{outline:2px solid #00646D;outline-offset:3px}"
     },
     {
-      "name": "Research Field",
+      "name": "Editor Field",
       "kind": "input",
       "refersTo": "field",
-      "description": "编辑器和筛选器的清晰仪器字段。",
-      "html": "<label class=\"ds-field-label\">ARTICLE PATH<input class=\"ds-field\" value=\"observing-play\"></label>",
-      "css": ".ds-field-label{display:grid;gap:7px;color:#0B0D10;font:560 12px/1.4 'Geist Mono',monospace;letter-spacing:.08em}.ds-field{min-height:44px;border:1px solid #B8BEC4;border-radius:4px;background:#F4F6F3;color:#0B0D10;padding:12px 14px;font:400 16px/1.5 system-ui,sans-serif}.ds-field:focus{border-color:#0B0D10;outline:2px solid #00C6D7;outline-offset:2px}"
+      "description": "编辑器使用的纯白字段和清晰焦点环。",
+      "html": "<label class=\"ds-field-label\">文章路径<input class=\"ds-field\" value=\"game-notes\"></label>",
+      "css": ".ds-field-label{display:grid;gap:7px;color:#090909;font:560 12px/1.4 'Geist Mono',monospace}.ds-field{min-height:44px;border:1px solid #B8BEC4;border-radius:4px;background:#fff;color:#090909;padding:12px 14px;font:400 16px/1.5 system-ui,sans-serif}.ds-field:focus{border-color:#090909;outline:2px solid #00C6D7;outline-offset:2px}"
     },
     {
-      "name": "Signal Chip",
-      "kind": "chip",
-      "refersTo": "signal-chip",
-      "description": "标签与状态的紧凑反色标记。",
-      "html": "<span class=\"ds-chip\"># GAME-SYSTEMS <b>04</b></span>",
-      "css": ".ds-chip{display:inline-flex;align-items:center;gap:9px;border:1px solid #0B0D10;border-radius:2px;background:#0B0D10;color:#F4F6F3;padding:6px 9px;font:560 12px/1.4 'Geist Mono',monospace;letter-spacing:.05em}.ds-chip b{color:#00C6D7;font-weight:700}"
-    },
-    {
-      "name": "Signal Navigation",
+      "name": "Editorial Navigation",
       "kind": "nav",
-      "description": "细线顶部导航和受控活动刻度。",
-      "html": "<nav class=\"ds-nav\"><strong>FGL</strong><a class=\"is-active\" href=\"#\">BLOG</a><a href=\"#\">ABOUT</a><a href=\"#\">EDITOR</a></nav>",
-      "css": ".ds-nav{display:flex;align-items:center;gap:24px;border-top:1px solid #0B0D10;border-bottom:1px solid #0B0D10;padding:14px 2px;color:#0B0D10;font:560 12px/1.4 'Geist Mono',monospace;letter-spacing:.08em}.ds-nav strong{margin-right:auto;font:760 22px/1 Geist,sans-serif}.ds-nav a{position:relative;color:inherit;text-decoration:none}.ds-nav a:hover:after,.ds-nav a.is-active:after{content:'';position:absolute;left:0;right:0;bottom:-15px;height:3px;background:#0B0D10;box-shadow:2px 0 #E2007A,-2px 0 #00C6D7}.ds-nav a:focus-visible{outline:2px solid #00646D;outline-offset:4px}"
+      "description": "以社团中文标识开头、中文名称与英文代码并列的目录导航。",
+      "html": "<nav class=\"ds-nav\"><strong>未来游戏研究所</strong><a class=\"is-active\" href=\"#\">首页 <small>TOP</small></a><a href=\"#\">资讯 <small>INFO</small></a><a href=\"#\">项目 <small>WORKS</small></a><a href=\"#\">研究所 <small>ABOUT</small></a><a href=\"#\">联系 <small>CONTACT</small></a></nav>",
+      "css": ".ds-nav{display:flex;align-items:center;gap:24px;border-bottom:1px solid #090909;padding:14px 0;color:#090909}.ds-nav strong{margin-right:auto;font:700 18px/1 'Songti SC',serif}.ds-nav a{color:inherit;text-decoration:none}.ds-nav small{display:block;font:560 10px/1.4 'Geist Mono',monospace;letter-spacing:.08em}.ds-nav a.is-active{text-shadow:1px 0 #E2007A,-1px 0 #00C6D7}.ds-nav a:focus-visible{outline:2px solid #00646D;outline-offset:4px}"
     },
     {
       "name": "Nixie Boot Sequence",
       "kind": "custom",
-      "description": "唯一使用暖色辉光的短暂加载仪式。",
-      "html": "<div class=\"ds-nixie\" role=\"status\" aria-label=\"Future Game Laboratory 正在启动\"><span>F</span><span>G</span><span>L</span><small>00:00:01</small></div>",
-      "css": ".ds-nixie{display:flex;align-items:center;gap:8px;background:#0D1014;color:#FF7A1A;padding:24px;font:600 36px/1 'Geist Mono',monospace}.ds-nixie span{display:grid;place-items:center;width:48px;height:68px;border:1px solid #5A2C14;border-radius:18px;text-shadow:0 0 8px rgba(255,122,26,.85),0 0 24px rgba(255,122,26,.38)}.ds-nixie small{margin-left:12px;color:#A8AFB8;font-size:11px;letter-spacing:.08em}@media(prefers-reduced-motion:reduce){.ds-nixie *{animation:none!important;transition:none!important}}"
+      "description": "唯一使用暖色辉光的短暂启动动画。",
+      "html": "<div class=\"ds-nixie\" role=\"status\" aria-label=\"未来游戏研究所正在启动\"><span>0</span><span>0</span><span>1</span><small>00:00:01</small></div>",
+      "css": ".ds-nixie{display:flex;align-items:center;gap:8px;background:#090909;color:#FF7A1A;padding:24px;font:600 36px/1 'Geist Mono',monospace}.ds-nixie span{display:grid;place-items:center;width:48px;height:68px;border:1px solid #5A2C14;border-radius:18px;text-shadow:0 0 8px rgba(255,122,26,.85),0 0 24px rgba(255,122,26,.38)}.ds-nixie small{margin-left:12px;color:#B3B3B3;font-size:11px;letter-spacing:.08em}@media(prefers-reduced-motion:reduce){.ds-nixie *{animation:none!important;transition:none!important}}"
     }
   ],
   "narrative": {
-    "northStar": "未校准的未来信号",
-    "overview": "界面像一台正在运行、尚未完全校准的研究仪器。首页允许不对称的大尺度构图，正文与编辑器则回到克制、稳定的工作表面；辉光管加载器是唯一的暖色启动仪式。",
-    "keyCharacteristics": ["冷白画布与碳黑结构", "青/洋红色差信号", "不对称首页与稳定长文", "小圆角和平面表面", "中等动效与完整减弱动效"],
-    "rules": [
-      { "name": "The Signal Budget Rule", "body": "每个视口只允许一个主要色差信号。", "section": "colors" },
-      { "name": "The Warmth Is Temporal Rule", "body": "琥珀橙只在系统正在启动的时间段出现。", "section": "colors" },
-      { "name": "The Two Voices Rule", "body": "显示字负责观测系统，正文负责研究者。", "section": "typography" },
-      { "name": "The Flat Until Touched Rule", "body": "表面静止时平面，交互或状态变化才出现影子。", "section": "elevation" }
+    "northStar": "来自未来的白色标题页",
+    "overview": "界面是一份可阅读的社团刊物。纯白画布、中文书宋标题、坚定的黑色结构与少量套色偏移构成主体；首页以品牌主视觉、Information 时间流和 Works/About/Contact 侧栏组织真实内容。",
+    "keyCharacteristics": [
+      "真正的纯白画布",
+      "中文书宋标题",
+      "Information 主栏与栏目侧栏",
+      "稀少的青洋红套色",
+      "自然主题揭示",
+      "001 辉光管启动动画"
     ],
-    "dos": ["Do 用不对称首页构图表达品牌，用稳定阅读列承载长文。", "Do 为所有动效提供 prefers-reduced-motion 替代。", "Do 让辉光管加载器可跳过、短暂且只出现暖色时间信号。"],
-    "donts": ["Don't 做成通用 SaaS 落地页模板。", "Don't 使用纯黑满屏霓虹的廉价赛博朋克视觉。", "Don't 复刻 Steins;Gate 专有素材。", "Don't 使用玻璃拟态、渐变文字和无意义技术图表。"]
+    "rules": [
+      {
+        "name": "True White Rule",
+        "body": "浅色主题的主要画布和表面必须是 #FFFFFF。",
+        "section": "colors"
+      },
+      {
+        "name": "One Brand Mark Rule",
+        "body": "只使用社团提供的中文标识，不创造 FGL 字母主视觉。",
+        "section": "composition"
+      },
+      {
+        "name": "Motion In Words Rule",
+        "body": "戏剧性优先发生在文字切换与遮罩显影中。",
+        "section": "motion"
+      },
+      {
+        "name": "Warmth Is Temporal Rule",
+        "body": "琥珀橙只在辉光管启动期间出现。",
+        "section": "colors"
+      }
+    ],
+    "dos": [
+      "Do 用标题、留白、细线和列表组织信息。",
+      "Do 为所有动效提供 prefers-reduced-motion 替代。",
+      "Do 把编辑器固定在 /edits/ 并放在主导航之外。"
+    ],
+    "donts": [
+      "Don't 使用超大 FGL 字母或技术仪表盘。",
+      "Don't 添加 Discography、Music 或 SNS。",
+      "Don't 使用米白画布、渐变文字、玻璃拟态或持续霓虹。",
+      "Don't 复刻参考站点的专有素材。"
+    ]
   }
 }
