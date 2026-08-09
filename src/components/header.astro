@@ -8,13 +8,13 @@ const isActive = (href: string) =>
   href === '/'
     ? pathname === '/'
     : pathname === href || pathname.startsWith(`${href}/`)
-const logo = withBase('/static/future-game-institute.png')
+const logo = withBase('/static/future-game-laboratory-lockup.png')
 ---
 
 <div class="site-nav-bar">
   <Link href="/" class="brand-lockup" aria-label="未来游戏研究所首页">
     <span class="brand-logo-window" aria-hidden="true">
-      <img src={logo} alt="" width="225" height="225" />
+      <img src={logo} alt="" width="225" height="65" />
     </span>
   </Link>
 
@@ -55,7 +55,7 @@ const logo = withBase('/static/future-game-institute.png')
 <dialog class="site-menu" id="site-menu" aria-label="网站导航">
   <header class="site-menu__header">
     <span class="site-menu__logo" aria-hidden="true">
-      <img src={logo} alt="" width="225" height="225" />
+      <img src={logo} alt="" width="225" height="65" />
     </span>
     <button id="site-menu-close" type="button" aria-label="关闭导航">
       <span>CLOSE</span>
@@ -102,19 +102,14 @@ const logo = withBase('/static/future-game-institute.png')
   }
 
   .brand-logo-window {
-    position: relative;
     display: block;
     width: 11.75rem;
-    height: 3.35rem;
-    overflow: hidden;
+    aspect-ratio: 225 / 65;
   }
 
   .brand-logo-window img {
-    position: absolute;
-    top: -3.62rem;
-    left: 0;
-    width: 11.75rem;
-    max-width: none;
+    display: block;
+    width: 100%;
     height: auto;
     filter: var(--brand-logo-filter, none);
   }
@@ -273,17 +268,14 @@ const logo = withBase('/static/future-game-institute.png')
   }
 
   .site-menu__logo {
-    position: relative;
     display: block;
     width: 10.5rem;
-    height: 3.25rem;
-    overflow: hidden;
+    aspect-ratio: 225 / 65;
   }
 
   .site-menu__logo img {
-    position: absolute;
-    top: -3.25rem;
-    width: 10.5rem;
+    display: block;
+    width: 100%;
     height: auto;
     filter: none;
   }
@@ -375,12 +367,6 @@ const logo = withBase('/static/future-game-institute.png')
 
   @media (max-width: 520px) {
     .brand-logo-window {
-      width: 9.4rem;
-      height: 2.8rem;
-    }
-
-    .brand-logo-window img {
-      top: -2.9rem;
       width: 9.4rem;
     }
 

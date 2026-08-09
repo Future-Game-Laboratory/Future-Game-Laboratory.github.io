@@ -116,7 +116,7 @@ components:
 - **Buttons：** 4px 圆角，黑白反色。悬停可出现 1–2px 青/洋红套色偏移，但不持续发光。
 - **Article Lists：** 使用上下边线和图文节奏，不堆叠重复圆角卡片。
 - **Fields：** 纯白表面、黑色文字、1px 边线与清晰焦点环，最小高度 44px。
-- **Brand Mark：** 只使用 `future-game-institute.png` 提供的「未来游戏研究所」标识。
+- **Brand Mark：** 页眉使用社团提供的横向 `future-game-laboratory-lockup.png` 标识并保持完整比例，不再裁切方形素材；About 页面仍可使用 `future-game-institute.png`。
 - **Nixie Loader：** 背景固定为 `#FFFFFF`，八枚独立细长管体组成两位整数和六位小数；除管体和小数点外不显示标题、状态、轨道或跳过按钮。
 
 ## 7. Do / Don't

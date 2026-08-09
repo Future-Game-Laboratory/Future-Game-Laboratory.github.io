@@ -109,6 +109,7 @@ test('homepage keeps the cover and a single announcement entry point', () => {
   const footer = homepage.match(
     /<footer class="site-footer"[\s\S]*?<\/footer>/,
   )?.[0]
+  assert.match(homepage, /\/static\/future-game-laboratory-lockup\.png/)
   assert.match(homepage, /\/static\/forked-light-cover\.webp/)
   assert.match(homepage, /class="announcement-panel"/)
   assert.match(homepage, /data-title-reveal/)
