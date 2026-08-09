@@ -159,9 +159,23 @@
     {
       "name": "Editorial Navigation",
       "kind": "nav",
-      "description": "以社团中文标识开头、只显示全大写英文栏目名称的纯白目录导航。",
-      "html": "<nav class=\"ds-nav\"><strong>未来游戏研究所</strong><a class=\"is-active\" href=\"#\">HOME</a><a href=\"#\">INFORMATION</a><a href=\"#\">WORKS</a><a href=\"#\">ABOUT</a><a href=\"#\">CONTACT</a></nav>",
-      "css": ".ds-nav{display:flex;align-items:center;gap:24px;border-bottom:1px solid #090909;background:#fff;padding:14px 0;color:#090909}.ds-nav strong{margin-right:auto;font:700 18px/1 'Songti SC',serif}.ds-nav a{color:inherit;font:700 12px/1 'Geist',sans-serif;letter-spacing:.07em;text-decoration:none}.ds-nav a.is-active{text-shadow:1px 0 #E2007A,-1px 0 #00C6D7}.ds-nav a:focus-visible{outline:2px solid #00646D;outline-offset:4px}"
+      "description": "点击社团横向标识进入首页，其后只显示全大写英文栏目名称的纯白目录导航。",
+      "html": "<nav class=\"ds-nav\"><a class=\"ds-brand\" href=\"/\"><img src=\"/static/future-game-laboratory-lockup.png\" alt=\"未来游戏研究所\"></a><a class=\"is-active\" href=\"/blog/\">NEWS</a><a href=\"/works/\">WORKS</a><a href=\"/about/\">ABOUT</a><a href=\"/contact/\">CONTACT</a></nav>",
+      "css": ".ds-nav{display:flex;align-items:center;gap:24px;border-bottom:1px solid #090909;background:#fff;padding:14px 0;color:#090909}.ds-nav .ds-brand{margin-right:auto;letter-spacing:0}.ds-nav .ds-brand img{display:block;width:188px;height:auto}.ds-nav a{color:inherit;font:700 12px/1 'Geist',sans-serif;letter-spacing:.07em;text-decoration:none}.ds-nav a.is-active{text-shadow:1px 0 #E2007A,-1px 0 #00C6D7}.ds-nav a:focus-visible{outline:2px solid #00646D;outline-offset:4px}"
+    },
+    {
+      "name": "Homepage Poster Carousel",
+      "kind": "custom",
+      "description": "从约定目录读取海报，按文件名自然排序，在窄版固定画框中完整显示并顺序循环。",
+      "html": "<section class=\"ds-carousel\" aria-roledescription=\"carousel\"><figure><img src=\"/static/carousel/01-poster.webp\" alt=\"作品海报\"></figure><div><button aria-label=\"上一张海报\">←</button><span>01 / 03</span><button aria-label=\"下一张海报\">→</button></div></section>",
+      "css": ".ds-carousel{width:min(100%,54rem);margin-inline:auto}.ds-carousel figure{aspect-ratio:16/10;margin:0;border-block:1px solid #090909;background:#fff}.ds-carousel img{width:100%;height:100%;object-fit:contain}.ds-carousel>div{display:flex;min-height:44px;align-items:center;justify-content:space-between;border-bottom:1px solid #B8BEC4;font:560 11px/1.4 'Geist Mono',monospace}.ds-carousel button{min-width:44px;min-height:44px;border:0;background:#fff;color:#090909}"
+    },
+    {
+      "name": "Contact Form",
+      "kind": "form",
+      "description": "单列窄版邮件表单；纯白字段、必填标记与全宽黑色发送按钮延续参考图的直接感。",
+      "html": "<form class=\"ds-contact\"><label>你的姓名 *<input name=\"name\" required></label><label>电子邮件地址 *<input type=\"email\" name=\"email\" required></label><label>你的咨询 *<textarea name=\"message\" required></textarea></label><button type=\"submit\">发送</button></form>",
+      "css": ".ds-contact{display:grid;max-width:48rem;gap:22px}.ds-contact label{display:grid;gap:8px;font:600 15px/1.5 system-ui,sans-serif}.ds-contact input,.ds-contact textarea{min-height:44px;border:1px solid #74787C;border-radius:2px;background:#fff;color:#090909;padding:12px 14px}.ds-contact textarea{min-height:256px}.ds-contact button{min-height:50px;border:1px solid #090909;border-radius:2px;background:#090909;color:#fff;font-weight:700}"
     },
     {
       "name": "Nixie Boot Sequence",
@@ -173,11 +187,13 @@
   ],
   "narrative": {
     "northStar": "来自未来的白色标题页",
-    "overview": "界面是一份可阅读的社团刊物。首页只保留完整作品封面与 Information 公告流；Works、About、Contact 由全站导航进入，不在首页重复出现。",
+    "overview": "界面是一份可阅读的社团刊物。首页在 64rem 窄版外框内保留顺序海报轮播、News 动态流与右下角联系方式；Works、About 与 Contact 表单由全站导航进入。",
     "keyCharacteristics": [
       "真正的纯白画布",
       "中文书宋标题",
-      "单一封面与公告入口",
+      "文件夹驱动的顺序海报轮播",
+      "接近 Notion / 飞书文档的窄版页宽",
+      "News 作为首页唯一内容入口",
       "稀少的青洋红套色",
       "全大写英文导航与标题",
       "XX.XXXXXX 八管冷阴极启动动画"
@@ -191,6 +207,11 @@
       {
         "name": "One Brand Mark Rule",
         "body": "只使用社团提供的中文标识，不创造 FGL 字母主视觉。",
+        "section": "composition"
+      },
+      {
+        "name": "Narrow Reading Frame Rule",
+        "body": "全站外框不超过 64rem，海报轮播不超过 54rem，长文继续限制在 72ch 内。",
         "section": "composition"
       },
       {

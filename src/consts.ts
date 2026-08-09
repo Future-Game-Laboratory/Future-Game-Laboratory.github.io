@@ -12,12 +12,8 @@ export const SITE: Site = {
 
 export const NAV_LINKS: SocialLink[] = [
   {
-    href: '/',
-    label: 'HOME',
-  },
-  {
     href: '/blog',
-    label: 'INFORMATION',
+    label: 'NEWS',
   },
   {
     href: '/works',
@@ -34,8 +30,10 @@ export const NAV_LINKS: SocialLink[] = [
 ]
 
 // 联系方式配置：填写后显示；SNS 链接留空时不会渲染对应按钮。
+// email 同时作为首页明文邮箱和默认 FormSubmit 收件人；formEndpoint 可覆盖为自有表单服务地址。
 export const CONTACT = {
   email: '',
+  formEndpoint: '',
   socials: [
     {
       label: '小红书',

@@ -1,4 +1,6 @@
 ---
+import CoverCarousel from '@/components/cover-carousel.astro'
+import HomeContact from '@/components/home-contact.astro'
 import Link from '@/components/link.astro'
 import PageHead from '@/components/page-head.astro'
 import TitleReveal from '@/components/title-reveal.astro'
@@ -7,29 +9,44 @@ import Layout from '@/layouts/layout.astro'
 import { getRecentPosts } from '@/lib/data-utils'
 import { withBase } from '@/lib/paths'
 import { formatDate } from '@/lib/utils'
+import { readdir } from 'node:fs/promises'
+import { resolve } from 'node:path'
 
 const announcements = await getRecentPosts(SITE.featuredPostCount)
-const cover = withBase('/static/forked-light-cover.webp')
+const carouselDirectory = resolve(process.cwd(), 'public/static/carousel')
+const carouselFiles = (
+  await readdir(carouselDirectory).catch((error: unknown) => {
+    if (error instanceof Error && 'code' in error && error.code === 'ENOENT') {
+      return []
+    }
+
+    throw error
+  })
+)
+  .filter((file) => /\.(?:avif|jpe?g|png|webp)$/i.test(file))
+  .sort((left, right) =>
+    left.localeCompare(right, 'zh-CN', { numeric: true, sensitivity: 'base' }),
+  )
+const carouselSlides = carouselFiles.map((file, index) => ({
+  src: withBase(`/static/carousel/${encodeURIComponent(file)}`),
+  alt:
+    file === '01-forked-light-cover.webp'
+      ? '《歧光》封面：废墟中的两个人影望向贯穿天地的光'
+      : `未来游戏研究所海报 ${String(index + 1).padStart(2, '0')}`,
+}))
 ---
 
 <Layout class="home-shell">
   <PageHead slot="head" title="未来游戏研究所" />
 
   <div class="front-page">
-    <figure class="home-cover">
-      <img
-        src={cover}
-        width="2200"
-        height="1401"
-        alt="《歧光》封面：废墟中的两个人影望向贯穿天地的光"
-      />
-    </figure>
+    <CoverCarousel slides={carouselSlides} />
 
     <section class="announcement-panel" aria-labelledby="announcement-title">
       <header class="announcement-heading">
         <div>
-          <TitleReveal text="INFORMATION" id="announcement-title" />
-          <p>ANNOUNCEMENTS / SITE UPDATES</p>
+          <TitleReveal text="NEWS" id="announcement-title" />
+          <p>INSTITUTE UPDATES / ACTIVITY LOG</p>
         </div>
         <Link href="/blog">VIEW ALL <span aria-hidden="true">→</span></Link>
       </header>
@@ -60,6 +77,8 @@ const cover = withBase('/static/forked-light-cover.webp')
         )
       }
     </section>
+
+    <HomeContact />
   </div>
 </Layout>
 
@@ -71,22 +90,8 @@ const cover = withBase('/static/forked-light-cover.webp')
       clamp(5rem, 9vw, 9rem);
   }
 
-  .home-cover {
-    margin: 0;
-    overflow: hidden;
-    border-top: 1px solid var(--foreground);
-    border-bottom: 1px solid var(--foreground);
-    background: #090b12;
-  }
-
-  .home-cover img {
-    display: block;
-    width: 100%;
-    height: auto;
-  }
-
   .announcement-panel {
-    max-width: 66rem;
+    max-width: 58rem;
     margin-top: clamp(4rem, 9vw, 9rem);
   }
 
@@ -101,7 +106,7 @@ const cover = withBase('/static/forked-light-cover.webp')
 
   .announcement-heading :global(h1) {
     font-family: var(--font-display);
-    font-size: clamp(2.6rem, 7vw, 5.6rem);
+    font-size: clamp(2.6rem, 7vw, 5rem);
     font-weight: 760;
     line-height: 0.9;
     letter-spacing: -0.04em;

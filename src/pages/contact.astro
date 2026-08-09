@@ -1,12 +1,16 @@
 ---
-import Link from '@/components/link.astro'
 import PageHead from '@/components/page-head.astro'
 import TitleReveal from '@/components/title-reveal.astro'
 import { CONTACT } from '@/consts'
 import Layout from '@/layouts/layout.astro'
-import { Icon } from 'astro-icon/components'
 
-const socialLinks = CONTACT.socials.filter((channel) => channel.href.trim())
+const email = CONTACT.email.trim()
+const formAction =
+  CONTACT.formEndpoint.trim() ||
+  (email ? `https://formsubmit.co/${encodeURIComponent(email)}` : '')
+const formReady = Boolean(formAction)
+const sent = Astro.url.searchParams.get('sent') === '1'
+const nextUrl = new URL('/contact/?sent=1', Astro.site).toString()
 ---
 
 <Layout class="max-w-5xl">
@@ -20,52 +24,111 @@ const socialLinks = CONTACT.socials.filter((channel) => channel.href.trim())
     <header class="contact-heading">
       <TitleReveal text="CONTACT" />
     </header>
-    <p class="contact-intro">
-      研究合作、内容纠错、活动邀请与加入意向，都可以通过以下方式与未来游戏研究所联系。
-    </p>
 
-    <section aria-labelledby="email-heading">
-      <h2 id="email-heading">EMAIL</h2>
-      {
-        CONTACT.email ? (
-          <Link class="contact-email" href={`mailto:${CONTACT.email}`} external>
-            {CONTACT.email}
-          </Link>
-        ) : (
-          <p class="contact-unconfigured">邮箱暂未配置。</p>
-        )
-      }
-    </section>
+    <div class="contact-intro">
+      <p>感谢你访问未来游戏研究所。</p>
+      <p>研究合作、内容纠错、活动邀请、加入意向与其他咨询，请使用下方表单。</p>
+      <p><span aria-hidden="true">*</span> 表示必填项。</p>
+    </div>
 
     {
-      socialLinks.length > 0 && (
-        <section aria-labelledby="sns-heading">
-          <h2 id="sns-heading">SNS</h2>
-          <nav class="social-buttons" aria-label="社交平台">
-            {socialLinks.map((channel) => (
-              <Link
-                href={channel.href}
-                external
-                class="social-button"
-                aria-label={channel.label}
-                title={channel.label}
-              >
-                <Icon name={channel.icon} aria-hidden="true" />
-              </Link>
-            ))}
-          </nav>
-        </section>
+      sent && (
+        <p class="contact-result" role="status">
+          信息已经发送。感谢你的来信，我们会在阅读后回复。
+        </p>
       )
     }
 
-    <p class="contact-note">请不要通过公开平台发送不应公开的个人信息。</p>
+    <form
+      class="contact-form"
+      action={formReady ? formAction : undefined}
+      method="POST"
+      accept-charset="UTF-8"
+    >
+      <input type="hidden" name="_subject" value="未来游戏研究所网站联系表单" />
+      <input type="hidden" name="_template" value="table" />
+      <input type="hidden" name="_next" value={nextUrl} />
+      <label class="contact-honeypot" aria-hidden="true">
+        请勿填写
+        <input type="text" name="_honey" tabindex="-1" autocomplete="off" />
+      </label>
+
+      <label>
+        <span>你的姓名 <i aria-hidden="true">*</i></span>
+        <input
+          type="text"
+          name="name"
+          autocomplete="name"
+          maxlength="80"
+          required
+        />
+      </label>
+
+      <label>
+        <span>电子邮件地址 <i aria-hidden="true">*</i></span>
+        <input
+          type="email"
+          name="email"
+          autocomplete="email"
+          maxlength="160"
+          required
+        />
+      </label>
+
+      <label>
+        <span>公司名称 / 组织名称</span>
+        <input
+          type="text"
+          name="organization"
+          autocomplete="organization"
+          maxlength="120"
+        />
+      </label>
+
+      <label>
+        <span>电话号码</span>
+        <input
+          type="tel"
+          name="phone"
+          autocomplete="tel"
+          inputmode="tel"
+          maxlength="40"
+        />
+      </label>
+
+      <label>
+        <span>你的咨询 <i aria-hidden="true">*</i></span>
+        <textarea name="message" rows="12" maxlength="4000" required></textarea>
+      </label>
+
+      {
+        !formReady && (
+          <p class="contact-configuration" id="contact-configuration">
+            表单收件地址正在配置中。
+          </p>
+        )
+      }
+
+      <button
+        class="signal-control"
+        type="submit"
+        disabled={!formReady}
+        aria-describedby={!formReady ? 'contact-configuration' : undefined}
+      >
+        发送
+      </button>
+    </form>
+
+    <p class="contact-note">
+      请不要提交密码、访问令牌、证件号码或其他不应通过普通电子邮件传输的敏感信息。
+    </p>
   </article>
 </Layout>
 
 <style>
   .contact-document {
     width: 100%;
-    max-width: 60rem;
+    max-width: 48rem;
     padding-bottom: clamp(3rem, 8vw, 7rem);
   }
 
@@ -83,80 +146,106 @@ const socialLinks = CONTACT.socials.filter((channel) => channel.href.trim())
   }
 
   .contact-intro {
-    max-width: 56rem;
-    margin-top: 2.5rem;
-    font-size: 1.05rem;
-    line-height: 1.9;
+    display: grid;
+    gap: 0.35rem;
+    margin-top: clamp(2rem, 5vw, 3.5rem);
+    font-size: 1rem;
+    line-height: 1.8;
   }
 
-  .contact-document section {
-    margin-top: clamp(3rem, 7vw, 5.5rem);
+  .contact-intro p:last-child,
+  .contact-intro p:last-child span,
+  .contact-form i {
+    color: var(--signal-magenta-ink);
   }
 
-  .contact-document h2 {
-    margin-bottom: 1.25rem;
-    font-size: 1.25rem;
-    font-weight: 700;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
+  .contact-result,
+  .contact-configuration {
+    border: 1px solid var(--foreground);
+    background: var(--background);
+    padding: 0.9rem 1rem;
+    font-size: 0.9rem;
+    line-height: 1.6;
   }
 
-  .contact-email {
-    display: inline-block;
-    font-size: clamp(1.2rem, 3vw, 1.8rem);
-    font-weight: 650;
-    text-decoration: underline;
-    text-underline-offset: 0.35rem;
-    overflow-wrap: anywhere;
+  .contact-result {
+    margin-top: 2rem;
+    box-shadow:
+      2px 2px 0 var(--signal-magenta),
+      -2px -2px 0 var(--signal-cyan);
   }
 
-  .contact-unconfigured,
-  .contact-note {
+  .contact-form {
+    display: grid;
+    gap: 1.4rem;
+    margin-top: clamp(3rem, 7vw, 5rem);
+  }
+
+  .contact-form label:not(.contact-honeypot) {
+    display: grid;
+    gap: 0.5rem;
+  }
+
+  .contact-form label > span {
+    color: var(--foreground);
+    font-size: 0.95rem;
+    font-weight: 600;
+  }
+
+  .contact-form i {
+    font-style: normal;
+  }
+
+  .contact-form input,
+  .contact-form textarea {
+    width: 100%;
+    border-color: #74787c;
+    border-radius: 2px;
+    padding: 0.75rem 0.85rem;
+  }
+
+  .contact-form textarea {
+    min-height: 16rem;
+    resize: vertical;
+    line-height: 1.65;
+  }
+
+  .contact-honeypot {
+    position: absolute;
+    left: -10000px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+
+  .contact-configuration {
     color: var(--muted-foreground);
   }
 
-  .social-buttons {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.75rem;
-  }
-
-  .social-button {
-    display: grid;
-    width: 3rem;
-    height: 3rem;
-    place-items: center;
-    border: 1px solid var(--foreground);
-    border-radius: 50%;
-    transition:
-      transform 160ms var(--ease-signal),
-      background-color 160ms var(--ease-signal),
-      color 160ms var(--ease-signal),
-      box-shadow 160ms var(--ease-signal);
-  }
-
-  .social-button :global(svg) {
-    width: 1.25rem;
-    height: 1.25rem;
-  }
-
-  .social-button:hover {
-    transform: translateY(-2px);
+  .contact-form button {
+    min-height: 3.15rem;
+    border-color: var(--foreground);
+    border-radius: 2px;
     background: var(--foreground);
     color: var(--background);
-    box-shadow: var(--signal-shadow);
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  .contact-form button:disabled {
+    border-color: var(--border);
+    background: var(--muted);
+    color: var(--muted-foreground);
+    cursor: not-allowed;
   }
 
   .contact-note {
-    margin-top: clamp(4rem, 10vw, 8rem);
+    margin-top: clamp(3rem, 8vw, 6rem);
     border-top: 1px solid var(--border);
     padding-top: 1rem;
-    font-size: 0.85rem;
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .social-button:hover {
-      transform: none;
-    }
+    color: var(--muted-foreground);
+    font-size: 0.82rem;
+    line-height: 1.7;
   }
 </style>

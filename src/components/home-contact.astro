@@ -1,0 +1,125 @@
+---
+import { CONTACT } from '@/consts'
+import { Icon } from 'astro-icon/components'
+
+const email = CONTACT.email.trim()
+const socialLinks = CONTACT.socials
+  .map((channel) => ({ ...channel, href: channel.href.trim() }))
+  .filter((channel) => channel.href)
+const hasChannels = Boolean(email || socialLinks.length)
+---
+
+{
+  hasChannels && (
+    <aside class="home-contact" aria-labelledby="home-contact-title">
+      <p id="home-contact-title">CONTACT</p>
+      <div class="home-contact__channels">
+        {email && (
+          <a class="home-contact__email" href={`mailto:${email}`}>
+            {email}
+          </a>
+        )}
+        {socialLinks.length > 0 && (
+          <nav class="home-contact__socials" aria-label="社交平台">
+            {socialLinks.map((channel) => (
+              <a
+                href={channel.href}
+                target="_blank"
+                rel="noreferrer noopener"
+                aria-label={channel.label}
+                title={channel.label}
+              >
+                <Icon name={channel.icon} aria-hidden="true" />
+              </a>
+            ))}
+          </nav>
+        )}
+      </div>
+    </aside>
+  )
+}
+
+<style>
+  .home-contact {
+    display: grid;
+    width: fit-content;
+    max-width: 100%;
+    justify-items: end;
+    gap: 0.85rem;
+    margin: clamp(4rem, 9vw, 8rem) 0 0 auto;
+    text-align: right;
+  }
+
+  .home-contact > p {
+    color: var(--muted-foreground);
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+  }
+
+  .home-contact__channels,
+  .home-contact__socials {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.75rem;
+  }
+
+  .home-contact__email {
+    color: var(--foreground);
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-decoration: underline;
+    text-underline-offset: 0.3rem;
+    overflow-wrap: anywhere;
+  }
+
+  .home-contact__socials a {
+    display: grid;
+    width: 2.65rem;
+    height: 2.65rem;
+    place-items: center;
+    border: 1px solid var(--foreground);
+    border-radius: 50%;
+    color: var(--foreground);
+    transition:
+      transform 160ms var(--ease-signal),
+      background-color 160ms var(--ease-signal),
+      color 160ms var(--ease-signal),
+      box-shadow 160ms var(--ease-signal);
+  }
+
+  .home-contact__socials a:hover {
+    transform: translateY(-2px);
+    background: var(--foreground);
+    color: var(--background);
+    box-shadow: var(--signal-shadow);
+  }
+
+  .home-contact__socials :global(svg) {
+    width: 1.1rem;
+    height: 1.1rem;
+  }
+
+  @media (max-width: 640px) {
+    .home-contact {
+      justify-items: start;
+      margin-right: auto;
+      margin-left: 0;
+      text-align: left;
+    }
+
+    .home-contact__channels,
+    .home-contact__socials {
+      justify-content: flex-start;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .home-contact__socials a:hover {
+      transform: none;
+    }
+  }
+</style>

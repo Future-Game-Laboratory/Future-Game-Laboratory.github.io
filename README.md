@@ -42,13 +42,18 @@ npm run preview
 
 ## 联系方式
 
-在 `src/consts.ts` 的 `CONTACT` 中配置公开邮箱、小红书、X 和哔哩哔哩链接：
+在 `src/consts.ts` 的 `CONTACT` 中配置表单收件地址、公开邮箱、小红书、X 和哔哩哔哩链接：
 
-- 邮箱会在联系页单独以明文显示。
-- SNS 链接填写后显示对应图标按钮；留空则不渲染。
-- 未提供真实邮箱前，联系页会明确显示“邮箱暂未配置”，不会使用虚构地址。
+- `email` 会在首页右下角明文显示，并作为默认 FormSubmit 收件地址。
+- `formEndpoint` 可以覆盖为自有表单服务地址；两者都为空时，Contact 表单保留但发送按钮禁用。
+- SNS 链接填写后在首页显示对应图标按钮；留空则不渲染。
+- 默认 FormSubmit 第一次使用时，需要在收件邮箱完成一次激活确认。
+
+完整配置说明见 [docs/CONTACT.md](docs/CONTACT.md)。
 
 About 页正文位于 `src/content/pages/about.md`，可直接使用 Markdown 维护。
+
+首页轮播图放在 `public/static/carousel/`，按文件名自然排序。完整说明见 [docs/CAROUSEL.md](docs/CAROUSEL.md)。
 
 ## 部署
 

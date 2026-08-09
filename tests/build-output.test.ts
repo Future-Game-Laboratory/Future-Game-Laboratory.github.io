@@ -104,36 +104,60 @@ test('generated pages keep the single white theme and omit breadcrumbs', () => {
   }
 })
 
-test('homepage keeps the cover and a single announcement entry point', () => {
+test('homepage keeps the ordered carousel, NEWS entry point, and lean footer', () => {
   const homepage = readFileSync(join(dist, 'index.html'), 'utf8')
   const footer = homepage.match(
     /<footer class="site-footer"[\s\S]*?<\/footer>/,
   )?.[0]
   assert.match(homepage, /\/static\/future-game-laboratory-lockup\.png/)
-  assert.match(homepage, /\/static\/forked-light-cover\.webp/)
+  assert.match(homepage, /<a[^>]*href="\/"[^>]*class="[^"]*brand-lockup/)
+  assert.match(homepage, /\/static\/carousel\/01-forked-light-cover\.webp/)
+  assert.match(homepage, /data-poster-carousel/)
   assert.match(homepage, /class="announcement-panel"/)
   assert.match(homepage, /data-title-reveal/)
   assert.ok(footer)
   assert.doesNotMatch(footer, /<nav|href=/)
   assert.doesNotMatch(footer, /持续研究|公开过程/)
-  for (const label of ['HOME', 'INFORMATION', 'WORKS', 'ABOUT', 'CONTACT']) {
+  for (const label of ['NEWS', 'WORKS', 'ABOUT', 'CONTACT']) {
     assert.match(homepage, new RegExp(`>${label}<`))
   }
+  assert.doesNotMatch(homepage, />HOME</)
+  assert.doesNotMatch(homepage, />INFORMATION</)
+  assert.doesNotMatch(homepage, /class="home-contact"/)
   assert.doesNotMatch(
     homepage,
     /class="(?:front-hero|front-directory|front-sidebar|front-closing)"/,
   )
 })
 
-test('contact hides unconfigured SNS links and about renders Markdown', () => {
+test('contact renders the email form while unconfigured channels stay hidden', () => {
   const contact = readFileSync(join(dist, 'contact/index.html'), 'utf8')
   const about = readFileSync(join(dist, 'about/index.html'), 'utf8')
+  const form = contact.match(/<form[\s\S]*?>/)?.[0]
+
+  assert.ok(form)
+  assert.match(form, /method="POST"/)
+  assert.doesNotMatch(form, /action=/)
+  for (const field of ['name', 'email', 'organization', 'phone', 'message']) {
+    assert.match(contact, new RegExp(`name="${field}"`))
+  }
+  assert.match(contact, /<button[^>]*disabled[^>]*>/)
+  assert.match(contact, /表单收件地址正在配置中/)
   assert.doesNotMatch(contact, /href=""/)
   assert.doesNotMatch(contact, /class="social-buttons"/)
   assert.match(about, /data-title-text="ABOUT"/)
   assert.match(about, /<h2 id="institute">INSTITUTE<\/h2>/)
   assert.match(about, /<h2 id="members">MEMBERS<\/h2>/)
   assert.match(about, /<h2 id="links">LINKS<\/h2>/)
+})
+
+test('compiled styles use the narrow document-width frame', () => {
+  const styles = walk(dist)
+    .filter((file) => file.endsWith('.css'))
+    .map((file) => readFileSync(file, 'utf8'))
+    .join('\n')
+
+  assert.match(styles, /--site-max:\s*64rem/)
 })
 
 test('template author and draft template posts are not generated', () => {
