@@ -210,14 +210,9 @@ const logo = withBase('/static/future-game-laboratory-lockup.png')
     padding: 0;
     cursor: pointer;
     transition:
-      transform 100ms var(--ease-signal),
       background-color 160ms var(--ease-signal),
       color 160ms var(--ease-signal),
       box-shadow 160ms var(--ease-signal);
-  }
-
-  .menu-toggle:active {
-    transform: scale(0.96);
   }
 
   .menu-trigger {
@@ -282,24 +277,19 @@ const logo = withBase('/static/future-game-laboratory-lockup.png')
     color-scheme: dark;
     padding: 0;
     opacity: 0;
-    transform: scale(1.025);
-    transform-origin: top right;
     transition:
       opacity 260ms var(--ease-signal),
-      transform 480ms var(--ease-reveal),
       display 260ms allow-discrete,
       overlay 260ms allow-discrete;
   }
 
   .site-menu[open][data-state='open'] {
     opacity: 1;
-    transform: scale(1);
   }
 
   .site-menu[open][data-state='opening'],
   .site-menu[open][data-state='closing'] {
     opacity: 0;
-    transform: scale(1.015);
   }
 
   .site-menu::backdrop {
@@ -328,6 +318,9 @@ const logo = withBase('/static/future-game-laboratory-lockup.png')
   .site-menu__header {
     height: var(--header-height);
     border-bottom: 1px solid #3d3d3d;
+    padding-inline-end: calc(
+      var(--site-gutter) + var(--menu-scrollbar-compensation, 0px)
+    );
   }
 
   .site-menu__logo {
@@ -455,10 +448,6 @@ const logo = withBase('/static/future-game-laboratory-lockup.png')
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .site-menu {
-      transform: none;
-    }
-
     .menu-icon__line {
       transition-duration: 0.01ms;
     }
