@@ -58,6 +58,9 @@ const tubeIndexes = Array.from({ length: 8 }, (_, index) => index)
           ))
         }
       </div>
+      <div class="nixie-loader__chassis" aria-hidden="true">
+        <span class="nixie-loader__chassis-panel" />
+      </div>
     </div>
   </div>
 </div>
@@ -136,7 +139,17 @@ const tubeIndexes = Array.from({ length: 8 }, (_, index) => index)
     transform: scaleY(0.56);
   }
 
+  .nixie-loader__progress {
+    display: grid;
+    width: fit-content;
+    max-width: 100%;
+    justify-items: center;
+    margin-inline: auto;
+  }
+
   .nixie-loader__bank {
+    position: relative;
+    z-index: 2;
     display: flex;
     align-items: flex-start;
     justify-content: center;
@@ -145,8 +158,8 @@ const tubeIndexes = Array.from({ length: 8 }, (_, index) => index)
   }
 
   .nixie-tube {
-    --tube-width: clamp(1.65rem, 5.5vw, 3.45rem);
-    --tube-height: clamp(4.45rem, 12.8vw, 8.65rem);
+    --tube-width: clamp(1.55rem, 5vw, 3.1rem);
+    --tube-height: clamp(4.7rem, 13.2vw, 8.85rem);
     position: relative;
     display: block;
     width: var(--tube-width);
@@ -154,37 +167,37 @@ const tubeIndexes = Array.from({ length: 8 }, (_, index) => index)
     flex: 0 0 var(--tube-width);
     margin-top: clamp(0.35rem, 1.1vw, 0.72rem);
     isolation: isolate;
-    border: 1px solid rgb(86 110 119 / 56%);
-    border-radius: 48% 48% 15% 15% / 10% 10% 5% 5%;
+    border: 1px solid rgb(79 86 87 / 58%);
+    border-radius: 43% 43% 13% 13% / 8% 8% 4% 4%;
     background:
       radial-gradient(
         ellipse at 50% 50%,
-        rgb(255 222 166 / 16%) 0%,
-        rgb(255 166 55 / 8%) 34%,
+        rgb(255 215 153 / 18%) 0%,
+        rgb(255 146 38 / 9%) 36%,
         transparent 66%
       ),
       linear-gradient(
         96deg,
-        rgb(255 255 255 / 92%) 0%,
-        rgb(204 226 231 / 20%) 12%,
-        rgb(255 255 255 / 5%) 34%,
-        rgb(18 119 139 / 8%) 66%,
-        rgb(255 255 255 / 76%) 88%,
-        rgb(166 201 209 / 18%) 100%
+        rgb(255 255 255 / 94%) 0%,
+        rgb(181 196 197 / 22%) 11%,
+        rgb(109 91 82 / 10%) 31%,
+        rgb(83 60 48 / 13%) 62%,
+        rgb(255 255 255 / 74%) 87%,
+        rgb(130 153 155 / 22%) 100%
       ),
       radial-gradient(
         ellipse at 50% 72%,
-        rgb(20 132 151 / 11%),
+        rgb(47 55 55 / 15%),
         transparent 50%
       );
     box-shadow:
-      inset 4px 0 6px rgb(255 255 255 / 84%),
-      inset -3px 0 8px rgb(17 104 121 / 12%),
-      inset 0 -10px 14px rgb(23 88 102 / 9%),
-      inset 0 0 18px rgb(255 153 42 / 8%),
+      inset 4px 0 6px rgb(255 255 255 / 88%),
+      inset -3px 0 8px rgb(48 68 70 / 15%),
+      inset 0 -12px 16px rgb(36 38 36 / 12%),
+      inset 0 0 18px rgb(255 139 31 / 9%),
       0 1px 0 #ffffff,
-      0 0 15px -8px rgb(255 153 42 / 52%),
-      0 13px 18px -15px rgb(8 48 57 / 44%);
+      0 0 16px -8px rgb(255 137 30 / 58%),
+      0 13px 18px -15px rgb(18 26 27 / 52%);
     transform-origin: 50% 100%;
     animation: tube-seat 500ms var(--ease-reveal) both;
     animation-delay: calc(70ms + var(--tube-index) * 28ms);
@@ -193,19 +206,22 @@ const tubeIndexes = Array.from({ length: 8 }, (_, index) => index)
 
   .nixie-tube::before {
     position: absolute;
-    top: clamp(-0.42rem, -0.7vw, -0.25rem);
+    z-index: 1;
+    top: 4.5%;
     left: 50%;
-    width: 24%;
-    height: clamp(0.3rem, 0.9vw, 0.55rem);
-    border: 1px solid rgb(89 115 123 / 46%);
-    border-bottom: 0;
-    border-radius: 50% 50% 18% 18% / 44% 44% 12% 12%;
+    width: 54%;
+    height: 5.5%;
+    border: 1px solid rgb(83 77 69 / 46%);
+    border-radius: 50%;
     background: linear-gradient(
-      90deg,
-      rgb(213 230 234 / 48%),
-      rgb(255 255 255 / 90%) 45%,
-      rgb(142 188 199 / 28%)
+      180deg,
+      rgb(236 220 198 / 54%),
+      rgb(105 88 75 / 38%) 48%,
+      rgb(229 151 60 / 18%)
     );
+    box-shadow:
+      inset 0 1px rgb(255 255 255 / 54%),
+      0 1px 2px rgb(38 30 24 / 22%);
     content: '';
     transform: translateX(-50%);
   }
@@ -213,20 +229,20 @@ const tubeIndexes = Array.from({ length: 8 }, (_, index) => index)
   .nixie-tube::after {
     position: absolute;
     z-index: 5;
-    top: 8%;
+    top: 7%;
     bottom: 16%;
-    left: 11%;
-    width: 12%;
+    left: 10%;
+    width: 11%;
     border-radius: 999px;
     background: linear-gradient(
       to right,
       transparent,
-      rgb(255 255 255 / 88%),
+        rgb(255 255 255 / 94%),
       transparent
     );
     content: '';
     filter: blur(0.35px);
-    opacity: 0.76;
+    opacity: 0.82;
     box-shadow: 0 0 4px rgb(255 255 255 / 44%);
     transform: rotate(2deg);
   }
@@ -261,8 +277,8 @@ const tubeIndexes = Array.from({ length: 8 }, (_, index) => index)
     right: 23%;
     bottom: 8%;
     left: 23%;
-    border-right: 1px solid rgb(0 101 123 / 42%);
-    border-left: 1px solid rgb(0 101 123 / 42%);
+    border-right: 1px solid rgb(60 69 68 / 42%);
+    border-left: 1px solid rgb(60 69 68 / 42%);
   }
 
   .nixie-tube__stem::before {
@@ -271,28 +287,36 @@ const tubeIndexes = Array.from({ length: 8 }, (_, index) => index)
     right: -27%;
     left: -27%;
     height: 8%;
-    border: 1px solid rgb(20 104 122 / 43%);
+    border: 1px solid rgb(75 76 69 / 48%);
     border-radius: 50%;
-    background: rgb(210 231 235 / 34%);
-    box-shadow: 0 0 0 1px rgb(255 255 255 / 24%);
+    background: linear-gradient(
+      180deg,
+      rgb(230 222 203 / 44%),
+      rgb(110 94 75 / 26%)
+    );
+    box-shadow:
+      0 0 0 1px rgb(255 255 255 / 22%),
+      0 1px 2px rgb(42 36 29 / 18%);
     content: '';
   }
 
   .nixie-tube__stem::after {
     position: absolute;
-    right: 18%;
-    bottom: -2%;
-    left: 18%;
-    height: 29%;
-    border-right: 1px solid rgb(15 90 107 / 48%);
-    border-left: 1px solid rgb(15 90 107 / 48%);
+    right: -18%;
+    bottom: 1%;
+    left: -18%;
+    height: 6%;
+    border: 1px solid rgb(72 73 68 / 45%);
+    border-radius: 50%;
+    background: rgb(153 146 129 / 24%);
+    box-shadow: inset 0 1px rgb(255 255 255 / 32%);
     content: '';
   }
 
   .nixie-tube__digits {
     position: absolute;
     z-index: 2;
-    inset: 12% 0 17%;
+    inset: 13% 0 18%;
     display: grid;
     place-items: center;
   }
@@ -302,15 +326,16 @@ const tubeIndexes = Array.from({ length: 8 }, (_, index) => index)
     --digit-y: 0px;
     position: absolute;
     grid-area: 1 / 1;
-    color: rgb(8 76 91 / 2%);
+    color: rgb(44 48 46 / 2%);
     font-family: 'Arial Narrow', 'Helvetica Neue', var(--font-sans);
-    font-size: clamp(1.75rem, 5vw, 3.65rem);
+    font-size: clamp(2.2rem, 6.2vw, 4.9rem);
     font-stretch: condensed;
     font-weight: 300;
     line-height: 1;
-    opacity: 0.2;
-    transform: translate(var(--digit-x), var(--digit-y)) scaleX(0.72);
-    -webkit-text-stroke: 0.68px rgb(31 87 97 / 68%);
+    opacity: 0.16;
+    transform: translate(var(--digit-x), var(--digit-y)) scaleX(0.64)
+      scaleY(1.06);
+    -webkit-text-stroke: 0.68px rgb(62 67 64 / 64%);
     text-shadow: 0 1px 0 rgb(255 255 255 / 44%);
     transition: opacity 40ms linear;
   }
@@ -367,24 +392,25 @@ const tubeIndexes = Array.from({ length: 8 }, (_, index) => index)
     position: absolute;
     z-index: 3;
     inset: 12% 13% 16%;
-    border: 1px solid rgb(25 101 116 / 36%);
+    border: 1px solid rgb(62 70 68 / 34%);
     border-radius: 45% 45% 8% 8% / 8% 8% 4% 4%;
     background-image:
-      repeating-linear-gradient(
-        0deg,
-        transparent 0 4px,
-        rgb(18 107 124 / 20%) 4px 5px
+      linear-gradient(
+        to bottom,
+        transparent 0 calc(100% - 1px),
+        rgb(62 68 65 / 19%) calc(100% - 1px)
       ),
-      repeating-linear-gradient(
-        90deg,
-        transparent 0 4px,
-        rgb(18 107 124 / 17%) 4px 5px
+      linear-gradient(
+        to right,
+        transparent 0 calc(100% - 1px),
+        rgb(62 68 65 / 16%) calc(100% - 1px)
       );
+    background-size: 5px 5px;
     box-shadow:
       inset 0 0 0 1px rgb(255 255 255 / 24%),
-      0 0 5px rgb(13 117 138 / 8%),
+      0 0 5px rgb(42 48 47 / 9%),
       inset 0 0 9px rgb(255 157 45 / 7%);
-    opacity: 0.68;
+    opacity: 0.6;
     -webkit-mask-image: linear-gradient(
       to bottom,
       transparent,
@@ -407,16 +433,16 @@ const tubeIndexes = Array.from({ length: 8 }, (_, index) => index)
     border-radius: inherit;
     background:
       radial-gradient(
-        ellipse at 46% 4%,
-        rgb(255 255 255 / 72%),
-        transparent 24%
+        ellipse at 48% 2%,
+        rgb(255 255 255 / 78%),
+        transparent 22%
       ),
       linear-gradient(
         104deg,
         transparent 8%,
         rgb(255 255 255 / 36%) 15%,
         transparent 25% 70%,
-        rgb(133 190 201 / 10%) 82%,
+        rgb(111 138 140 / 12%) 82%,
         transparent 92%
       ),
       radial-gradient(
@@ -426,7 +452,8 @@ const tubeIndexes = Array.from({ length: 8 }, (_, index) => index)
       );
     box-shadow:
       inset 0 0 0 1px rgb(255 255 255 / 28%),
-      inset 0 -13px 17px rgb(4 69 82 / 5%);
+      inset 0 2px 3px rgb(255 255 255 / 48%),
+      inset 0 -13px 17px rgb(35 40 40 / 8%);
     opacity: 0.9;
     pointer-events: none;
   }
@@ -434,51 +461,151 @@ const tubeIndexes = Array.from({ length: 8 }, (_, index) => index)
   .nixie-tube__base {
     position: absolute;
     z-index: 6;
-    right: 4%;
-    bottom: -13%;
-    left: 4%;
-    height: 19%;
-    border: 1px solid rgb(89 111 118 / 70%);
-    border-radius: 2px 2px 5px 5px;
-    background:
-      repeating-linear-gradient(
-        90deg,
-        transparent 0 12%,
-        rgb(25 104 122 / 11%) 12% 15%
-      ),
-      linear-gradient(
-        180deg,
-        #ffffff 0%,
-        #dce8eb 24%,
-        #8faeb5 39%,
-        #f8fbfb 50%,
-        #c8d9dd 77%,
-        #ffffff 100%
-      );
+    right: 7%;
+    bottom: -10%;
+    left: 7%;
+    height: 15%;
+    border: 1px solid rgb(39 47 48 / 84%);
+    border-radius: 2px 2px 1px 1px;
+    background: linear-gradient(
+      180deg,
+      #829093 0%,
+      #293538 19%,
+      #0d1517 45%,
+      #253134 76%,
+      #657477 100%
+    );
     box-shadow:
-      inset 0 2px 1px rgb(255 255 255 / 86%),
-      inset 0 7px 9px rgb(255 164 53 / 8%),
-      0 5px 7px rgb(10 61 71 / 20%),
-      0 0 11px -6px rgb(255 148 37 / 38%);
+      inset 0 1px 0 rgb(230 240 241 / 52%),
+      inset 0 5px 7px rgb(255 152 43 / 7%),
+      0 4px 5px rgb(16 22 23 / 32%);
   }
 
   .nixie-tube__base::before,
   .nixie-tube__base::after {
     position: absolute;
-    bottom: -30%;
-    width: 1px;
-    height: 34%;
-    background: #69878d;
-    box-shadow: 0 0 0 0.3px #dce8ea;
+    bottom: -44%;
+    width: 2px;
+    height: 48%;
+    border-radius: 1px;
+    background: linear-gradient(90deg, #78501d, #edbd68 48%, #76501f);
+    box-shadow: 0 1px 1px rgb(50 31 10 / 34%);
     content: '';
   }
 
   .nixie-tube__base::before {
-    left: 28%;
+    left: 25%;
   }
 
   .nixie-tube__base::after {
-    right: 28%;
+    right: 25%;
+  }
+
+  .nixie-loader__chassis {
+    position: relative;
+    z-index: 3;
+    width: calc(100% + clamp(0.8rem, 2.2vw, 1.65rem));
+    height: clamp(2rem, 6vw, 4.1rem);
+    margin-top: clamp(0.42rem, 1.2vw, 0.72rem);
+    border: 1px solid #657579;
+    border-top-color: #aebdc0;
+    border-radius: 1px 1px 3px 3px;
+    background:
+      linear-gradient(
+        90deg,
+        transparent 0 7.5%,
+        rgb(68 82 86 / 42%) 7.5% 7.85%,
+        rgb(246 249 249 / 24%) 8% 8.25%,
+        transparent 8.4% 91.6%,
+        rgb(246 249 249 / 24%) 91.75% 92%,
+        rgb(68 82 86 / 42%) 92.15% 92.5%,
+        transparent 92.5%
+      ),
+      linear-gradient(
+        180deg,
+        #eef3f4 0%,
+        #a9b7ba 8%,
+        #74858a 13%,
+        #dce5e7 22%,
+        #b7c3c6 58%,
+        #8f9fa3 83%,
+        #657579 100%
+      );
+    box-shadow:
+      inset 2px 0 1px rgb(255 255 255 / 60%),
+      inset -2px 0 2px rgb(35 49 52 / 24%),
+      inset 0 1px 0 #ffffff,
+      inset 0 -4px 5px rgb(40 55 58 / 22%),
+      0 10px 16px -13px rgb(17 28 31 / 70%);
+  }
+
+  .nixie-loader__chassis::before {
+    position: absolute;
+    top: clamp(-0.48rem, -0.8vw, -0.32rem);
+    right: 1.2%;
+    left: 1.2%;
+    height: clamp(0.36rem, 0.9vw, 0.54rem);
+    border: 1px solid #3e4b4e;
+    border-radius: 1px;
+    background: linear-gradient(
+      180deg,
+      #a5b2b4 0%,
+      #344245 24%,
+      #10191b 58%,
+      #5e6e71 100%
+    );
+    box-shadow:
+      inset 0 1px rgb(236 243 244 / 48%),
+      0 2px 3px rgb(14 21 22 / 34%);
+    content: '';
+  }
+
+  .nixie-loader__chassis::after {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(
+        circle at 2.4% 19%,
+        #e8eff0 0 1px,
+        #5c6d71 1.5px 2.5px,
+        transparent 3px
+      ),
+      radial-gradient(
+        circle at 97.6% 19%,
+        #e8eff0 0 1px,
+        #5c6d71 1.5px 2.5px,
+        transparent 3px
+      ),
+      radial-gradient(
+        circle at 2.4% 82%,
+        #dce5e6 0 1px,
+        #536469 1.5px 2.5px,
+        transparent 3px
+      ),
+      radial-gradient(
+        circle at 97.6% 82%,
+        #dce5e6 0 1px,
+        #536469 1.5px 2.5px,
+        transparent 3px
+      );
+    content: '';
+    pointer-events: none;
+  }
+
+  .nixie-loader__chassis-panel {
+    position: absolute;
+    inset: 12% 8% 13%;
+    border-right: 1px solid rgb(72 88 92 / 42%);
+    border-left: 1px solid rgb(72 88 92 / 42%);
+    background: linear-gradient(
+      180deg,
+      rgb(255 255 255 / 38%),
+      transparent 18% 76%,
+      rgb(45 60 64 / 10%)
+    );
+    box-shadow:
+      inset 1px 0 rgb(255 255 255 / 42%),
+      inset -1px 0 rgb(255 255 255 / 26%);
   }
 
   .nixie-separator {

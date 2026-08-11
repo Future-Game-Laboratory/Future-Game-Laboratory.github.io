@@ -85,11 +85,13 @@ test('nixie loader renders an eight-tube six-decimal progress display', () => {
   const cathodes = homepage.match(/data-digit="[0-9]"/g)
   const glows = homepage.match(/class="nixie-tube__glow"/g)
   const glassLayers = homepage.match(/class="nixie-tube__glass"/g)
+  const chassis = homepage.match(/class="nixie-loader__chassis"/g)
 
   assert.equal(tubes?.length, 8)
   assert.equal(cathodes?.length, 80)
   assert.equal(glows?.length, 8)
   assert.equal(glassLayers?.length, 8)
+  assert.equal(chassis?.length, 1)
   assert.match(homepage, /role="progressbar"/)
   assert.match(homepage, /aria-valuetext="加载进度 00\.000000%"/)
   assert.doesNotMatch(
