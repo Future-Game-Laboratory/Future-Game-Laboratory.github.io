@@ -111,7 +111,11 @@ test('homepage keeps the ordered carousel, NEWS entry point, and lean footer', (
     /<footer class="site-footer"[\s\S]*?<\/footer>/,
   )?.[0]
   assert.match(homepage, /\/static\/future-game-laboratory-lockup\.png/)
-  assert.match(homepage, /<a[^>]*href="\/"[^>]*class="[^"]*brand-lockup/)
+  const brandLink = homepage.match(
+    /<a[^>]*href="\/"[^>]*class="[^"]*brand-lockup[^"]*"[^>]*>/,
+  )?.[0]
+  assert.ok(brandLink)
+  assert.match(brandLink, /data-astro-reload/)
   assert.match(homepage, /\/static\/carousel\/01-forked-light-cover\.webp/)
   assert.match(homepage, /data-poster-carousel/)
   assert.match(homepage, /class="announcement-panel"/)
