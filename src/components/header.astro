@@ -425,6 +425,7 @@ const logo = withBase('/static/future-game-laboratory-lockup.png')
 
   :global(html[data-menu='open']) {
     overflow: hidden;
+    padding-inline-end: var(--menu-scrollbar-compensation, 0px);
   }
 
   @media (max-width: 940px) {
@@ -470,6 +471,7 @@ const logo = withBase('/static/future-game-laboratory-lockup.png')
 
 <script>
   function setupSiteMenu() {
+    const root = document.documentElement
     const dialog = document.getElementById('site-menu')
     const open = document.getElementById('site-menu-open')
     const close = document.getElementById('site-menu-close')
@@ -489,19 +491,25 @@ const logo = withBase('/static/future-game-laboratory-lockup.png')
       if (closeTimer !== undefined) window.clearTimeout(closeTimer)
       closeTimer = undefined
       delete dialog.dataset.state
-      delete document.documentElement.dataset.menu
+      delete root.dataset.menu
+      root.style.removeProperty('--menu-scrollbar-compensation')
       open.setAttribute('aria-expanded', 'false')
     }
 
     open.onclick = () => {
       if (dialog.open) return
+      const scrollbarWidth = Math.max(0, window.innerWidth - root.clientWidth)
+      root.style.setProperty(
+        '--menu-scrollbar-compensation',
+        `${scrollbarWidth}px`,
+      )
       dialog.dataset.state = 'opening'
       dialog.showModal()
-      document.documentElement.dataset.menu = 'open'
+      root.dataset.menu = 'open'
       open.setAttribute('aria-expanded', 'true')
       dialog.getBoundingClientRect()
       dialog.dataset.state = 'open'
-      close.focus()
+      close.focus({ preventScroll: true })
     }
 
     const closeMenu = () => {
@@ -512,7 +520,7 @@ const logo = withBase('/static/future-game-laboratory-lockup.png')
       const finishClose = () => {
         if (dialog.open) dialog.close()
         cleanUpMenu()
-        open.focus()
+        open.focus({ preventScroll: true })
       }
 
       if (reduceMotion.matches) {
