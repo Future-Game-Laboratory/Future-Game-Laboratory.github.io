@@ -40,14 +40,19 @@ const logo = withBase('/static/future-game-laboratory-lockup.png')
 
   <div class="navigation-controls">
     <button
-      class="menu-trigger"
+      class="menu-trigger menu-toggle"
       id="site-menu-open"
       type="button"
+      aria-label="打开导航"
       aria-haspopup="dialog"
       aria-controls="site-menu"
+      aria-expanded="false"
     >
-      <span>MENU</span>
-      <i aria-hidden="true"></i>
+      <span class="menu-icon" aria-hidden="true">
+        <i class="menu-icon__line"></i>
+        <i class="menu-icon__line"></i>
+        <i class="menu-icon__line"></i>
+      </span>
     </button>
   </div>
 </div>
@@ -57,9 +62,17 @@ const logo = withBase('/static/future-game-laboratory-lockup.png')
     <Link href="/" class="site-menu__logo" aria-label="未来游戏研究所首页">
       <img src={logo} alt="" width="225" height="65" />
     </Link>
-    <button id="site-menu-close" type="button" aria-label="关闭导航">
-      <span>CLOSE</span>
-      <i aria-hidden="true"></i>
+    <button
+      class="site-menu__toggle menu-toggle"
+      id="site-menu-close"
+      type="button"
+      aria-label="关闭导航"
+    >
+      <span class="menu-icon" aria-hidden="true">
+        <i class="menu-icon__line"></i>
+        <i class="menu-icon__line"></i>
+        <i class="menu-icon__line"></i>
+      </span>
     </button>
   </header>
   <nav class="site-menu__nav" aria-label="全屏导航">
@@ -121,6 +134,10 @@ const logo = withBase('/static/future-game-laboratory-lockup.png')
     align-items: center;
   }
 
+  .desktop-navigation {
+    margin-left: auto;
+  }
+
   .desktop-navigation nav ul {
     gap: clamp(1rem, 2.4vw, 2rem);
     margin: 0;
@@ -169,50 +186,72 @@ const logo = withBase('/static/future-game-laboratory-lockup.png')
   }
 
   .navigation-controls {
+    display: none;
     gap: 0.55rem;
-    margin-left: auto;
+    margin-left: 0;
+  }
+
+  .menu-toggle {
+    height: 2.75rem;
+    width: 2.75rem;
+    flex: 0 0 auto;
+    place-items: center;
+    border: 1px solid currentColor;
+    border-radius: 4px;
+    background: transparent;
+    padding: 0;
+    cursor: pointer;
+    transition:
+      transform 100ms var(--ease-signal),
+      border-color 160ms var(--ease-signal),
+      background-color 160ms var(--ease-signal),
+      color 160ms var(--ease-signal);
+  }
+
+  .menu-toggle:active {
+    transform: scale(0.96);
   }
 
   .menu-trigger {
     display: none;
-    height: 2.75rem;
-    align-items: center;
-    gap: 0.7rem;
-    border: 1px solid var(--foreground);
-    border-radius: 3px;
-    background: transparent;
     color: var(--foreground);
-    padding: 0 0.75rem;
-    font-family: var(--font-mono);
-    font-size: 0.68rem;
-    letter-spacing: 0.07em;
   }
 
-  .menu-trigger i,
-  .site-menu__header button i {
+  .menu-trigger:hover {
+    background: var(--foreground);
+    color: var(--background);
+  }
+
+  .menu-icon {
     position: relative;
-    width: 1rem;
-    height: 8px;
+    display: block;
+    width: 1.125rem;
+    height: 0.875rem;
   }
 
-  .menu-trigger i::before,
-  .menu-trigger i::after,
-  .site-menu__header button i::before,
-  .site-menu__header button i::after {
+  .menu-icon__line {
     position: absolute;
-    right: 0;
     left: 0;
+    display: block;
+    width: 100%;
     height: 1px;
     background: currentColor;
-    content: '';
+    transform-origin: center;
+    transition:
+      transform 260ms var(--ease-signal),
+      opacity 160ms var(--ease-signal);
   }
 
-  .menu-trigger i::before {
-    top: 0;
+  .menu-icon__line:nth-child(1) {
+    transform: translateY(1px);
   }
 
-  .menu-trigger i::after {
-    bottom: 0;
+  .menu-icon__line:nth-child(2) {
+    transform: translateY(6.5px);
+  }
+
+  .menu-icon__line:nth-child(3) {
+    transform: translateY(12px);
   }
 
   .site-menu {
@@ -223,11 +262,13 @@ const logo = withBase('/static/future-game-laboratory-lockup.png')
     margin: 0;
     overflow: hidden auto;
     border: 0;
-    background: #ffffff;
-    color: #0b0d10;
+    background: #090909;
+    color: #ffffff;
+    color-scheme: dark;
     padding: 0;
     opacity: 0;
     transform: scale(1.025);
+    transform-origin: top right;
     transition:
       opacity 260ms var(--ease-signal),
       transform 480ms var(--ease-reveal),
@@ -235,20 +276,25 @@ const logo = withBase('/static/future-game-laboratory-lockup.png')
       overlay 260ms allow-discrete;
   }
 
-  .site-menu[open] {
+  .site-menu[open][data-state='open'] {
     opacity: 1;
     transform: scale(1);
   }
 
-  @starting-style {
-    .site-menu[open] {
-      opacity: 0;
-      transform: scale(1.025);
-    }
+  .site-menu[open][data-state='opening'],
+  .site-menu[open][data-state='closing'] {
+    opacity: 0;
+    transform: scale(1.015);
   }
 
   .site-menu::backdrop {
-    background: rgb(255 255 255 / 96%);
+    background: rgb(9 9 9 / 98%);
+    opacity: 0;
+    transition: opacity 220ms var(--ease-signal);
+  }
+
+  .site-menu[data-state='open']::backdrop {
+    opacity: 1;
   }
 
   .site-menu__header,
@@ -258,19 +304,20 @@ const logo = withBase('/static/future-game-laboratory-lockup.png')
     align-items: center;
     justify-content: space-between;
     gap: 1rem;
-    padding: 1.15rem clamp(1rem, 4vw, 3rem);
+    padding-inline: var(--site-gutter);
     font-family: var(--font-mono);
     font-size: 0.62rem;
     letter-spacing: 0.07em;
   }
 
   .site-menu__header {
-    border-bottom: 1px solid #b8bec4;
+    height: var(--header-height);
+    border-bottom: 1px solid #3d3d3d;
   }
 
   .site-menu__logo {
     display: block;
-    width: 10.5rem;
+    width: 11.75rem;
     aspect-ratio: 225 / 65;
   }
 
@@ -278,29 +325,32 @@ const logo = withBase('/static/future-game-laboratory-lockup.png')
     display: block;
     width: 100%;
     height: auto;
-    filter: none;
+    filter: invert(1);
   }
 
-  .site-menu__header button {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.65rem;
-    border: 1px solid #7d8387;
-    border-radius: 3px;
-    background: transparent;
-    color: #0b0d10;
-    padding: 0.65rem 0.75rem;
-    font: inherit;
+  .site-menu__toggle {
+    display: inline-grid;
+    border-color: #737373;
+    color: #ffffff;
   }
 
-  .site-menu__header button i::before {
-    top: 3px;
-    transform: rotate(45deg);
+  .site-menu__toggle:hover {
+    border-color: #ffffff;
+    background: #ffffff;
+    color: #090909;
   }
 
-  .site-menu__header button i::after {
-    bottom: 4px;
-    transform: rotate(-45deg);
+  .site-menu[data-state='open'] .menu-icon__line:nth-child(1) {
+    transform: translateY(6.5px) rotate(45deg);
+  }
+
+  .site-menu[data-state='open'] .menu-icon__line:nth-child(2) {
+    opacity: 0;
+    transform: translateY(6.5px) scaleX(0.35);
+  }
+
+  .site-menu[data-state='open'] .menu-icon__line:nth-child(3) {
+    transform: translateY(6.5px) rotate(-45deg);
   }
 
   .site-menu__nav {
@@ -308,7 +358,7 @@ const logo = withBase('/static/future-game-laboratory-lockup.png')
     display: grid;
     min-height: calc(100svh - 9rem);
     place-items: center;
-    padding: clamp(2.5rem, 6vw, 6rem) clamp(1rem, 7vw, 7rem);
+    padding: clamp(2.5rem, 6vw, 6rem) var(--site-gutter);
   }
 
   .site-menu__nav ul {
@@ -319,7 +369,7 @@ const logo = withBase('/static/future-game-laboratory-lockup.png')
   }
 
   .site-menu__nav li {
-    border-bottom: 1px solid #b8bec4;
+    border-bottom: 1px solid #3d3d3d;
   }
 
   .site-menu__nav a {
@@ -327,6 +377,7 @@ const logo = withBase('/static/future-game-laboratory-lockup.png')
     align-items: baseline;
     justify-content: space-between;
     gap: 1rem;
+    color: #ffffff;
     padding: clamp(0.85rem, 2vw, 1.45rem) 0;
     font-family: var(--font-display);
     font-size: clamp(2.2rem, 6vw, 4.8rem);
@@ -344,12 +395,17 @@ const logo = withBase('/static/future-game-laboratory-lockup.png')
   }
 
   .site-menu__footer {
-    border-top: 1px solid #b8bec4;
-    color: #575b60;
+    border-top: 1px solid #3d3d3d;
+    color: #b8bec4;
+    padding-block: 1.15rem;
   }
 
-  .site-menu__footer a:hover {
-    color: #0b0d10;
+  .site-menu__footer a {
+    color: #ffffff;
+  }
+
+  .site-menu :global(:focus-visible) {
+    outline-color: #00c6d7;
   }
 
   :global(html[data-menu='open']) {
@@ -362,12 +418,21 @@ const logo = withBase('/static/future-game-laboratory-lockup.png')
     }
 
     .menu-trigger {
-      display: inline-flex;
+      display: inline-grid;
+    }
+
+    .navigation-controls {
+      display: flex;
+      margin-left: auto;
     }
   }
 
   @media (max-width: 520px) {
     .brand-logo-window {
+      width: 9.4rem;
+    }
+
+    .site-menu__logo {
       width: 9.4rem;
     }
 
@@ -381,6 +446,14 @@ const logo = withBase('/static/future-game-laboratory-lockup.png')
     .site-menu {
       transform: none;
     }
+
+    .menu-icon__line {
+      transition-duration: 0.01ms;
+    }
+
+    .site-menu::backdrop {
+      transition-duration: 0.01ms;
+    }
   }
 </style>
 
@@ -391,29 +464,67 @@ const logo = withBase('/static/future-game-laboratory-lockup.png')
     const close = document.getElementById('site-menu-close')
     if (
       !(dialog instanceof HTMLDialogElement) ||
-      !(open instanceof HTMLElement)
+      !(open instanceof HTMLButtonElement) ||
+      !(close instanceof HTMLButtonElement)
     )
       return
 
+    let closeTimer: number | undefined
+    const reduceMotion = window.matchMedia(
+      '(prefers-reduced-motion: reduce)',
+    )
+
+    const cleanUpMenu = () => {
+      if (closeTimer !== undefined) window.clearTimeout(closeTimer)
+      closeTimer = undefined
+      delete dialog.dataset.state
+      delete document.documentElement.dataset.menu
+      open.setAttribute('aria-expanded', 'false')
+    }
+
     open.onclick = () => {
+      if (dialog.open) return
+      dialog.dataset.state = 'opening'
       dialog.showModal()
       document.documentElement.dataset.menu = 'open'
-      close?.focus()
+      open.setAttribute('aria-expanded', 'true')
+      dialog.getBoundingClientRect()
+      dialog.dataset.state = 'open'
+      close.focus()
     }
+
     const closeMenu = () => {
-      dialog.close()
-      delete document.documentElement.dataset.menu
-      open.focus()
+      if (!dialog.open || dialog.dataset.state === 'closing') return
+      dialog.dataset.state = 'closing'
+      open.setAttribute('aria-expanded', 'false')
+
+      const finishClose = () => {
+        if (dialog.open) dialog.close()
+        cleanUpMenu()
+        open.focus()
+      }
+
+      if (reduceMotion.matches) {
+        finishClose()
+        return
+      }
+
+      closeTimer = window.setTimeout(finishClose, 280)
     }
-    if (close instanceof HTMLElement) close.onclick = closeMenu
+
+    close.onclick = closeMenu
     dialog.onclick = (event) => {
       if (event.target === dialog) closeMenu()
     }
-    dialog.onclose = () => delete document.documentElement.dataset.menu
+    dialog.oncancel = (event) => {
+      event.preventDefault()
+      closeMenu()
+    }
+    dialog.onclose = cleanUpMenu
     dialog.querySelectorAll('a').forEach((link) => {
       ;(link as HTMLAnchorElement).onclick = () => {
         if (dialog.open) dialog.close()
-        delete document.documentElement.dataset.menu
+        cleanUpMenu()
       }
     })
   }

@@ -115,6 +115,14 @@ test('homepage keeps the ordered carousel, NEWS entry point, and lean footer', (
   assert.match(homepage, /data-poster-carousel/)
   assert.match(homepage, /class="announcement-panel"/)
   assert.match(homepage, /data-title-reveal/)
+  const menuTrigger = homepage.match(
+    /<button[^>]*class="[^"]*menu-trigger[^"]*"[\s\S]*?<\/button>/,
+  )?.[0]
+  assert.ok(menuTrigger)
+  assert.match(menuTrigger, /aria-label="打开导航"/)
+  assert.match(menuTrigger, /aria-expanded="false"/)
+  assert.equal((menuTrigger.match(/menu-icon__line/g) ?? []).length, 3)
+  assert.doesNotMatch(menuTrigger, />MENU</)
   assert.ok(footer)
   assert.doesNotMatch(footer, /<nav|href=/)
   assert.doesNotMatch(footer, /FUTURE GAME LABORATORY|signal-label/)
@@ -163,6 +171,18 @@ test('compiled styles use the narrow document-width frame', () => {
     .join('\n')
 
   assert.match(styles, /--site-max:\s*64rem/)
+  assert.match(
+    styles,
+    /\.desktop-navigation[^\{]*\{[^\}]*margin-left:\s*auto/,
+  )
+  assert.match(
+    styles,
+    /\.navigation-controls[^\{]*\{[^\}]*display:\s*none/,
+  )
+  assert.match(
+    styles,
+    /\.site-menu[^\{]*\{[^\}]*background:\s*#090909[^\}]*color:\s*#(?:fff|ffffff)/,
+  )
 })
 
 test('section headers omit decorative labels and redundant rules', () => {
