@@ -66,6 +66,7 @@ test('private editor is noindex and absent from sitemap', () => {
   const editor = readFileSync(join(dist, 'edits/index.html'), 'utf8')
   const sitemap = readFileSync(join(dist, 'sitemap-0.xml'), 'utf8')
   assert.match(editor, /<meta name="robots" content="noindex, nofollow">/)
+  assert.equal(existsSync(join(dist, 'editor/index.html')), false)
   assert.doesNotMatch(sitemap, /\/editor\//)
   assert.doesNotMatch(sitemap, /\/edits\//)
 })
@@ -136,6 +137,7 @@ test('homepage keeps the ordered carousel, NEWS entry point, and lean footer', (
   }
   assert.doesNotMatch(homepage, />HOME</)
   assert.doesNotMatch(homepage, />INFORMATION</)
+  assert.doesNotMatch(homepage, /href="\/edits\/?"/)
   assert.doesNotMatch(homepage, /class="home-contact"/)
   assert.doesNotMatch(
     homepage,
@@ -182,6 +184,15 @@ test('compiled styles use the narrow document-width frame', () => {
   assert.match(
     styles,
     /\.site-menu[^\{]*\{[^\}]*background:\s*#090909[^\}]*color:\s*#(?:fff|ffffff)/,
+  )
+  assert.match(styles, /\.menu-toggle[^\{]*\{[^\}]*border:\s*0/)
+  assert.match(
+    styles,
+    /\.menu-trigger[^\{]*\{[^\}]*background:\s*#090909[^\}]*color:\s*#(?:fff|ffffff)[^\}]*box-shadow:\s*var\(--signal-shadow\)/,
+  )
+  assert.match(
+    styles,
+    /\.menu-icon__line[^\{]*\{[^\}]*height:\s*2px/,
   )
 })
 

@@ -93,7 +93,6 @@ const logo = withBase('/static/future-game-laboratory-lockup.png')
   </nav>
   <footer class="site-menu__footer">
     <span>&copy; {new Date().getFullYear()} 未来游戏研究所</span>
-    <Link href="/edits">EDITS ↗</Link>
   </footer>
 </dialog>
 
@@ -196,16 +195,15 @@ const logo = withBase('/static/future-game-laboratory-lockup.png')
     width: 2.75rem;
     flex: 0 0 auto;
     place-items: center;
-    border: 1px solid currentColor;
+    border: 0;
     border-radius: 4px;
-    background: transparent;
     padding: 0;
     cursor: pointer;
     transition:
       transform 100ms var(--ease-signal),
-      border-color 160ms var(--ease-signal),
       background-color 160ms var(--ease-signal),
-      color 160ms var(--ease-signal);
+      color 160ms var(--ease-signal),
+      box-shadow 160ms var(--ease-signal);
   }
 
   .menu-toggle:active {
@@ -214,12 +212,17 @@ const logo = withBase('/static/future-game-laboratory-lockup.png')
 
   .menu-trigger {
     display: none;
-    color: var(--foreground);
+    background: #090909;
+    color: #ffffff;
+    box-shadow: var(--signal-shadow);
   }
 
   .menu-trigger:hover {
-    background: var(--foreground);
-    color: var(--background);
+    background: #090909;
+    color: #ffffff;
+    box-shadow:
+      3px 2px 0 rgb(226 0 122 / 78%),
+      -3px -2px 0 rgb(0 198 215 / 78%);
   }
 
   .menu-icon {
@@ -231,10 +234,12 @@ const logo = withBase('/static/future-game-laboratory-lockup.png')
 
   .menu-icon__line {
     position: absolute;
+    top: 0;
     left: 0;
     display: block;
     width: 100%;
-    height: 1px;
+    height: 2px;
+    border-radius: 999px;
     background: currentColor;
     transform-origin: center;
     transition:
@@ -243,11 +248,11 @@ const logo = withBase('/static/future-game-laboratory-lockup.png')
   }
 
   .menu-icon__line:nth-child(1) {
-    transform: translateY(1px);
+    transform: translateY(0);
   }
 
   .menu-icon__line:nth-child(2) {
-    transform: translateY(6.5px);
+    transform: translateY(6px);
   }
 
   .menu-icon__line:nth-child(3) {
@@ -330,27 +335,29 @@ const logo = withBase('/static/future-game-laboratory-lockup.png')
 
   .site-menu__toggle {
     display: inline-grid;
-    border-color: #737373;
-    color: #ffffff;
-  }
-
-  .site-menu__toggle:hover {
-    border-color: #ffffff;
     background: #ffffff;
     color: #090909;
   }
 
+  .site-menu__toggle:hover {
+    background: #ffffff;
+    color: #090909;
+    box-shadow:
+      2px 2px 0 rgb(226 0 122 / 64%),
+      -2px -2px 0 rgb(0 198 215 / 64%);
+  }
+
   .site-menu[data-state='open'] .menu-icon__line:nth-child(1) {
-    transform: translateY(6.5px) rotate(45deg);
+    transform: translateY(6px) rotate(45deg);
   }
 
   .site-menu[data-state='open'] .menu-icon__line:nth-child(2) {
     opacity: 0;
-    transform: translateY(6.5px) scaleX(0.35);
+    transform: translateY(6px) scaleX(0.35);
   }
 
   .site-menu[data-state='open'] .menu-icon__line:nth-child(3) {
-    transform: translateY(6.5px) rotate(-45deg);
+    transform: translateY(6px) rotate(-45deg);
   }
 
   .site-menu__nav {
@@ -397,11 +404,9 @@ const logo = withBase('/static/future-game-laboratory-lockup.png')
   .site-menu__footer {
     border-top: 1px solid #3d3d3d;
     color: #b8bec4;
+    justify-content: center;
     padding-block: 1.15rem;
-  }
-
-  .site-menu__footer a {
-    color: #ffffff;
+    text-align: center;
   }
 
   .site-menu :global(:focus-visible) {
@@ -436,10 +441,6 @@ const logo = withBase('/static/future-game-laboratory-lockup.png')
       width: 9.4rem;
     }
 
-    .site-menu__footer {
-      align-items: flex-start;
-      flex-direction: column;
-    }
   }
 
   @media (prefers-reduced-motion: reduce) {
