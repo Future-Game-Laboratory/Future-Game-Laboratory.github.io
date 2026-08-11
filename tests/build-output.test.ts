@@ -117,6 +117,11 @@ test('homepage keeps the ordered carousel, NEWS entry point, and lean footer', (
   assert.match(homepage, /data-title-reveal/)
   assert.ok(footer)
   assert.doesNotMatch(footer, /<nav|href=/)
+  assert.doesNotMatch(footer, /FUTURE GAME LABORATORY|signal-label/)
+  assert.match(
+    footer,
+    /© 2026 未来游戏研究所 All Rights Reserved\./,
+  )
   assert.doesNotMatch(footer, /持续研究|公开过程/)
   for (const label of ['NEWS', 'WORKS', 'ABOUT', 'CONTACT']) {
     assert.match(homepage, new RegExp(`>${label}<`))
@@ -158,6 +163,14 @@ test('compiled styles use the narrow document-width frame', () => {
     .join('\n')
 
   assert.match(styles, /--site-max:\s*64rem/)
+})
+
+test('section headers omit decorative labels and redundant rules', () => {
+  const news = readFileSync(join(dist, 'blog/index.html'), 'utf8')
+  const works = readFileSync(join(dist, 'works/index.html'), 'utf8')
+
+  assert.doesNotMatch(news, /NEWS ARCHIVE \/ PAGE|class="signal-label"/)
+  assert.doesNotMatch(works, /WORKS \/ PROJECTS|W \/ 001|class="signal-label"/)
 })
 
 test('template author and draft template posts are not generated', () => {

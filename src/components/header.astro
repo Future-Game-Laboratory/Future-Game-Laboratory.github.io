@@ -90,10 +90,10 @@ const logo = withBase('/static/future-game-laboratory-lockup.png')
     width: min(100%, var(--site-max));
     height: var(--header-height);
     align-items: center;
-    justify-content: space-between;
-    gap: 1.5rem;
+    justify-content: flex-start;
+    gap: clamp(1.25rem, 3vw, 2.5rem);
     margin-inline: auto;
-    padding: 0 clamp(1rem, 3.3vw, 3rem);
+    padding: 0 var(--site-gutter);
   }
 
   .brand-lockup {
@@ -170,6 +170,7 @@ const logo = withBase('/static/future-game-laboratory-lockup.png')
 
   .navigation-controls {
     gap: 0.55rem;
+    margin-left: auto;
   }
 
   .menu-trigger {

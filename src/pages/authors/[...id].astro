@@ -27,7 +27,6 @@ const publicPosts = authorPosts.filter((post) => !post.data.draft)
     noindex
   />
   <PageHeader
-    label={`CONTRIBUTOR / ${String(publicPosts.length).padStart(2, '0')} ARTICLES`}
     title={author.data.name}
     description={author.data.bio}
   />

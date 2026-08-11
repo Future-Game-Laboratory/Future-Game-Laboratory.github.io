@@ -13,39 +13,26 @@ import Layout from '@/layouts/layout.astro'
     description="未来游戏研究所的研究计划、游戏原型与公开项目。"
   />
   <PageHeader
-    label="WORKS / PROJECTS"
     title="WORKS"
     description="这里整理研究计划、游戏原型、公开活动与协作项目。项目材料会在具备足够上下文后逐步公开。"
   />
 
   <section class="works-intro">
-    <p class="works-index">W / 001</p>
-    <div>
-      <h2>首批项目档案正在整理</h2>
-      <p>
-        我们不会使用示例项目填充目录。项目公开后，这里会提供目标、过程、阶段成果和相关研究记录，而不只是最终展示。
-      </p>
-      <Link href="/blog" class={buttonVariants({ variant: 'outline' })}>
-        先阅读研究资讯 <span aria-hidden="true">→</span>
-      </Link>
-    </div>
+    <h2>首批项目档案正在整理</h2>
+    <p>
+      我们不会使用示例项目填充目录。项目公开后，这里会提供目标、过程、阶段成果和相关研究记录，而不只是最终展示。
+    </p>
+    <Link href="/blog" class={buttonVariants({ variant: 'outline' })}>
+      先阅读研究资讯 <span aria-hidden="true">→</span>
+    </Link>
   </section>
 </Layout>
 
 <style>
   .works-intro {
-    display: grid;
-    grid-template-columns: minmax(8rem, 0.45fr) minmax(0, 1.55fr);
-    gap: clamp(2rem, 8vw, 8rem);
-    border-top: 1px solid var(--foreground);
-    border-bottom: 1px solid var(--foreground);
-    padding: clamp(2.5rem, 7vw, 6rem) 0;
-  }
-
-  .works-index {
-    font-family: var(--font-mono);
-    font-size: 0.72rem;
-    letter-spacing: 0.08em;
+    width: 100%;
+    max-width: 50rem;
+    padding-bottom: clamp(2.5rem, 7vw, 6rem);
   }
 
   .works-intro h2 {
@@ -56,17 +43,10 @@ import Layout from '@/layouts/layout.astro'
     line-height: 1.1;
   }
 
-  .works-intro div > p {
+  .works-intro > p {
     max-width: 50rem;
     margin: 1.5rem 0 2rem;
     color: var(--muted-foreground);
     line-height: 1.8;
-  }
-
-  @media (max-width: 640px) {
-    .works-intro {
-      grid-template-columns: 1fr;
-      gap: 1.5rem;
-    }
   }
 </style>

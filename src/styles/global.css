@@ -67,6 +67,7 @@
   --brand-logo-filter: none;
   --header-height: 4.25rem;
   --site-max: 64rem;
+  --site-gutter: clamp(1rem, 3.3vw, 3rem);
   --reading-max: 72ch;
   --signal-shadow:
     2px 2px 0 rgb(226 0 122 / 72%), -2px -2px 0 rgb(0 198 215 / 72%);
@@ -181,7 +182,7 @@
   .site-main {
     width: min(100%, var(--site-max));
     margin-inline: auto;
-    padding: clamp(1.5rem, 4vw, 4rem) clamp(1rem, 3.3vw, 3rem)
+    padding: clamp(1.5rem, 4vw, 4rem) var(--site-gutter)
       clamp(5rem, 9vw, 9rem);
   }
 
@@ -193,10 +194,13 @@
   }
 
   .site-footer {
-    width: min(100%, var(--site-max));
-    margin-inline: auto;
-    border-top: 1px solid var(--foreground);
-    padding: 1.4rem clamp(1rem, 3.3vw, 3rem) 2.25rem;
+    display: grid;
+    width: 100%;
+    min-height: var(--header-height);
+    margin-top: auto;
+    place-items: center;
+    background: #090909;
+    padding: 1.25rem var(--site-gutter);
   }
 
   .skip-link {
@@ -240,27 +244,9 @@
   }
 
   .page-hero {
-    position: relative;
     display: grid;
     gap: 1.25rem;
-    border-top: 1px solid var(--foreground);
-    border-bottom: 1px solid var(--foreground);
-    padding: clamp(2rem, 5vw, 4.5rem) 0;
-  }
-
-  .page-hero::after {
-    position: absolute;
-    right: 0;
-    bottom: -2px;
-    width: clamp(4rem, 12vw, 11rem);
-    height: 3px;
-    background: var(--foreground);
-    box-shadow:
-      2px 0 var(--signal-magenta),
-      -2px 0 var(--signal-cyan);
-    content: '';
-    transform-origin: right;
-    animation: signal-rule-in 720ms var(--ease-reveal) both;
+    padding-top: clamp(0.5rem, 1.5vw, 1rem);
   }
 
   .page-hero h1,
@@ -275,7 +261,7 @@
     text-wrap: balance;
   }
 
-  .page-hero > p:not(.signal-label) {
+  .page-hero > p {
     max-width: 62ch;
     color: color-mix(in srgb, var(--foreground) 76%, var(--background));
     font-size: clamp(1rem, 1.8vw, 1.15rem);
@@ -583,15 +569,6 @@
   #toc-sidebar-container a:hover,
   #subposts-sidebar-container a:hover {
     color: var(--foreground);
-  }
-}
-
-@keyframes signal-rule-in {
-  from {
-    transform: scaleX(0.08);
-  }
-  to {
-    transform: scaleX(1);
   }
 }
 
