@@ -1650,7 +1650,7 @@ function HomeEditor({
     <div className="admin-editor-stack">
       <EditorHeading
         title="首页信息"
-        description="维护首页右侧的公告与 SNS 链接。RSS 按钮由系统固定显示。"
+        description="维护首页右侧的公告与 SNS 链接。GitHub 与 RSS 按钮由系统固定显示。"
         dirty={dirty}
         saving={saving}
         onSave={onSave}
@@ -1725,7 +1725,14 @@ function HomeEditor({
       </section>
 
       <section className="admin-panel admin-form-section">
-        <header><div><h2>SNS 账号</h2><p>只有填写链接的平台才会出现在首页；RSS 无需配置。</p></div></header>
+        <header>
+          <div>
+            <h2>SNS 账号</h2>
+            <p>
+              只有填写链接的平台才会出现在首页；GitHub 与 RSS 无需配置。
+            </p>
+          </div>
+        </header>
         <div className="admin-social-list">
           {settings.socials.map((social) => (
             <div key={social.icon}>
@@ -1735,19 +1742,38 @@ function HomeEditor({
                 type="url"
                 placeholder="https://"
                 value={social.href}
-                onChange={(event) => onChange((current) => {
-                  if (!current) return current
-                  const socials = current.socials.map((item) =>
-                    item.icon === social.icon
-                      ? { ...item, href: event.target.value }
-                      : item,
-                  )
-                  return { ...current, socials }
-                })}
+                onChange={(event) =>
+                  onChange((current) => {
+                    if (!current) return current
+                    const socials = current.socials.map((item) =>
+                      item.icon === social.icon
+                        ? { ...item, href: event.target.value }
+                        : item,
+                    )
+                    return { ...current, socials }
+                  })
+                }
               />
             </div>
           ))}
-          <div className="is-readonly"><span>RSS</span><input className="admin-field" value="/rss.xml" disabled readOnly /></div>
+          <div className="is-readonly">
+            <span>GitHub</span>
+            <input
+              className="admin-field"
+              value="https://github.com/Future-Game-Laboratory"
+              disabled
+              readOnly
+            />
+          </div>
+          <div className="is-readonly">
+            <span>RSS</span>
+            <input
+              className="admin-field"
+              value="/rss.xml"
+              disabled
+              readOnly
+            />
+          </div>
         </div>
       </section>
     </div>

@@ -59,7 +59,9 @@ const carouselSlides = carouselFiles.map((file, index) => ({
       <section class="news-panel" aria-labelledby="news-title">
         <header class="news-heading">
           <TitleReveal text="NEWS" id="news-title" />
-          <Link href="/blog">VIEW ALL <span aria-hidden="true">→</span></Link>
+          <Link href="/blog">
+            VIEW ALL <span class="news-triangle" aria-hidden="true"></span>
+          </Link>
         </header>
 
         {
@@ -78,7 +80,7 @@ const carouselSlides = carouselFiles.map((file, index) => ({
                       <h2>{post.data.title}</h2>
                       <p>{post.data.description}</p>
                     </div>
-                    <span aria-hidden="true">→</span>
+                    <span class="news-triangle" aria-hidden="true"></span>
                   </Link>
                 </li>
               ))}
@@ -132,7 +134,7 @@ const carouselSlides = carouselFiles.map((file, index) => ({
 
   .news-heading :global(h1) {
     font-family: var(--font-display);
-    font-size: clamp(2.5rem, 6vw, 4.5rem);
+    font-size: clamp(2.5rem, 5vw, 3.75rem);
     font-weight: 760;
     line-height: 0.9;
     letter-spacing: -0.04em;
@@ -170,14 +172,20 @@ const carouselSlides = carouselFiles.map((file, index) => ({
   }
 
   .news-list a {
+    position: relative;
     display: grid;
-    grid-template-columns: 6.5rem minmax(0, 1fr) auto;
-    gap: 1.5rem;
-    align-items: baseline;
-    padding: 1.5rem 0;
+    grid-template-areas:
+      'content time'
+      'content marker';
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 0.5rem clamp(1rem, 3vw, 2rem);
+    align-items: start;
+    padding: 1.25rem 0;
   }
 
   .news-list time {
+    grid-area: time;
+    justify-self: end;
     color: var(--muted-foreground);
     font-family: var(--font-mono);
     font-size: 0.68rem;
@@ -187,7 +195,7 @@ const carouselSlides = carouselFiles.map((file, index) => ({
 
   .news-list h2 {
     font-family: var(--font-serif);
-    font-size: clamp(1.15rem, 2vw, 1.5rem);
+    font-size: clamp(1.05rem, 1.6vw, 1.25rem);
     font-weight: 700;
     line-height: 1.3;
     text-wrap: balance;
@@ -195,17 +203,41 @@ const carouselSlides = carouselFiles.map((file, index) => ({
 
   .news-list p {
     max-width: 58ch;
-    margin-top: 0.5rem;
+    margin-top: 0.4rem;
     color: var(--muted-foreground);
-    line-height: 1.7;
+    font-size: 0.95rem;
+    line-height: 1.65;
   }
 
-  .news-list a > span {
-    transition: transform 180ms var(--ease-signal);
+  .news-list a > div {
+    grid-area: content;
+    min-width: 0;
   }
 
-  .news-list a:hover > span {
-    transform: translateX(0.25rem);
+  .news-triangle {
+    display: inline-block;
+    width: 0;
+    height: 0;
+    flex: 0 0 auto;
+    border-top: 0.28rem solid transparent;
+    border-bottom: 0.28rem solid transparent;
+    border-left: 0.46rem solid currentColor;
+    transform-origin: center;
+    transition: transform 220ms var(--ease-signal);
+  }
+
+  .news-list a > .news-triangle {
+    grid-area: marker;
+    align-self: end;
+    justify-self: end;
+    margin-bottom: 0.2rem;
+  }
+
+  .news-heading > a:hover .news-triangle,
+  .news-heading > a:focus-visible .news-triangle,
+  .news-list a:hover > .news-triangle,
+  .news-list a:focus-visible > .news-triangle {
+    transform: translateX(0.35rem) scaleX(1.15);
   }
 
   .news-empty {
@@ -256,7 +288,7 @@ const carouselSlides = carouselFiles.map((file, index) => ({
     }
 
     .news-heading :global(h1) {
-      font-size: clamp(2.5rem, 15vw, 3.5rem);
+      font-size: clamp(2.4rem, 14vw, 3.25rem);
     }
 
     .news-heading > a {
@@ -265,22 +297,20 @@ const carouselSlides = carouselFiles.map((file, index) => ({
     }
 
     .news-list a {
-      grid-template-columns: minmax(0, 1fr) auto;
-      gap: 0.75rem;
-    }
-
-    .news-list time {
-      grid-column: 1 / -1;
+      gap: 0.55rem 0.75rem;
     }
   }
 
   @media (prefers-reduced-motion: reduce) {
     .news-heading > a,
-    .news-list a > span {
+    .news-triangle {
       transition: none;
     }
 
-    .news-list a:hover > span {
+    .news-heading > a:hover .news-triangle,
+    .news-heading > a:focus-visible .news-triangle,
+    .news-list a:hover > .news-triangle,
+    .news-list a:focus-visible > .news-triangle {
       transform: none;
     }
   }

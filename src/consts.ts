@@ -6,7 +6,7 @@ export const SITE: Site = {
   href: 'https://future-game-laboratory.github.io/',
   author: '未来游戏研究所',
   locale: 'zh-CN',
-  featuredPostCount: 6,
+  featuredPostCount: 5,
   postsPerPage: 5,
 }
 

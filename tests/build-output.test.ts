@@ -128,9 +128,23 @@ test('homepage keeps the ordered carousel, NEWS entry point, and lean footer', (
   assert.match(homepage, /class="announcement-panel"/)
   assert.match(homepage, /class="home-information"/)
   assert.match(homepage, /class="home-sidebar"/)
-  assert.match(homepage, /class="home-socials"/)
-  assert.match(homepage, /href="\/rss\.xml"/)
-  assert.match(homepage, />RSS</)
+  const homeSocials = homepage.match(
+    /<section class="home-socials"[\s\S]*?<\/section>/,
+  )?.[0]
+  assert.ok(homeSocials)
+  assert.match(
+    homeSocials,
+    /href="https:\/\/github\.com\/Future-Game-Laboratory"/,
+  )
+  assert.match(homeSocials, /href="\/rss\.xml"/)
+  assert.ok(
+    homeSocials.indexOf('aria-label="GitHub"') <
+      homeSocials.indexOf('aria-label="RSS"'),
+  )
+  assert.doesNotMatch(homeSocials, /<span>|title=/)
+  assert.match(homepage, /class="news-triangle"/)
+  const homepageNews = homepage.match(/<ol class="news-list">([\s\S]*?)<\/ol>/)
+  assert.ok((homepageNews?.[1].match(/<li>/g) ?? []).length <= 5)
   assert.match(homepage, /id="announcement-title">公告</)
   assert.match(homepage, /data-title-reveal/)
   const menuTrigger = homepage.match(
