@@ -257,3 +257,16 @@ test('editor implementation keeps the repository permission and content gates wi
   }
   assert.match(workflow, /PUBLIC_GITHUB_OAUTH_PROXY:/)
 })
+
+test('site typecheck excludes the editor-only dependency stubs', () => {
+  const tsconfig = JSON.parse(
+    readFileSync(new URL('../tsconfig.json', import.meta.url), 'utf8'),
+  ) as { exclude?: string[] }
+  const editorTypecheck = readFileSync(
+    new URL('./typecheck-editor.mjs', import.meta.url),
+    'utf8',
+  )
+
+  assert.ok(tsconfig.exclude?.includes('tests/types/editor-stubs.d.ts'))
+  assert.match(editorTypecheck, /tests\/types\/editor-stubs\.d\.ts/)
+})

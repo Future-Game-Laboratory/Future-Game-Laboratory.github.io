@@ -8,5 +8,6 @@
     },
     "jsx": "react-jsx",
     "jsxImportSource": "react"
-  }
+  },
+  "exclude": ["tests/types/editor-stubs.d.ts"]
 }
