@@ -1,20 +1,22 @@
 ---
-import ContentEditor from '@/components/content-editor'
+import ContentManager from '@/components/content-manager'
 import PageHead from '@/components/page-head.astro'
-import PageHeader from '@/components/page-header.astro'
-import Layout from '@/layouts/layout.astro'
+import EditorLayout from '@/layouts/editor-layout.astro'
+
+const repository = {
+  owner: 'Future-Game-Laboratory',
+  repo: 'Future-Game-Laboratory.github.io',
+  branch: 'main',
+}
+const oauthProxy = import.meta.env.PUBLIC_GITHUB_OAUTH_PROXY?.replace(/\/$/, '') ?? ''
 ---
 
-<Layout class="max-w-7xl">
+<EditorLayout>
   <PageHead
     slot="head"
     title="EDITS"
-    description="编写、预览并发布未来游戏研究所的文章。"
+    description="未来游戏研究所内容管理后台"
     noindex
   />
-  <PageHeader
-    title="EDITS"
-    description="编写 MDX、实时检查文章结构，并直接提交到 GitHub 触发站点构建。内容会自动保存在这台设备上。"
-  />
-  <ContentEditor client:load />
-</Layout>
+  <ContentManager client:load repository={repository} oauthProxy={oauthProxy} />
+</EditorLayout>

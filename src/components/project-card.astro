@@ -29,7 +29,6 @@ const { project } = Astro.props
       )
     }
     <div class="project-record__body">
-      <p class="signal-label">PROJECT / EXTERNAL</p>
       <h3>{project.data.name}</h3>
       <p>{project.data.description}</p>
       {
@@ -62,7 +61,6 @@ const { project } = Astro.props
 
 <style>
   .project-record {
-    border-top: 1px solid var(--foreground);
     border-bottom: 1px solid var(--foreground);
   }
 
@@ -92,7 +90,7 @@ const { project } = Astro.props
   }
 
   .project-record h3 {
-    margin-top: 0.85rem;
+    margin: 0;
     font-family: var(--font-display);
     font-size: clamp(1.5rem, 3vw, 2.5rem);
     font-weight: 660;
@@ -100,7 +98,7 @@ const { project } = Astro.props
     letter-spacing: -0.03em;
   }
 
-  .project-record__body > p:not(.signal-label, .project-record__date) {
+  .project-record__body > p:not(.project-record__date) {
     margin-top: 0.75rem;
     color: var(--muted-foreground);
     line-height: 1.7;

@@ -1,59 +1,107 @@
-# 内容编辑器
+# 内容管理后台
 
-编辑器位于站点的 `/edits/` 路由。在当前 GitHub Pages 配置下，完整地址为：
+后台位于站点的 `/edits/` 路由，正式地址为：
 
 <https://future-game-laboratory.github.io/edits/>
 
-## 写作与本地草稿
+该路由不会出现在公开导航与 sitemap 中，并使用 `noindex, nofollow`。这不是安全边界；
+真正的访问控制由 GitHub 登录和仓库权限检查完成。
 
-标题、摘要、日期、路径、标签、作者和正文会自动保存在浏览器的
-`localStorage` 中。它适合避免页面刷新造成的内容丢失，但不应当被当作唯一备份。
+## 后台能管理什么
 
-编辑器可以下载单个 `.mdx` 文件或复制完整源码。下载的文件应放到：
+- 首页轮播图片、公告与小红书、X、哔哩哔哩链接；RSS 始终显示。
+- NEWS 文章与草稿：新建、编辑、预览源码、删除。
+- WORKS 页面正文与项目档案。
+- AUTHORS 作者档案与公开状态。
+- ABOUT 页面正文。
+- CONTACT 页介绍、FormSubmit 收件邮箱或自定义表单接口。
+
+每次保存都会通过 GitHub Contents API 直接提交到 `main`，随后触发 GitHub Pages
+部署。后台不在站点服务器中另存一份内容。
+
+## 登录与权限
+
+用户点击“使用 GitHub 登录”后完成 GitHub OAuth + PKCE 授权。随机 `state` 防止伪造
+回调，当前标签页保存的 PKCE verifier 防止被截获的授权码单独换取令牌。后台会同时读取登录用户和目标
+仓库信息，只有目标仓库返回以下任一权限时才允许进入：
+
+- `permissions.push`
+- `permissions.maintain`
+- `permissions.admin`
+
+仅有 `pull` 或 `triage` 权限的账号不能进入。OAuth 令牌只保存在当前标签页的
+`sessionStorage` 中，关闭标签页后清除；Worker 不保存令牌。
+
+## 为什么需要 OAuth Worker
+
+GitHub Pages 是纯静态托管，浏览器端不能安全保存 OAuth App 的 `client_secret`。
+`workers/github-oauth/` 提供最小 Cloudflare Worker：
+
+- `GET /authorize` 跳转到 GitHub 授权页面。
+- `POST /token` 将一次性 `code` 换成访问令牌。
+- 严格校验允许的 Origin，并给响应设置 `no-store`。
+- 不读取或保存仓库内容。
+
+## 一次性部署配置
+
+### 1. 创建 GitHub OAuth App
+
+在 GitHub 的 **Settings → Developer settings → OAuth Apps** 中创建应用：
+
+- Application name：例如 `FGL Content Admin`
+- Homepage URL：`https://future-game-laboratory.github.io/`
+- Authorization callback URL：`https://future-game-laboratory.github.io/edits/`
+
+记录 Client ID，并生成 Client Secret。不要把 Secret 提交到仓库。
+
+### 2. 部署 Cloudflare Worker
+
+确认 `workers/github-oauth/wrangler.toml` 中的 `ALLOWED_ORIGIN` 与 `CALLBACK_URL`
+对应正式站点，然后在 `workers/github-oauth/` 下执行：
+
+```bash
+npx wrangler login
+npx wrangler secret put GITHUB_CLIENT_ID
+npx wrangler secret put GITHUB_CLIENT_SECRET
+npx wrangler deploy
+```
+
+更完整的 Worker 说明见 `workers/github-oauth/README.md`。
+
+### 3. 配置 GitHub Actions 变量
+
+打开仓库 **Settings → Secrets and variables → Actions → Variables**，新增：
 
 ```text
-src/content/blog/<article-slug>/index.mdx
+PUBLIC_GITHUB_OAUTH_PROXY=https://<worker-name>.<account>.workers.dev
 ```
 
-如果文章包含图片，可在文章目录下创建 `assets/`，并在正文中使用相对路径：
+`.github/workflows/deploy-pages.yml` 会在 Astro 构建时注入该变量。设置完成后重新运行
+Pages 工作流；未配置时 `/edits/` 会显示配置提示并禁用登录按钮。
 
-```md
-![图片说明](./assets/example.png)
+## 本地调试
+
+复制 `.env.example` 为 `.env`，把变量改成已部署的 Worker 地址，再运行：
+
+```bash
+npm ci
+npm run dev
 ```
 
-## 直接发布到 GitHub
+本地调试需要把 Worker 的 `ALLOWED_ORIGIN` 暂时设为 `http://localhost:1234`，并为
+本地回调创建单独的 OAuth App，或在调试结束后立即恢复正式配置。OAuth App 的回调地址
+必须与 Worker 的 `CALLBACK_URL` 完全一致。
 
-编辑器使用 GitHub Contents API 创建或更新文章文件。它不需要独立服务器，适合
-部署在纯静态 GitHub Pages 上。
+## 内容与发布行为
 
-创建 fine-grained personal access token 时：
+- 新 NEWS 文件：`src/content/blog/<slug>/index.mdx`
+- 新 WORKS 项目：`src/content/projects/<slug>.md`
+- 新 AUTHORS 档案：`src/content/authors/<slug>.md`
+- `draft: true` 的 NEWS 会提交到仓库，但不会出现在公开页面与 RSS。
+- NEWS 编辑器支持封面路径以及子文章的可选排序值；正文仍可使用 Markdown / MDX。
+- `draft: true` 的 WORKS 项目和 AUTHORS 档案不会出现在各自公开页面。
+- 保存已有文件时后台使用 Contents API 返回的最新文件 SHA，以支持连续编辑。
+- 删除 NEWS、项目、作者档案或首页轮播图片会直接产生一次 Git 提交；ABOUT、WORKS 页面正文不可在后台删除。
 
-1. 将 **Repository access** 限制为 `Future-Game-Laboratory.github.io`。
-2. 只授予 **Contents: Read and write** 权限。
-3. 使用较短的过期时间，并定期轮换。
-4. 不要把 token 写进文章、提交、Issue 或截图。
-
-Token 只写入当前标签页的 `sessionStorage`，关闭标签页后会被浏览器清除。组织、仓库和
-分支信息保存在 `localStorage`，但 token 不会进入长期存储，也不会发送给博客服务器。
-发布时 token 仅发送到 `https://api.github.com`。
-
-点击“提交并触发构建”后：
-
-1. 编辑器检查 `src/content/blog/<slug>/index.mdx` 是否已存在。
-2. 不存在时创建文件；存在时带 SHA 更新文件。
-3. 提交进入所选分支。
-4. 当分支是 `main` 时，GitHub Actions 自动重新构建并部署站点。
-
-## 草稿与公开发布
-
-- `draft: true`：文件会进入仓库，但不会生成公开文章页面。
-- `draft: false`：构建后出现在文章列表、标签、作者聚合和 RSS 中。
-
-建议首次提交保持草稿状态，确认源码和图片路径后再取消草稿。
-
-## 安全边界
-
-这是一个无后端的仓库编辑器，因此无法像服务端 OAuth 应用那样隐藏凭证或实施多人角色
-权限。对团队公开使用时，优先让成员使用各自的 fine-grained token，并通过 GitHub
-组织权限控制写入者。若将来需要审核流、多人角色或媒体库，应增加 OAuth 服务和 Pull
-Request 发布模式，而不是扩大个人 token 的权限。
+保存前请确认页面顶部的“未保存”状态已经消失。GitHub 的分支保护规则仍然有效；如果
+未来要求审核后发布，应把保存行为改为创建分支和 Pull Request，而不是扩大 OAuth 权限。

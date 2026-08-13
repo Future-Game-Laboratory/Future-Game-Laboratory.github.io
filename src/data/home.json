@@ -1,0 +1,23 @@
+{
+  "announcement": {
+    "title": "公告",
+    "body": "未来游戏研究所的最新活动、研究计划与网站更新将在这里发布。"
+  },
+  "socials": [
+    {
+      "label": "小红书",
+      "href": "",
+      "icon": "xiaohongshu"
+    },
+    {
+      "label": "X",
+      "href": "",
+      "icon": "x-social"
+    },
+    {
+      "label": "哔哩哔哩",
+      "href": "",
+      "icon": "bilibili"
+    }
+  ]
+}

@@ -73,10 +73,11 @@ test('private editor is noindex and absent from sitemap', () => {
 
 test('editor page contains its hydrated app and publishing controls', () => {
   const editor = readFileSync(join(dist, 'edits/index.html'), 'utf8')
-  assert.match(editor, /data-title-text="EDITS"/)
-  assert.match(editor, /正文（Markdown \/ MDX）/)
-  assert.match(editor, /提交并触发构建/)
-  assert.match(editor, /content-editor\.[^"']+\.js/)
+  assert.match(editor, /内容管理后台/)
+  assert.match(editor, /使用 GitHub 登录/)
+  assert.match(editor, /没有编辑权限的账号无法进入/)
+  assert.match(editor, /content-manager\.[^"']+\.js/)
+  assert.doesNotMatch(editor, /fgl-editor-token|Personal Access Token/)
 })
 
 test('nixie loader renders an eight-tube six-decimal progress display', () => {
@@ -219,6 +220,12 @@ test('section headers omit decorative labels and redundant rules', () => {
 
   assert.doesNotMatch(news, /NEWS ARCHIVE \/ PAGE|class="signal-label"/)
   assert.doesNotMatch(works, /WORKS \/ PROJECTS|W \/ 001|class="signal-label"/)
+})
+
+test('draft sample projects stay out of the public WORKS page', () => {
+  const works = readFileSync(join(dist, 'works/index.html'), 'utf8')
+  assert.doesNotMatch(works, /Project [ABC]/)
+  assert.doesNotMatch(works, /PROJECT \/ EXTERNAL/)
 })
 
 test('template author and draft template posts are not generated', () => {

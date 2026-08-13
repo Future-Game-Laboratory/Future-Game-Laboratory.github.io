@@ -1,16 +1,20 @@
 ---
 import PageHead from '@/components/page-head.astro'
 import TitleReveal from '@/components/title-reveal.astro'
-import { CONTACT } from '@/consts'
+import contactSettings from '@/data/contact.json'
 import Layout from '@/layouts/layout.astro'
 
-const email = CONTACT.email.trim()
+const email = contactSettings.email.trim()
 const formAction =
-  CONTACT.formEndpoint.trim() ||
+  contactSettings.formEndpoint.trim() ||
   (email ? `https://formsubmit.co/${encodeURIComponent(email)}` : '')
 const formReady = Boolean(formAction)
 const sent = Astro.url.searchParams.get('sent') === '1'
 const nextUrl = new URL('/contact/?sent=1', Astro.site).toString()
+const introParagraphs = contactSettings.intro
+  .split(/\n\s*\n/)
+  .map((paragraph) => paragraph.trim())
+  .filter(Boolean)
 ---
 
 <Layout class="max-w-5xl">
@@ -26,8 +30,7 @@ const nextUrl = new URL('/contact/?sent=1', Astro.site).toString()
     </header>
 
     <div class="contact-intro">
-      <p>感谢你访问未来游戏研究所。</p>
-      <p>研究合作、内容纠错、活动邀请、加入意向与其他咨询，请使用下方表单。</p>
+      {introParagraphs.map((paragraph) => <p>{paragraph}</p>)}
       <p><span aria-hidden="true">*</span> 表示必填项。</p>
     </div>
 

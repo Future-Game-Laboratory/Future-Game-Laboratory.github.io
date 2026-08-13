@@ -30,8 +30,20 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Test editor and OAuth
+        run: npm test
+
+      - name: Check editor types
+        run: npm run test:types
+
       - name: Build site
         run: npm run build
+        env:
+          ASTRO_TELEMETRY_DISABLED: 1
+          PUBLIC_GITHUB_OAUTH_PROXY: ${{ vars.PUBLIC_GITHUB_OAUTH_PROXY }}
+
+      - name: Test generated site
+        run: npm run test:dist
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3

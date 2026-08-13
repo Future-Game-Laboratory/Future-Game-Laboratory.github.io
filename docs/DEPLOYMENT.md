@@ -11,10 +11,14 @@ The site is built and deployed by `.github/workflows/deploy-pages.yml` whenever
 2. Under **Build and deployment**, set **Source** to **GitHub Actions**.
 3. Push or merge a commit into `main`, or run the workflow manually from the
    **Actions** tab.
+4. To enable `/edits/`, deploy `workers/github-oauth/` and add its URL as the
+   Actions repository variable `PUBLIC_GITHUB_OAUTH_PROXY`. See
+   `docs/EDITOR.md` for the complete OAuth setup.
 
-The workflow installs the exact dependency graph from `package-lock.json`, runs Astro's
-type/content checks, builds the static site, and deploys the `dist` directory
-with GitHub's official Pages actions.
+The workflow installs the exact dependency graph from `package-lock.json`, runs the
+editor/OAuth tests and strict editor type check, runs Astro's type/content checks,
+builds the static site, verifies `dist`, and only then deploys it with GitHub's
+official Pages actions.
 
 ## Local verification
 

@@ -11,4 +11,6 @@ public/static/carousel/
 └── 03-third-poster.jpg
 ```
 
-添加、替换或删除图片后提交到 `main`，GitHub Actions 下一次构建会自动更新轮播。轮播使用固定画框和 `object-fit: contain`，因此不会裁切纵向或横向海报；为减小页面加载量，建议单张图片控制在 1 MB 左右。
+拥有仓库编辑权限的成员可以直接进入 `/edits/`，使用 GitHub 账号登录后在「首页管理」中添加、覆盖或删除轮播图片。也可以继续手动维护上述目录并提交到 `main`。两种方式都会触发 GitHub Actions，构建完成后首页轮播自动更新。
+
+后台接受 AVIF、JPEG、PNG 和 WebP，单张上限为 10 MB；为减小页面加载量，仍建议将图片优化到 1 MB 左右。轮播使用固定画框和 `object-fit: contain`，不会裁切纵向或横向海报。

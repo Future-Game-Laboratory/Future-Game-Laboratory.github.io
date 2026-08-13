@@ -45,6 +45,7 @@ const projects = defineCollection({
       link: z.url(),
       startDate: z.coerce.date().optional(),
       endDate: z.coerce.date().optional(),
+      draft: z.boolean().optional(),
     }),
 })
 

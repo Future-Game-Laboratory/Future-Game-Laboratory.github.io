@@ -30,19 +30,22 @@ npm run preview
 
 ## 内容编辑器
 
-访问 `/edits/` 可以编写、预览和发布文章。旧的 `/editor/` 会自动跳转到新地址。编辑器支持：
+访问 `/edits/` 可以使用 GitHub 账号进入独立内容管理后台。后台登录后会检查当前账号对
+`Future-Game-Laboratory/Future-Game-Laboratory.github.io` 的写权限；无写权限的账号会被拒绝。后台支持：
 
-- 文章元数据和 Markdown/MDX 正文编辑
-- 阅读视图与完整 MDX 源码预览
-- 浏览器本地自动保存草稿
-- 下载或复制 MDX
-- 使用 GitHub fine-grained token 直接提交到仓库
+- 首页轮播、公告与 SNS 链接管理
+- NEWS 文章和草稿的新建、编辑、预览与删除
+- WORKS 页面和项目档案管理
+- AUTHORS 作者档案、ABOUT 正文与 CONTACT 表单配置
+- 通过 GitHub OAuth 直接提交仓库并触发部署
 
 完整说明见 [docs/EDITOR.md](docs/EDITOR.md)。
 
 ## 联系方式
 
-在 `src/consts.ts` 的 `CONTACT` 中配置表单收件地址、公开邮箱、小红书、X 和哔哩哔哩链接：
+首页 SNS 和公告位于 `src/data/home.json`，轮播图片位于
+`public/static/carousel/`，CONTACT 页配置位于 `src/data/contact.json`，均可在
+`/edits/` 中维护：
 
 - `email` 作为默认 FormSubmit 收件地址，不在首页 SNS 区显示。
 - `formEndpoint` 可以覆盖为自有表单服务地址；两者都为空时，Contact 表单保留但发送按钮禁用。
@@ -60,6 +63,9 @@ About 页正文位于 `src/content/pages/about.md`，可直接使用 Markdown �
 推送到 `main` 后，`.github/workflows/deploy-pages.yml` 会执行内容检查、
 生产构建并发布 `dist` 到 GitHub Pages。首次使用需要在仓库的
 **Settings → Pages** 中把 Source 设置为 **GitHub Actions**。
+
+启用后台登录还需要部署 `workers/github-oauth/`，并在 Actions Repository Variables
+中设置 `PUBLIC_GITHUB_OAUTH_PROXY`，完整步骤见 [docs/EDITOR.md](docs/EDITOR.md)。
 
 完整说明见 [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md)。
 

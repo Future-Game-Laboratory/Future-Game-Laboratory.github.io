@@ -1,0 +1,20 @@
+---
+import '@/styles/global.css'
+import '@/styles/editor.css'
+
+import Head from '@/components/head.astro'
+import { SITE } from '@/consts'
+---
+
+<!doctype html>
+<html class="bg-background text-foreground" lang={SITE.locale} data-boot="seen">
+  <Head>
+    <slot name="head" />
+  </Head>
+  <body class="editor-body">
+    <a class="skip-link" href="#editor-main">跳到编辑工作区</a>
+    <main id="editor-main">
+      <slot />
+    </main>
+  </body>
+</html>

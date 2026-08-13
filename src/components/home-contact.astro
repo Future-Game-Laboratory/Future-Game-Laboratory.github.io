@@ -1,9 +1,9 @@
 ---
-import { CONTACT } from '@/consts'
+import home from '@/data/home.json'
 import { withBase } from '@/lib/paths'
 import { Icon } from 'astro-icon/components'
 
-const socialLinks = CONTACT.socials
+const socialLinks = home.socials
   .map((channel) => ({ ...channel, href: channel.href.trim() }))
   .filter((channel) => channel.href)
 const channels = [

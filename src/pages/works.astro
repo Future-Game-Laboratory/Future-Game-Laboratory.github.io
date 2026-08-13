@@ -1,52 +1,95 @@
 ---
-import Link from '@/components/link.astro'
+import ProjectCard from '@/components/project-card.astro'
 import PageHead from '@/components/page-head.astro'
-import PageHeader from '@/components/page-header.astro'
-import { buttonVariants } from '@/components/ui/button'
+import TitleReveal from '@/components/title-reveal.astro'
 import Layout from '@/layouts/layout.astro'
+import { getAllProjects } from '@/lib/data-utils'
+import { getEntry, render } from 'astro:content'
+
+const works = await getEntry('pages', 'works')
+if (!works) throw new Error('Missing works page content')
+const { Content } = await render(works)
+const projects = await getAllProjects()
 ---
 
-<Layout class="max-w-6xl">
+<Layout class="max-w-5xl">
   <PageHead
     slot="head"
-    title="WORKS"
-    description="未来游戏研究所的研究计划、游戏原型与公开项目。"
-  />
-  <PageHeader
-    title="WORKS"
-    description="这里整理研究计划、游戏原型、公开活动与协作项目。项目材料会在具备足够上下文后逐步公开。"
+    title={works.data.title}
+    description={works.data.description}
   />
 
-  <section class="works-intro">
-    <h2>首批项目档案正在整理</h2>
-    <p>
-      我们不会使用示例项目填充目录。项目公开后，这里会提供目标、过程、阶段成果和相关研究记录，而不只是最终展示。
-    </p>
-    <Link href="/blog" class={buttonVariants({ variant: 'outline' })}>
-      先阅读研究资讯 <span aria-hidden="true">→</span>
-    </Link>
-  </section>
+  <header class="works-heading">
+    <TitleReveal text="WORKS" />
+  </header>
+
+  <article class="prose works-document">
+    <Content />
+  </article>
+
+  {
+    projects.length > 0 && (
+      <section class="works-projects" aria-labelledby="works-projects-title">
+        <h2 id="works-projects-title">PROJECTS</h2>
+        <div class="works-projects__list">
+          {projects.map((project) => <ProjectCard project={project} />)}
+        </div>
+      </section>
+    )
+  }
 </Layout>
 
 <style>
-  .works-intro {
-    width: 100%;
-    max-width: 50rem;
-    padding-bottom: clamp(2.5rem, 7vw, 6rem);
+  .works-heading {
+    padding-top: clamp(0.5rem, 1.5vw, 1rem);
   }
 
-  .works-intro h2 {
+  .works-heading :global(h1) {
+    margin: 0;
+    font-size: clamp(2.4rem, 6vw, 4.8rem);
+    font-weight: 760;
+    line-height: 1;
+    letter-spacing: -0.04em;
+  }
+
+  .works-document {
+    width: 100%;
+    max-width: 60rem;
+    padding-bottom: clamp(3rem, 8vw, 7rem);
+  }
+
+  .works-document :global(h2) {
     max-width: 14ch;
+    margin-top: clamp(3rem, 7vw, 5.5rem);
+    border: 0;
+    padding: 0;
     font-family: var(--font-serif);
     font-size: clamp(2rem, 5vw, 4rem);
     font-weight: 700;
     line-height: 1.1;
   }
 
-  .works-intro > p {
-    max-width: 50rem;
-    margin: 1.5rem 0 2rem;
-    color: var(--muted-foreground);
-    line-height: 1.8;
+  .works-document :global(p) {
+    max-width: 70ch;
+  }
+
+  .works-projects {
+    width: 100%;
+    max-width: 60rem;
+    padding-bottom: clamp(3rem, 8vw, 7rem);
+  }
+
+  .works-projects > h2 {
+    margin: clamp(3rem, 7vw, 5.5rem) 0 1rem;
+    font-family: var(--font-display);
+    font-size: clamp(1.8rem, 4vw, 3rem);
+    font-weight: 740;
+    letter-spacing: -0.035em;
+    line-height: 1;
+  }
+
+  .works-projects__list {
+    display: grid;
+    border-top: 1px solid var(--foreground);
   }
 </style>

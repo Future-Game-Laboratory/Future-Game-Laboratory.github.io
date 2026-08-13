@@ -4,7 +4,8 @@ import HomeContact from '@/components/home-contact.astro'
 import Link from '@/components/link.astro'
 import PageHead from '@/components/page-head.astro'
 import TitleReveal from '@/components/title-reveal.astro'
-import { HOME_ANNOUNCEMENT, SITE } from '@/consts'
+import { SITE } from '@/consts'
+import home from '@/data/home.json'
 import Layout from '@/layouts/layout.astro'
 import { getRecentPosts } from '@/lib/data-utils'
 import { withBase } from '@/lib/paths'
@@ -50,8 +51,8 @@ const carouselSlides = carouselFiles.map((file, index) => ({
           class="announcement-panel"
           aria-labelledby="announcement-title"
         >
-          <h2 id="announcement-title">{HOME_ANNOUNCEMENT.title}</h2>
-          <p>{HOME_ANNOUNCEMENT.body}</p>
+          <h2 id="announcement-title">{home.announcement.title}</h2>
+          <p>{home.announcement.body}</p>
         </section>
       </aside>
 

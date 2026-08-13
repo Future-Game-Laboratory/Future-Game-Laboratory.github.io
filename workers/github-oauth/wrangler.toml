@@ -1,0 +1,7 @@
+name = "fgl-github-oauth"
+main = "src/index.ts"
+compatibility_date = "2026-08-01"
+
+[vars]
+ALLOWED_ORIGIN = "https://future-game-laboratory.github.io"
+CALLBACK_URL = "https://future-game-laboratory.github.io/edits/"
