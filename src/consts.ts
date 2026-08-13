@@ -53,6 +53,12 @@ export const CONTACT = {
   ],
 } as const
 
+// 首页侧栏公告：只维护标题与正文，不与 NEWS 文章内容耦合。
+export const HOME_ANNOUNCEMENT = {
+  title: '公告',
+  body: '未来游戏研究所的最新活动、研究计划与网站更新将在这里发布。',
+} as const
+
 export const ICON_MAP: IconMap = {
   Website: 'lucide:globe',
   GitHub: 'lucide:github',

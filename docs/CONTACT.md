@@ -18,9 +18,9 @@ export const CONTACT = {
 } as const
 ```
 
-- `email` 会在首页右下角明文显示，并作为 Contact 表单的默认收件地址。
+- `email` 作为 Contact 表单的默认收件地址，不在首页 SNS 区显示。
 - `formEndpoint` 留空时，表单使用 FormSubmit；如已有自己的表单服务，可在此填写完整提交地址。
-- 邮箱或 SNS 链接留空时，对应入口不会显示。全部留空时，首页不会渲染联系方式区域。
+- SNS 链接留空时，对应入口不会显示；RSS 按钮始终保留。
 - `email` 与 `formEndpoint` 都为空时，Contact 表单仍可预览，但提交按钮会被禁用。
 
 使用 FormSubmit 时，首次提交会向收件地址发送激活邮件。完成确认后，后续表单内容才会转发到该邮箱。

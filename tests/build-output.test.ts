@@ -125,6 +125,12 @@ test('homepage keeps the ordered carousel, NEWS entry point, and lean footer', (
   assert.match(homepage, /\/static\/carousel\/01-forked-light-cover\.webp/)
   assert.match(homepage, /data-poster-carousel/)
   assert.match(homepage, /class="announcement-panel"/)
+  assert.match(homepage, /class="home-information"/)
+  assert.match(homepage, /class="home-sidebar"/)
+  assert.match(homepage, /class="home-socials"/)
+  assert.match(homepage, /href="\/rss\.xml"/)
+  assert.match(homepage, />RSS</)
+  assert.match(homepage, /id="announcement-title">公告</)
   assert.match(homepage, /data-title-reveal/)
   const menuTrigger = homepage.match(
     /<button[^>]*class="[^"]*menu-trigger[^"]*"[\s\S]*?<\/button>/,
@@ -149,6 +155,7 @@ test('homepage keeps the ordered carousel, NEWS entry point, and lean footer', (
   assert.doesNotMatch(homepage, />INFORMATION</)
   assert.doesNotMatch(homepage, /href="\/edits\/?"/)
   assert.doesNotMatch(homepage, /class="home-contact"/)
+  assert.doesNotMatch(homepage, /mailto:/)
   assert.doesNotMatch(
     homepage,
     /class="(?:front-hero|front-directory|front-sidebar|front-closing)"/,

@@ -44,9 +44,9 @@ npm run preview
 
 在 `src/consts.ts` 的 `CONTACT` 中配置表单收件地址、公开邮箱、小红书、X 和哔哩哔哩链接：
 
-- `email` 会在首页右下角明文显示，并作为默认 FormSubmit 收件地址。
+- `email` 作为默认 FormSubmit 收件地址，不在首页 SNS 区显示。
 - `formEndpoint` 可以覆盖为自有表单服务地址；两者都为空时，Contact 表单保留但发送按钮禁用。
-- SNS 链接填写后在首页显示对应图标按钮；留空则不渲染。
+- SNS 链接填写后在首页显示对应黑白图标按钮；留空则不渲染，RSS 按钮始终保留。
 - 默认 FormSubmit 第一次使用时，需要在收件邮箱完成一次激活确认。
 
 完整配置说明见 [docs/CONTACT.md](docs/CONTACT.md)。
