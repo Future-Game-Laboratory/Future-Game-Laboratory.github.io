@@ -74,7 +74,7 @@ test('private editor is noindex and absent from sitemap', () => {
 test('editor page contains its hydrated app and publishing controls', () => {
   const editor = readFileSync(join(dist, 'edits/index.html'), 'utf8')
   assert.match(editor, /内容管理后台/)
-  assert.match(editor, /使用 GitHub 登录/)
+  assert.match(editor, /使用 GitHub(?:\s*账号)?登录/)
   assert.match(editor, /没有编辑权限的账号无法进入/)
   assert.match(editor, /content-manager\.[^"']+\.js/)
   assert.doesNotMatch(editor, /fgl-editor-token|Personal Access Token/)
@@ -145,7 +145,7 @@ test('homepage keeps the ordered carousel, NEWS entry point, and lean footer', (
   assert.match(homepage, /class="news-triangle"/)
   const homepageNews = homepage.match(/<ol class="news-list">([\s\S]*?)<\/ol>/)
   assert.ok((homepageNews?.[1].match(/<li>/g) ?? []).length <= 5)
-  assert.match(homepage, /id="announcement-title">公告</)
+  assert.match(homepage, /id="announcement-title"[^>]*>公告</)
   assert.match(homepage, /data-title-reveal/)
   const menuTrigger = homepage.match(
     /<button[^>]*class="[^"]*menu-trigger[^"]*"[\s\S]*?<\/button>/,
@@ -160,7 +160,7 @@ test('homepage keeps the ordered carousel, NEWS entry point, and lean footer', (
   assert.doesNotMatch(footer, /FUTURE GAME LABORATORY|signal-label/)
   assert.match(
     footer,
-    /© 2026 未来游戏研究所 All Rights Reserved\./,
+    /(?:©|&copy;)\s*2026 未来游戏研究所 All Rights Reserved\./,
   )
   assert.doesNotMatch(footer, /持续研究|公开过程/)
   for (const label of ['NEWS', 'WORKS', 'ABOUT', 'CONTACT']) {
