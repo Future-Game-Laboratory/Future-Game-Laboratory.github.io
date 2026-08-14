@@ -9,5 +9,5 @@
     "jsx": "react-jsx",
     "jsxImportSource": "react"
   },
-  "exclude": ["tests/types/editor-stubs.d.ts"]
+  "exclude": [".astro", "dist", "node_modules", "tests/types/editor-stubs.d.ts"]
 }

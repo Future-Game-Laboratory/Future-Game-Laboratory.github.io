@@ -600,6 +600,22 @@
   margin-top: 0.08rem;
 }
 
+.admin-notice code {
+  border-radius: 3px;
+  background: rgb(255 255 255 / 72%);
+  padding: 0.08rem 0.25rem;
+  font-family: Consolas, 'SFMono-Regular', ui-monospace, monospace;
+  font-size: 0.82em;
+  overflow-wrap: anywhere;
+}
+
+.admin-notice a {
+  color: inherit;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 0.16em;
+}
+
 .admin-notice--error {
   border-color: #efb2ad;
   background: #fff4f3;

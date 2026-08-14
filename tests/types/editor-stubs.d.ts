@@ -55,6 +55,7 @@ declare module 'lucide-react' {
   export const FolderKanban: any
   export const Github: any
   export const Home: any
+  export const KeyRound: any
   export const LayoutDashboard: any
   export const LoaderCircle: any
   export const LogOut: any

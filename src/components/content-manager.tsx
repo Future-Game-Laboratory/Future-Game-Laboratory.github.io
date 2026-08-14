@@ -9,8 +9,8 @@ import {
   FilePlus2,
   FileText,
   FolderKanban,
-  Github,
   Home,
+  KeyRound,
   LayoutDashboard,
   LoaderCircle,
   LogOut,
@@ -263,11 +263,15 @@ function StatusNotice({
 }
 
 function LoginScreen({
+  repository,
+  setupGuideUrl,
   oauthReady,
   busy,
   error,
   onLogin,
 }: {
+  repository: string
+  setupGuideUrl: string
   oauthReady: boolean
   busy: boolean
   error: string
@@ -283,14 +287,20 @@ function LoginScreen({
         <h1 id="admin-login-title">内容管理后台</h1>
         <p className="admin-login__description">
           使用 GitHub 账号登录。系统会在登录后检查你对
-          <strong> Future-Game-Laboratory.github.io </strong>
+          <strong> {repository} </strong>
           仓库的写入权限，没有编辑权限的账号无法进入。
         </p>
 
         {error && <StatusNotice kind="error">{error}</StatusNotice>}
         {!oauthReady && (
           <StatusNotice kind="info">
-            管理员尚未配置 GitHub OAuth 服务。请先按照 docs/EDITOR.md 完成部署。
+            后台界面已经部署，但尚未连接 GitHub OAuth 服务。请先部署
+            <code> workers/github-oauth </code>，再把 Worker 地址设置为仓库 Actions
+            变量 <code>PUBLIC_GITHUB_OAUTH_PROXY</code> 并重新运行 Pages 部署。
+            <a href={setupGuideUrl} target="_blank" rel="noreferrer">
+              查看完整配置步骤
+            </a>
+            。
           </StatusNotice>
         )}
 
@@ -300,7 +310,7 @@ function LoginScreen({
           onClick={onLogin}
           disabled={busy || !oauthReady}
         >
-          {busy ? <LoaderCircle className="admin-spin" /> : <Github />}
+          {busy ? <LoaderCircle className="admin-spin" /> : <KeyRound />}
           {busy ? '正在验证账号…' : '使用 GitHub 登录'}
         </button>
         <p className="admin-login__security">
@@ -370,7 +380,7 @@ export default function ContentManager({ repository, oauthProxy }: Props) {
   const [section, setSection] = useState<Section>('dashboard')
   const [mobileNavigation, setMobileNavigation] = useState(false)
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
-  const [authBusy, setAuthBusy] = useState(true)
+  const [authBusy, setAuthBusy] = useState(oauthReady)
   const [authError, setAuthError] = useState('')
   const [loading, setLoading] = useState(false)
   const [saving, setSaving] = useState(false)
@@ -392,6 +402,7 @@ export default function ContentManager({ repository, oauthProxy }: Props) {
   const mobileDrawerRef = useRef<HTMLElement>(null)
 
   const repositoryName = `${repository.owner}/${repository.repo}`
+  const setupGuideUrl = `https://github.com/${repository.owner}/${repository.repo}/blob/${repository.branch}/docs/EDITOR.md`
 
   const refreshFiles = useCallback(
     async (activeToken: string) => {
@@ -432,12 +443,19 @@ export default function ContentManager({ repository, oauthProxy }: Props) {
     let cancelled = false
 
     const restore = async () => {
-      setAuthBusy(true)
-      setAuthError('')
       const url = new URL(window.location.href)
       const code = url.searchParams.get('code')
       const returnedState = url.searchParams.get('state')
       const oauthError = url.searchParams.get('error_description') || url.searchParams.get('error')
+      const savedToken = sessionStorage.getItem(TOKEN_KEY)
+
+      if (!code && !oauthError && !savedToken) {
+        setAuthBusy(false)
+        return
+      }
+
+      setAuthBusy(true)
+      setAuthError('')
 
       try {
         if (code || oauthError) {
@@ -470,7 +488,6 @@ export default function ContentManager({ repository, oauthProxy }: Props) {
           return
         }
 
-        const savedToken = sessionStorage.getItem(TOKEN_KEY)
         if (savedToken && !cancelled) await authenticate(savedToken)
       } catch (reason) {
         sessionStorage.removeItem(TOKEN_KEY)
@@ -1250,6 +1267,8 @@ export default function ContentManager({ repository, oauthProxy }: Props) {
   if (!user || !access || !token) {
     return (
       <LoginScreen
+        repository={repositoryName}
+        setupGuideUrl={setupGuideUrl}
         oauthReady={oauthReady}
         busy={authBusy}
         error={authError}

@@ -255,6 +255,9 @@ test('editor implementation keeps the repository permission and content gates wi
   ]) {
     assert.match(manager, new RegExp(path.replace(/[./]/g, '\\$&')))
   }
+  assert.match(manager, /后台界面已经部署，但尚未连接 GitHub OAuth 服务/)
+  assert.match(manager, /PUBLIC_GITHUB_OAUTH_PROXY/)
+  assert.match(manager, /docs\/EDITOR\.md/)
   assert.match(workflow, /PUBLIC_GITHUB_OAUTH_PROXY:/)
 })
 
