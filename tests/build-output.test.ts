@@ -114,6 +114,11 @@ test('generated pages keep the single white theme and omit breadcrumbs', () => {
 
 test('homepage keeps the ordered carousel, NEWS entry point, and lean footer', () => {
   const homepage = readFileSync(join(dist, 'index.html'), 'utf8')
+  assert.match(homepage, /<title>未来游戏研究所<\/title>/)
+  assert.doesNotMatch(
+    homepage,
+    /<title>未来游戏研究所 \| 未来游戏研究所<\/title>/,
+  )
   const footer = homepage.match(
     /<footer class="site-footer"[\s\S]*?<\/footer>/,
   )?.[0]
