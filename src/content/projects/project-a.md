@@ -1,10 +1,11 @@
 ---
-name: 'Project A'
-description: 'This is an example project description! You should replace this with a description of your own project.'
-tags: ['Framework A', 'Library B', 'Tool C', 'Resource D']
-image: '../../../public/static/1200x630.png'
-link: 'https://example.com'
-startDate: '2024-01-01'
-endDate: '2024-02-01'
-draft: true
+name: "歧光"
+description: "歧路未竟，光启新章。"
+tags: ["Game"]
+image: "../../../public/static/1200x630.png"
+link: "https://future-game-laboratory.github.io/"
+startDate: "2026-06-20"
+draft: false
 ---
+
+
