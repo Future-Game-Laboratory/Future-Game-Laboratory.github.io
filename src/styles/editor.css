@@ -600,6 +600,24 @@
   margin-top: 0.08rem;
 }
 
+.admin-notice__content {
+  min-width: 0;
+  flex: 1;
+}
+
+.admin-notice__actions {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-left: 0.75rem;
+}
+
+.admin-notice__actions a {
+  color: inherit;
+  font-weight: 700;
+  text-underline-offset: 0.18em;
+}
+
 .admin-notice code {
   border-radius: 3px;
   background: rgb(255 255 255 / 72%);
@@ -880,6 +898,18 @@
   font-weight: 650;
 }
 
+.admin-change-badge {
+  display: inline-flex;
+  min-height: 1.75rem;
+  align-items: center;
+  border-radius: 999px;
+  background: #eaf3fc;
+  color: #194f82;
+  padding: 0.25rem 0.6rem;
+  font-size: 0.7rem;
+  font-weight: 650;
+}
+
 .admin-form-section {
   padding-bottom: 1.25rem;
 }
@@ -991,6 +1021,69 @@
 
 .admin-form-field--wide {
   grid-column: 1 / -1;
+}
+
+.admin-path-control {
+  position: relative;
+}
+
+.admin-path-control > svg {
+  position: absolute;
+  top: 50%;
+  left: 0.8rem;
+  z-index: 1;
+  width: 1rem;
+  transform: translateY(-50%);
+  color: var(--admin-muted);
+  pointer-events: none;
+}
+
+.admin-path-control .admin-field {
+  padding-left: 2.35rem;
+}
+
+.admin-path-help {
+  color: var(--admin-muted);
+  font-size: 0.72rem;
+  line-height: 1.6;
+}
+
+.admin-path-help code,
+.admin-identity-note code,
+.admin-template-note code,
+.admin-path-change code {
+  color: #273140;
+  font-family: Consolas, 'SFMono-Regular', ui-monospace, monospace;
+  font-size: 0.95em;
+  overflow-wrap: anywhere;
+}
+
+.admin-identity-note,
+.admin-template-note,
+.admin-path-change {
+  display: block;
+  border: 1px solid var(--admin-line);
+  border-radius: 4px;
+  padding: 0.7rem 0.75rem;
+  font-size: 0.74rem;
+  line-height: 1.6;
+}
+
+.admin-identity-note {
+  background: #f5f7f9;
+  color: #465365;
+}
+
+.admin-template-note {
+  border-color: #dfc56f;
+  background: #fff8df;
+  color: #674f00;
+}
+
+.admin-path-change {
+  border-color: #a9d9c1;
+  background: #f0faf5;
+  color: #145c3c;
 }
 
 .admin-source-editor {
@@ -1278,6 +1371,29 @@
 .admin-page-entry strong {
   font-size: 0.78rem;
   font-weight: 650;
+}
+
+.admin-file-list strong {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.admin-file-list strong > span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.admin-file-tag {
+  flex: 0 0 auto;
+  border-radius: 999px;
+  background: #fff0bd;
+  color: #6f5200;
+  padding: 0.12rem 0.38rem;
+  font-size: 0.58rem;
+  font-style: normal;
+  font-weight: 700;
 }
 
 .admin-file-list small,

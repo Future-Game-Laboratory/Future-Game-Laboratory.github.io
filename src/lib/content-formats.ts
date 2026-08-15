@@ -5,6 +5,23 @@ export type ParsedDocument = {
   body: string
 }
 
+export type SluggedContentKind = 'news' | 'project' | 'author'
+
+const STARTER_CONTENT_PATHS = new Set([
+  'src/content/authors/enscribe.md',
+  'src/content/projects/project-a.md',
+  'src/content/projects/project-b.md',
+  'src/content/projects/project-c.md',
+  'src/content/blog/2023-post/index.mdx',
+  'src/content/blog/2024-post/index.mdx',
+  'src/content/blog/callouts-component/index.mdx',
+  'src/content/blog/mobile-nav-and-subposts/index.mdx',
+  'src/content/blog/mobile-nav-and-subposts/mobile-navigation.mdx',
+  'src/content/blog/mobile-nav-and-subposts/subposts.mdx',
+  'src/content/blog/rehype-patch/index.mdx',
+  'src/content/blog/the-state-of-static-blogs/index.mdx',
+])
+
 const parseValue = (value: string): FrontmatterValue => {
   const trimmed = value.trim()
   if (trimmed === 'true') return true
@@ -82,7 +99,41 @@ export const splitCommaList = (value: string) =>
     .filter(Boolean)
 
 export const repositoryPathToSlug = (path: string) => {
-  const match = path.match(/^src\/content\/blog\/(.+?)\/(?:index\.)?mdx?$/)
-  if (match) return match[1]
+  const blogMatch = path.match(/^src\/content\/blog\/(.+)\.mdx?$/)
+  if (blogMatch) return blogMatch[1].replace(/\/index$/, '')
   return path.split('/').pop()?.replace(/\.mdx?$/, '') ?? path
 }
+
+export const normalizeContentSlug = (value: string) =>
+  value
+    .normalize('NFKD')
+    .replace(/\p{Mark}+/gu, '')
+    .toLocaleLowerCase('en-US')
+    .replace(/[^\p{Letter}\p{Number}]+/gu, '-')
+    .replace(/^-+|-+$/g, '')
+
+export const isValidContentSlug = (value: string) =>
+  /^[\p{Letter}\p{Number}]+(?:-[\p{Letter}\p{Number}]+)*$/u.test(value)
+
+export const repositoryPathForSlug = (
+  kind: SluggedContentKind,
+  slug: string,
+) =>
+  kind === 'news'
+    ? `src/content/blog/${slug}/index.mdx`
+    : kind === 'project'
+      ? `src/content/projects/${slug}.md`
+      : `src/content/authors/${slug}.md`
+
+export const publicPathForSlug = (
+  kind: SluggedContentKind,
+  slug: string,
+) =>
+  kind === 'news'
+    ? `/blog/${slug}/`
+    : kind === 'author'
+      ? `/authors/${slug}/`
+      : null
+
+export const isStarterContentPath = (path: string) =>
+  STARTER_CONTENT_PATHS.has(path)

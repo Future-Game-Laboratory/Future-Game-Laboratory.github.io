@@ -4,13 +4,13 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "ASTRO_TELEMETRY_DISABLED=1 astro dev",
-    "start": "ASTRO_TELEMETRY_DISABLED=1 astro dev",
-    "build": "ASTRO_TELEMETRY_DISABLED=1 astro check && ASTRO_TELEMETRY_DISABLED=1 astro build",
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro check && astro build",
     "test": "node --experimental-strip-types --test tests/editor.test.ts",
     "test:types": "node tests/typecheck-editor.mjs",
     "test:dist": "node --experimental-strip-types --test tests/build-output.test.ts",
-    "preview": "ASTRO_TELEMETRY_DISABLED=1 astro preview",
+    "preview": "astro preview",
     "astro": "astro",
     "prettier": "prettier --write **/*.{ts,tsx,css,astro} --ignore-path .gitignore"
   },

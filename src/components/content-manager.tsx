@@ -12,6 +12,7 @@ import {
   Home,
   KeyRound,
   LayoutDashboard,
+  Link2,
   LoaderCircle,
   LogOut,
   Mail,
@@ -29,21 +30,28 @@ import {
 } from 'lucide-react'
 import {
   canPushRepository,
+  commitRepositoryChanges,
   deleteRepositoryFile,
   getAuthenticatedUser,
   getRepositoryAccess,
   getRepositoryFile,
+  githubErrorMessage,
   listRepositoryFiles,
   saveRepositoryFile,
   saveRepositoryBinaryFile,
-  GitHubApiError,
   type GitHubUser,
   type RepositoryAccess,
   type RepositoryFile,
+  type RepositoryTextChange,
 } from '@/lib/github-editor'
 import {
   commaList,
+  isStarterContentPath,
+  isValidContentSlug,
+  normalizeContentSlug,
   parseDocument,
+  publicPathForSlug,
+  repositoryPathForSlug,
   repositoryPathToSlug,
   serializeDocument,
   splitCommaList,
@@ -90,6 +98,12 @@ type ContactSettings = {
   intro: string
   email: string
   formEndpoint: string
+}
+
+type EditorMessage = {
+  text: string
+  commitUrl?: string
+  deploymentUrl?: string
 }
 
 const isRecord = (value: unknown): value is Record<string, unknown> =>
@@ -203,17 +217,18 @@ const fileTitle = (file: RepositoryFile) => {
   return repositoryPathToSlug(file.path)
 }
 
-const githubErrorMessage = (reason: unknown, fallback: string) => {
-  if (reason instanceof GitHubApiError) {
-    if (reason.status === 401) return 'GitHub 登录已失效，请退出后重新登录。'
-    if (reason.status === 403) {
-      return 'GitHub 拒绝了此次操作，请确认仓库权限、分支保护和 API 配额。'
-    }
-    if (reason.status === 409 || reason.status === 422) {
-      return '远端内容已经变化，当前版本无法直接覆盖。请复制未保存内容，重新打开该文件后再提交。'
-    }
+const canEditDocumentSlug = (document: EditableFile) =>
+  document.kind !== 'page' &&
+  (document.isNew ||
+    document.kind === 'project' ||
+    document.kind === 'author' ||
+    /\/index\.mdx?$/.test(document.path))
+
+const targetPathForDocument = (document: EditableFile, slug: string) => {
+  if (document.kind === 'page' || !canEditDocumentSlug(document)) {
+    return document.path
   }
-  return reason instanceof Error ? reason.message : fallback
+  return repositoryPathForSlug(document.kind, slug)
 }
 
 const serializeEditableDocument = (active: EditableFile) => {
@@ -257,7 +272,7 @@ function StatusNotice({
   return (
     <div className={`admin-notice admin-notice--${kind}`} role={kind === 'error' ? 'alert' : 'status'}>
       <Icon aria-hidden="true" />
-      <span>{children}</span>
+      <div className="admin-notice__content">{children}</div>
     </div>
   )
 }
@@ -385,11 +400,14 @@ export default function ContentManager({ repository, oauthProxy }: Props) {
   const [loading, setLoading] = useState(false)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
-  const [message, setMessage] = useState('')
+  const [message, setMessage] = useState<EditorMessage | null>(null)
   const [search, setSearch] = useState('')
   const [selectedPath, setSelectedPath] = useState('')
   const [document, setDocument] = useState<EditableFile | null>(null)
   const [documentOriginal, setDocumentOriginal] = useState('')
+  const [documentSlug, setDocumentSlug] = useState('')
+  const [documentOriginalSlug, setDocumentOriginalSlug] = useState('')
+  const [documentSlugTouched, setDocumentSlugTouched] = useState(false)
   const [editorTab, setEditorTab] = useState<'edit' | 'preview' | 'source'>('edit')
   const [homeSettings, setHomeSettings] = useState<HomeSettings | null>(null)
   const [homeOriginal, setHomeOriginal] = useState('')
@@ -403,6 +421,7 @@ export default function ContentManager({ repository, oauthProxy }: Props) {
 
   const repositoryName = `${repository.owner}/${repository.repo}`
   const setupGuideUrl = `https://github.com/${repository.owner}/${repository.repo}/blob/${repository.branch}/docs/EDITOR.md`
+  const deploymentUrl = `https://github.com/${repository.owner}/${repository.repo}/actions/workflows/deploy-pages.yml`
 
   const refreshFiles = useCallback(
     async (activeToken: string) => {
@@ -536,7 +555,8 @@ export default function ContentManager({ repository, oauthProxy }: Props) {
   const logout = () => {
     const hasUnsavedChanges = Boolean(
       (document &&
-        serializeEditableDocument(document) !== documentOriginal) ||
+        (serializeEditableDocument(document) !== documentOriginal ||
+          documentSlug !== documentOriginalSlug)) ||
         (homeSettings &&
           `${JSON.stringify(homeSettings, null, 2)}\n` !== homeOriginal) ||
         (contactSettings &&
@@ -557,6 +577,9 @@ export default function ContentManager({ repository, oauthProxy }: Props) {
     setFiles([])
     setDocument(null)
     setDocumentOriginal('')
+    setDocumentSlug('')
+    setDocumentOriginalSlug('')
+    setDocumentSlugTouched(false)
     setHomeSettings(null)
     setHomeOriginal('')
     setContactSettings(null)
@@ -564,7 +587,7 @@ export default function ContentManager({ repository, oauthProxy }: Props) {
     setSelectedPath('')
     setSearch('')
     setError('')
-    setMessage('')
+    setMessage(null)
   }
 
   const closeMobileNavigation = useCallback((restoreFocus = true) => {
@@ -628,7 +651,8 @@ export default function ContentManager({ repository, oauthProxy }: Props) {
       section !== 'home' &&
       section !== 'contact' &&
       document &&
-      serializeActiveDocument(document) !== documentOriginal
+      (serializeActiveDocument(document) !== documentOriginal ||
+        documentSlug !== documentOriginalSlug)
     const hasHomeChanges =
       section === 'home' &&
       homeSettings &&
@@ -652,8 +676,11 @@ export default function ContentManager({ repository, oauthProxy }: Props) {
     setSelectedPath('')
     setDocument(null)
     setDocumentOriginal('')
+    setDocumentSlug('')
+    setDocumentOriginalSlug('')
+    setDocumentSlugTouched(false)
     setError('')
-    setMessage('')
+    setMessage(null)
     setSearch('')
   }
 
@@ -717,13 +744,17 @@ export default function ContentManager({ repository, oauthProxy }: Props) {
   const loadDocument = useCallback(
     async (path: string, kind: EditorKind) => {
       if (!token) return
-      if (document && serializeActiveDocument(document) !== documentOriginal) {
+      if (
+        document &&
+        (serializeActiveDocument(document) !== documentOriginal ||
+          documentSlug !== documentOriginalSlug)
+      ) {
         if (!window.confirm('当前内容尚未保存，确定要打开其他内容吗？')) return
       }
 
       setLoading(true)
       setError('')
-      setMessage('')
+      setMessage(null)
       try {
         const file = await getRepositoryFile(
           token,
@@ -733,6 +764,7 @@ export default function ContentManager({ repository, oauthProxy }: Props) {
           path,
         )
         const parsed = parseDocument(file.content)
+        const nextSlug = kind === 'page' ? '' : repositoryPathToSlug(path)
         setSelectedPath(path)
         setDocument({
           path,
@@ -754,6 +786,9 @@ export default function ContentManager({ repository, oauthProxy }: Props) {
             isNew: false,
           }),
         )
+        setDocumentSlug(nextSlug)
+        setDocumentOriginalSlug(nextSlug)
+        setDocumentSlugTouched(true)
         setEditorTab('edit')
       } catch (reason) {
         setError(githubErrorMessage(reason, '内容读取失败。'))
@@ -761,7 +796,14 @@ export default function ContentManager({ repository, oauthProxy }: Props) {
         setLoading(false)
       }
     },
-    [document, documentOriginal, repository, token],
+    [
+      document,
+      documentOriginal,
+      documentOriginalSlug,
+      documentSlug,
+      repository,
+      token,
+    ],
   )
 
   const loadHome = useCallback(async () => {
@@ -827,7 +869,11 @@ export default function ContentManager({ repository, oauthProxy }: Props) {
   }, [document, loadDocument, section])
 
   const createDocument = (kind: 'news' | 'project' | 'author') => {
-    if (document && serializeActiveDocument(document) !== documentOriginal) {
+    if (
+      document &&
+      (serializeActiveDocument(document) !== documentOriginal ||
+        documentSlug !== documentOriginalSlug)
+    ) {
       if (!window.confirm('当前内容尚未保存，确定要新建内容吗？')) return
     }
     const today = new Date().toISOString().slice(0, 10)
@@ -867,27 +913,35 @@ export default function ContentManager({ repository, oauthProxy }: Props) {
     setSelectedPath('')
     setDocument(next)
     setDocumentOriginal('')
-    setNewSlug('')
+    setDocumentSlug('')
+    setDocumentOriginalSlug('')
+    setDocumentSlugTouched(false)
     setEditorTab('edit')
     setError('')
-    setMessage('')
+    setMessage(null)
   }
 
   const updateAttribute = (key: string, value: FrontmatterValue) => {
+    const identityKey =
+      document?.kind === 'project' || document?.kind === 'author'
+        ? 'name'
+        : 'title'
+    if (
+      document?.isNew &&
+      !documentSlugTouched &&
+      key === identityKey &&
+      typeof value === 'string'
+    ) {
+      setDocumentSlug(normalizeContentSlug(value))
+    }
     setDocument((current) =>
       current
         ? { ...current, attributes: { ...current.attributes, [key]: value } }
         : current,
     )
     setError('')
-    setMessage('')
+    setMessage(null)
   }
-
-  const [newSlug, setNewSlug] = useState('')
-
-  useEffect(() => {
-    if (!document?.isNew) setNewSlug('')
-  }, [document?.isNew, document?.kind])
 
   const validateDocument = (active: EditableFile) => {
     if (active.kind === 'news') {
@@ -935,8 +989,16 @@ export default function ContentManager({ repository, oauthProxy }: Props) {
       if (!active.body.trim()) return '页面正文不能为空。'
     }
 
-    if (active.isNew && !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(newSlug)) {
-      return '新内容路径仅支持小写字母、数字和连字符。'
+    if (canEditDocumentSlug(active) && !isValidContentSlug(documentSlug)) {
+      return '请填写有效的内容地址，可使用中文、英文字母、数字和连字符。'
+    }
+
+    if (
+      active.kind !== 'page' &&
+      active.attributes.draft !== true &&
+      isStarterContentPath(targetPathForDocument(active, documentSlug))
+    ) {
+      return '这是示例模板地址。正式发布前请把“页面地址 / 内容 ID”改成与当前内容对应的新地址。'
     }
     return ''
   }
@@ -946,20 +1008,18 @@ export default function ContentManager({ repository, oauthProxy }: Props) {
     const issue = validateDocument(document)
     if (issue) return setError(issue)
 
-    const path = document.isNew
-      ? document.kind === 'news'
-        ? `src/content/blog/${newSlug}/index.mdx`
-        : document.kind === 'project'
-          ? `src/content/projects/${newSlug}.md`
-          : `src/content/authors/${newSlug}.md`
-      : document.path
+    const path = targetPathForDocument(document, documentSlug)
+    const isRenaming = !document.isNew && path !== document.path
     const content = serializeActiveDocument({ ...document, path })
     setSaving(true)
     setError('')
-    setMessage('')
+    setMessage(null)
 
     try {
-      if (document.isNew && files.some((file) => file.path === path)) {
+      if (
+        (document.isNew || isRenaming) &&
+        files.some((file) => file.path === path)
+      ) {
         throw new Error(`仓库中已存在 ${path}。`)
       }
       const title = fieldValue(
@@ -968,33 +1028,152 @@ export default function ContentManager({ repository, oauthProxy }: Props) {
           ? 'name'
           : 'title',
       )
-      const result = await saveRepositoryFile({
-        token,
-        owner: repository.owner,
-        repo: repository.repo,
-        branch: repository.branch,
-        path,
-        content,
-        sha: document.sha,
-        message: `${document.isNew ? '创建' : '更新'}${
-          document.kind === 'news'
-            ? '文章'
-            : document.kind === 'project'
-              ? '项目'
-              : document.kind === 'author'
-                ? '作者'
-                : '页面'
-        }：${title}`,
-      })
-      const nextSha = result.content.sha
+      const contentLabel =
+        document.kind === 'news'
+          ? '文章'
+          : document.kind === 'project'
+            ? '项目'
+            : document.kind === 'author'
+              ? '作者'
+              : '页面'
+      const commitMessage = `${
+        isRenaming ? '更新地址并保存' : document.isNew ? '创建' : '更新'
+      }${contentLabel}：${title}`
+
+      let nextSha = ''
+      let commitUrl = ''
+      let updatedAuthorReferences = 0
+
+      if (isRenaming) {
+        const changes: RepositoryTextChange[] = []
+
+        if (document.kind === 'news') {
+          const oldSlug = repositoryPathToSlug(document.path)
+          const oldPrefix = `src/content/blog/${oldSlug}/`
+          const newPrefix = `src/content/blog/${documentSlug}/`
+          const relatedFiles = files.filter((file) =>
+            file.path.startsWith(oldPrefix),
+          )
+          const oldPaths = new Set(relatedFiles.map((file) => file.path))
+          const relatedContents = await Promise.all(
+            relatedFiles.map(async (file) => ({
+              file,
+              content:
+                file.path === document.path
+                  ? content
+                  : (
+                      await getRepositoryFile(
+                        token,
+                        repository.owner,
+                        repository.repo,
+                        repository.branch,
+                        file.path,
+                      )
+                    ).content,
+            })),
+          )
+
+          relatedContents.forEach(({ file, content: fileContent }) => {
+            const nextPath = `${newPrefix}${file.path.slice(oldPrefix.length)}`
+            if (
+              files.some(
+                (existing) =>
+                  existing.path === nextPath && !oldPaths.has(nextPath),
+              )
+            ) {
+              throw new Error(`仓库中已存在 ${nextPath}。`)
+            }
+            changes.push({ path: nextPath, content: fileContent })
+            changes.push({ path: file.path, content: null })
+          })
+        } else {
+          changes.push({ path, content })
+          changes.push({ path: document.path, content: null })
+        }
+
+        if (document.kind === 'author') {
+          const oldSlug = repositoryPathToSlug(document.path)
+          const skipStarterReferences = isStarterContentPath(document.path)
+          const referencedFiles = await Promise.all(
+            newsFiles.map(async (file) => {
+              if (skipStarterReferences && isStarterContentPath(file.path)) {
+                return null
+              }
+              const source = await getRepositoryFile(
+                token,
+                repository.owner,
+                repository.repo,
+                repository.branch,
+                file.path,
+              )
+              const parsed = parseDocument(source.content)
+              const authors = parsed.attributes.authors
+              if (!Array.isArray(authors) || !authors.includes(oldSlug)) {
+                return null
+              }
+              parsed.attributes.authors = authors.map((author) =>
+                author === oldSlug ? documentSlug : author,
+              )
+              return {
+                path: file.path,
+                content: serializeDocument(parsed.attributes, parsed.body),
+              } satisfies RepositoryTextChange
+            }),
+          )
+          const authorChanges: RepositoryTextChange[] = []
+          referencedFiles.forEach((change) => {
+            if (change) authorChanges.push(change)
+          })
+          updatedAuthorReferences = authorChanges.length
+          changes.push(...authorChanges)
+        }
+
+        const result = await commitRepositoryChanges({
+          token,
+          owner: repository.owner,
+          repo: repository.repo,
+          branch: repository.branch,
+          message: commitMessage,
+          changes,
+        })
+        nextSha = result.contentShas[path]
+        commitUrl = result.commit.html_url
+      } else {
+        const result = await saveRepositoryFile({
+          token,
+          owner: repository.owner,
+          repo: repository.repo,
+          branch: repository.branch,
+          path,
+          content,
+          sha: document.sha,
+          message: commitMessage,
+        })
+        nextSha = result.content.sha
+        commitUrl = result.commit.html_url
+      }
+
       setDocument((current) =>
         current
           ? { ...current, path, sha: nextSha, source: content, isNew: false }
           : current,
       )
       setDocumentOriginal(content)
+      setDocumentOriginalSlug(documentSlug)
+      setDocumentSlugTouched(true)
       setSelectedPath(path)
-      setMessage('内容已提交到 GitHub，部署工作流将自动更新网站。')
+      const isDraft = document.attributes.draft === true
+      setMessage({
+        text: isDraft
+          ? `${contentLabel}草稿已保存到 GitHub，不会出现在公开网站。`
+          : `${contentLabel}已提交，GitHub Pages 正在构建，通常会在 1–2 分钟后上线。${
+              updatedAuthorReferences
+                ? ` 已同步更新 ${updatedAuthorReferences} 篇文章中的作者 ID。`
+                : ''
+            }`,
+        commitUrl,
+        deploymentUrl: isDraft ? undefined : deploymentUrl,
+      })
       try {
         await refreshFiles(token)
       } catch (reason) {
@@ -1016,9 +1195,9 @@ export default function ContentManager({ repository, oauthProxy }: Props) {
     if (!window.confirm(`确定删除 ${document.path} 吗？此操作会提交到 GitHub。`)) return
     setSaving(true)
     setError('')
-    setMessage('')
+    setMessage(null)
     try {
-      await deleteRepositoryFile({
+      const result = await deleteRepositoryFile({
         token,
         owner: repository.owner,
         repo: repository.repo,
@@ -1035,8 +1214,15 @@ export default function ContentManager({ repository, oauthProxy }: Props) {
       })
       setDocument(null)
       setDocumentOriginal('')
+      setDocumentSlug('')
+      setDocumentOriginalSlug('')
+      setDocumentSlugTouched(false)
       setSelectedPath('')
-      setMessage('内容已从仓库删除。')
+      setMessage({
+        text: '内容已从仓库删除。',
+        commitUrl: result.commit.html_url,
+        deploymentUrl,
+      })
       try {
         await refreshFiles(token)
       } catch (reason) {
@@ -1067,7 +1253,7 @@ export default function ContentManager({ repository, oauthProxy }: Props) {
     const content = `${JSON.stringify(homeSettings, null, 2)}\n`
     setSaving(true)
     setError('')
-    setMessage('')
+    setMessage(null)
     try {
       const result = await saveRepositoryFile({
         token,
@@ -1081,7 +1267,11 @@ export default function ContentManager({ repository, oauthProxy }: Props) {
       })
       setHomeSha(result.content.sha)
       setHomeOriginal(content)
-      setMessage('首页设置已提交到 GitHub。')
+      setMessage({
+        text: '首页设置已提交，GitHub Pages 正在构建。',
+        commitUrl: result.commit.html_url,
+        deploymentUrl,
+      })
       try {
         await refreshFiles(token)
       } catch (reason) {
@@ -1120,9 +1310,9 @@ export default function ContentManager({ repository, oauthProxy }: Props) {
 
     setSaving(true)
     setError('')
-    setMessage('')
+    setMessage(null)
     try {
-      await saveRepositoryBinaryFile({
+      const result = await saveRepositoryBinaryFile({
         token,
         owner: repository.owner,
         repo: repository.repo,
@@ -1132,7 +1322,11 @@ export default function ContentManager({ repository, oauthProxy }: Props) {
         sha: existing?.sha,
         message: `${existing ? '更新' : '添加'}首页轮播：${file.name}`,
       })
-      setMessage(`轮播图片 ${file.name} 已提交到 GitHub。`)
+      setMessage({
+        text: `轮播图片 ${file.name} 已提交，GitHub Pages 正在构建。`,
+        commitUrl: result.commit.html_url,
+        deploymentUrl,
+      })
       try {
         await refreshFiles(token)
       } catch (reason) {
@@ -1155,9 +1349,9 @@ export default function ContentManager({ repository, oauthProxy }: Props) {
     if (!window.confirm(`确定删除轮播图片 ${name} 吗？`)) return
     setSaving(true)
     setError('')
-    setMessage('')
+    setMessage(null)
     try {
-      await deleteRepositoryFile({
+      const result = await deleteRepositoryFile({
         token,
         owner: repository.owner,
         repo: repository.repo,
@@ -1166,7 +1360,11 @@ export default function ContentManager({ repository, oauthProxy }: Props) {
         sha: file.sha,
         message: `删除首页轮播：${name}`,
       })
-      setMessage(`轮播图片 ${name} 已从仓库删除。`)
+      setMessage({
+        text: `轮播图片 ${name} 已从仓库删除。`,
+        commitUrl: result.commit.html_url,
+        deploymentUrl,
+      })
       try {
         await refreshFiles(token)
       } catch (reason) {
@@ -1201,7 +1399,7 @@ export default function ContentManager({ repository, oauthProxy }: Props) {
     const content = `${JSON.stringify(contactSettings, null, 2)}\n`
     setSaving(true)
     setError('')
-    setMessage('')
+    setMessage(null)
     try {
       const result = await saveRepositoryFile({
         token,
@@ -1215,7 +1413,11 @@ export default function ContentManager({ repository, oauthProxy }: Props) {
       })
       setContactSha(result.content.sha)
       setContactOriginal(content)
-      setMessage('联系页设置已提交到 GitHub。')
+      setMessage({
+        text: '联系页设置已提交，GitHub Pages 正在构建。',
+        commitUrl: result.commit.html_url,
+        deploymentUrl,
+      })
       try {
         await refreshFiles(token)
       } catch (reason) {
@@ -1233,7 +1435,24 @@ export default function ContentManager({ repository, oauthProxy }: Props) {
   }
 
   const serializedDocument = document ? serializeActiveDocument(document) : ''
-  const documentDirty = Boolean(document && serializedDocument !== documentOriginal)
+  const changeDocumentSlug = (value: string) => {
+    setDocumentSlugTouched(true)
+    setDocumentSlug(
+      value
+        .normalize('NFKC')
+        .toLocaleLowerCase('en-US')
+        .replace(/[^\p{Letter}\p{Number}-]+/gu, '-')
+        .replace(/-{2,}/g, '-')
+        .replace(/^-+/, ''),
+    )
+    setError('')
+    setMessage(null)
+  }
+  const documentDirty = Boolean(
+    document &&
+      (serializedDocument !== documentOriginal ||
+        documentSlug !== documentOriginalSlug),
+  )
   const homeDirty = Boolean(
     homeSettings && `${JSON.stringify(homeSettings, null, 2)}\n` !== homeOriginal,
   )
@@ -1253,10 +1472,10 @@ export default function ContentManager({ repository, oauthProxy }: Props) {
     if (!token) return
     setLoading(true)
     setError('')
-    setMessage('')
+    setMessage(null)
     try {
       await refreshFiles(token)
-      setMessage('仓库内容列表已刷新。')
+      setMessage({ text: '仓库内容列表已刷新。' })
     } catch (reason) {
       setError(reason instanceof Error ? reason.message : '仓库刷新失败。')
     } finally {
@@ -1378,7 +1597,7 @@ export default function ContentManager({ repository, oauthProxy }: Props) {
             <a href={access.html_url} target="_blank" rel="noreferrer" className="admin-repository-status">
               <ShieldCheck aria-hidden="true" />
               <span>
-                <strong>可编辑</strong>
+                <strong>仓库已连接</strong>
                 <small>{repository.branch}</small>
               </span>
             </a>
@@ -1395,7 +1614,25 @@ export default function ContentManager({ repository, oauthProxy }: Props) {
 
         <div className="admin-content">
           {error && <StatusNotice kind="error">{error}</StatusNotice>}
-          {message && <StatusNotice kind="success">{message}</StatusNotice>}
+          {message && (
+            <StatusNotice kind="success">
+              <span>{message.text}</span>
+              {(message.commitUrl || message.deploymentUrl) && (
+                <span className="admin-notice__actions">
+                  {message.commitUrl && (
+                    <a href={message.commitUrl} target="_blank" rel="noreferrer">
+                      查看提交
+                    </a>
+                  )}
+                  {message.deploymentUrl && (
+                    <a href={message.deploymentUrl} target="_blank" rel="noreferrer">
+                      查看部署状态
+                    </a>
+                  )}
+                </span>
+              )}
+            </StatusNotice>
+          )}
 
           {section === 'dashboard' && (
             <Dashboard
@@ -1437,21 +1674,14 @@ export default function ContentManager({ repository, oauthProxy }: Props) {
               loading={loading}
               saving={saving}
               editorTab={editorTab}
-              newSlug={newSlug}
+              slug={documentSlug}
+              originalSlug={documentOriginalSlug}
               onSearch={setSearch}
               onSelect={(path) => void loadDocument(path, 'news')}
               onCreate={() => createDocument('news')}
               onUpdateAttribute={updateAttribute}
               onUpdateBody={(body) => setDocument((current) => (current ? { ...current, body } : current))}
-              onSlugChange={(value) =>
-                setNewSlug(
-                  value
-                    .toLowerCase()
-                    .replace(/[^a-z0-9-]/g, '')
-                    .replace(/-{2,}/g, '-')
-                    .replace(/^-+/, ''),
-                )
-              }
+              onSlugChange={changeDocumentSlug}
               onEditorTab={setEditorTab}
               onSave={saveDocument}
               onDelete={removeDocument}
@@ -1468,22 +1698,15 @@ export default function ContentManager({ repository, oauthProxy }: Props) {
               loading={loading}
               saving={saving}
               editorTab={editorTab}
-              newSlug={newSlug}
+              slug={documentSlug}
+              originalSlug={documentOriginalSlug}
               onSearch={setSearch}
               onSelectPage={() => void loadDocument(WORKS_PATH, 'page')}
               onSelectProject={(path) => void loadDocument(path, 'project')}
               onCreate={() => createDocument('project')}
               onUpdateAttribute={updateAttribute}
               onUpdateBody={(body) => setDocument((current) => (current ? { ...current, body } : current))}
-              onSlugChange={(value) =>
-                setNewSlug(
-                  value
-                    .toLowerCase()
-                    .replace(/[^a-z0-9-]/g, '')
-                    .replace(/-{2,}/g, '-')
-                    .replace(/^-+/, ''),
-                )
-              }
+              onSlugChange={changeDocumentSlug}
               onEditorTab={setEditorTab}
               onSave={saveDocument}
               onDelete={removeDocument}
@@ -1502,7 +1725,8 @@ export default function ContentManager({ repository, oauthProxy }: Props) {
               loading={loading}
               saving={saving}
               editorTab={editorTab}
-              newSlug={newSlug}
+              slug={documentSlug}
+              originalSlug={documentOriginalSlug}
               onSearch={setSearch}
               onSelect={(path) => void loadDocument(path, 'author')}
               onCreate={() => createDocument('author')}
@@ -1512,15 +1736,7 @@ export default function ContentManager({ repository, oauthProxy }: Props) {
                   current ? { ...current, body } : current,
                 )
               }
-              onSlugChange={(value) =>
-                setNewSlug(
-                  value
-                    .toLowerCase()
-                    .replace(/[^a-z0-9-]/g, '')
-                    .replace(/-{2,}/g, '-')
-                    .replace(/^-+/, ''),
-                )
-              }
+              onSlugChange={changeDocumentSlug}
               onEditorTab={setEditorTab}
               onSave={saveDocument}
               onDelete={removeDocument}
@@ -1586,7 +1802,7 @@ function Dashboard({
         <div>
           <p>你好，{user.name || user.login}</p>
           <h2>网站内容已经连接到 GitHub</h2>
-          <span>你对 {repository} 具有写入权限。所有修改将提交到 {branch} 分支并触发部署。</span>
+          <span>账号具备 {repository} 的仓库写权限。正式内容会提交到 {branch} 并触发部署；草稿只保存到仓库，不会公开显示。</span>
         </div>
         <button
           type="button"
@@ -1892,6 +2108,8 @@ function EditorHeading({
   saving,
   onSave,
   onDelete,
+  saveLabel = '保存并发布',
+  changeLabel,
 }: {
   title: string
   description: string
@@ -1899,16 +2117,19 @@ function EditorHeading({
   saving: boolean
   onSave: () => void
   onDelete?: () => void
+  saveLabel?: string
+  changeLabel?: string
 }) {
   return (
     <header className="admin-editor-heading">
       <div><h2>{title}</h2><p>{description}</p></div>
       <div>
         {dirty && <span className="admin-unsaved">未保存</span>}
+        {changeLabel && <span className="admin-change-badge">{changeLabel}</span>}
         {onDelete && <button type="button" className="admin-button admin-button--danger" onClick={onDelete} disabled={saving}><Trash2 />删除</button>}
         <button type="button" className="admin-button admin-button--primary" onClick={onSave} disabled={saving || !dirty}>
           {saving ? <LoaderCircle className="admin-spin" /> : <Save />}
-          {saving ? '正在提交…' : '保存并发布'}
+          {saving ? '正在提交…' : saveLabel}
         </button>
       </div>
     </header>
@@ -1926,7 +2147,8 @@ function CollectionWorkspace(props: {
   loading: boolean
   saving: boolean
   editorTab: 'edit' | 'preview' | 'source'
-  newSlug: string
+  slug: string
+  originalSlug: string
   onSearch: (value: string) => void
   onSelect: (path: string) => void
   onCreate: () => void
@@ -1959,7 +2181,8 @@ function CollectionWorkspace(props: {
             documentDirty={props.documentDirty}
             saving={props.saving}
             editorTab={props.editorTab}
-            newSlug={props.newSlug}
+            slug={props.slug}
+            originalSlug={props.originalSlug}
             onUpdateAttribute={props.onUpdateAttribute}
             onUpdateBody={props.onUpdateBody}
             onSlugChange={props.onSlugChange}
@@ -1989,7 +2212,8 @@ function WorksWorkspace(props: {
   loading: boolean
   saving: boolean
   editorTab: 'edit' | 'preview' | 'source'
-  newSlug: string
+  slug: string
+  originalSlug: string
   onSearch: (value: string) => void
   onSelectPage: () => void
   onSelectProject: (path: string) => void
@@ -2013,7 +2237,7 @@ function WorksWorkspace(props: {
         <div className="admin-file-list">
           {props.files.map((file) => (
             <button type="button" key={file.path} className={props.selectedPath === file.path ? 'is-active' : ''} onClick={() => props.onSelectProject(file.path)}>
-              <FolderKanban /><span><strong>{fileTitle(file)}</strong><small>{file.path}</small></span><ChevronRight />
+              <FolderKanban /><span><strong><span>{fileTitle(file)}</span>{isStarterContentPath(file.path) && <em className="admin-file-tag">示例</em>}</strong><small>{file.path}</small></span><ChevronRight />
             </button>
           ))}
         </div>
@@ -2025,7 +2249,8 @@ function WorksWorkspace(props: {
             documentDirty={props.documentDirty}
             saving={props.saving}
             editorTab={props.editorTab}
-            newSlug={props.newSlug}
+            slug={props.slug}
+            originalSlug={props.originalSlug}
             onUpdateAttribute={props.onUpdateAttribute}
             onUpdateBody={props.onUpdateBody}
             onSlugChange={props.onSlugChange}
@@ -2067,7 +2292,7 @@ function ContentList({
       <div className="admin-file-list">
         {files.length ? files.map((file) => (
           <button type="button" key={file.path} className={selectedPath === file.path ? 'is-active' : ''} onClick={() => onSelect(file.path)}>
-            <FileText /><span><strong>{fileTitle(file)}</strong><small>{file.path}</small></span><ChevronRight />
+            <FileText /><span><strong><span>{fileTitle(file)}</span>{isStarterContentPath(file.path) && <em className="admin-file-tag">示例</em>}</strong><small>{file.path}</small></span><ChevronRight />
           </button>
         )) : <p className="admin-file-list__empty">没有匹配的内容。</p>}
       </div>
@@ -2094,7 +2319,8 @@ function StandalonePageEditor(props: {
         documentDirty={props.dirty}
         saving={props.saving}
         editorTab={props.editorTab}
-        newSlug=""
+        slug=""
+        originalSlug=""
         onUpdateAttribute={props.onUpdateAttribute}
         onUpdateBody={props.onUpdateBody}
         onSlugChange={() => undefined}
@@ -2105,12 +2331,90 @@ function StandalonePageEditor(props: {
   )
 }
 
+function ContentIdentityField({
+  document,
+  slug,
+  originalSlug,
+  onChange,
+}: {
+  document: EditableFile
+  slug: string
+  originalSlug: string
+  onChange: (value: string) => void
+}) {
+  if (document.kind === 'page') return null
+
+  const editable = canEditDocumentSlug(document)
+  const pathChanged =
+    !document.isNew && editable && Boolean(slug) && slug !== originalSlug
+  const publicPath = publicPathForSlug(document.kind, slug)
+  const originalPublicPath = publicPathForSlug(document.kind, originalSlug)
+  const targetRepositoryPath = targetPathForDocument(document, slug)
+  const label =
+    document.kind === 'news'
+      ? '文章地址'
+      : document.kind === 'author'
+        ? '作者地址'
+        : '项目 ID'
+  const starterTemplate =
+    !document.isNew && isStarterContentPath(document.path)
+
+  return (
+    <label className="admin-form-field admin-form-field--wide admin-identity-field">
+      <span>
+        {label} <i aria-hidden="true">*</i>
+      </span>
+      <div className="admin-path-control">
+        <Link2 aria-hidden="true" />
+        <input
+          className="admin-field admin-mono"
+          value={slug}
+          onChange={(event) => onChange(event.target.value)}
+          placeholder={document.kind === 'project' ? 'project-id' : 'page-address'}
+          disabled={!editable}
+          required
+          aria-describedby="admin-content-address-help"
+        />
+      </div>
+      <small id="admin-content-address-help" className="admin-path-help">
+        {publicPath ? (
+          <>
+            公开路径 <code>{publicPath}</code>。名称可以随时修改，地址建议在发布后保持稳定。
+          </>
+        ) : (
+          <>
+            仓库路径 <code>{targetRepositoryPath}</code>。项目名称与这个 ID 可以不同。
+          </>
+        )}
+      </small>
+      {!editable && (
+        <span className="admin-identity-note">
+          子文章地址由父文章目录决定；如需整体改名，请打开该目录的主文章。
+        </span>
+      )}
+      {starterTemplate && (
+        <span className="admin-template-note">
+          这是随站点附带的示例模板。你可以直接填写真实内容，但正式发布前需要改成自己的地址；保存时系统会安全迁移文件。
+        </span>
+      )}
+      {pathChanged && (
+        <span className="admin-path-change">
+          保存后将从 <code>{originalPublicPath ?? document.path}</code> 更新为{' '}
+          <code>{publicPath ?? targetRepositoryPath}</code>
+          {document.kind === 'author' && '，公开文章中的作者 ID 也会同步更新'}。
+        </span>
+      )}
+    </label>
+  )
+}
+
 function DocumentEditor({
   document,
   documentDirty,
   saving,
   editorTab,
-  newSlug,
+  slug,
+  originalSlug,
   onUpdateAttribute,
   onUpdateBody,
   onSlugChange,
@@ -2122,7 +2426,8 @@ function DocumentEditor({
   documentDirty: boolean
   saving: boolean
   editorTab: 'edit' | 'preview' | 'source'
-  newSlug: string
+  slug: string
+  originalSlug: string
   onUpdateAttribute: (key: string, value: FrontmatterValue) => void
   onUpdateBody: (value: string) => void
   onSlugChange: (value: string) => void
@@ -2136,6 +2441,17 @@ function DocumentEditor({
       : 'title'
   const title = fieldValue(document.attributes, titleKey) || (document.isNew ? '新内容' : filename(document.path))
   const source = serializeEditableDocument(document)
+  const pathChanged =
+    !document.isNew &&
+    canEditDocumentSlug(document) &&
+    Boolean(slug) &&
+    slug !== originalSlug
+  const isDraft = document.kind !== 'page' && document.attributes.draft === true
+  const saveLabel = pathChanged
+    ? '保存并更新地址'
+    : isDraft
+      ? '保存草稿'
+      : '保存并发布'
   return (
     <div className="admin-editor-stack">
       <EditorHeading
@@ -2145,6 +2461,8 @@ function DocumentEditor({
         saving={saving}
         onSave={onSave}
         onDelete={!document.isNew && document.kind !== 'page' ? onDelete : undefined}
+        saveLabel={saveLabel}
+        changeLabel={pathChanged ? '地址将更新' : undefined}
       />
 
       <div className="admin-editor-tabs" role="tablist" aria-label="编辑视图">
@@ -2160,7 +2478,12 @@ function DocumentEditor({
           <div className="admin-form-grid">
             <Field label={document.kind === 'project' ? '项目名称' : document.kind === 'author' ? '作者名称' : '标题'} value={fieldValue(document.attributes, titleKey)} onChange={(value) => onUpdateAttribute(titleKey, value)} required />
             {document.kind !== 'author' && <Field label="摘要" value={fieldValue(document.attributes, 'description')} onChange={(value) => onUpdateAttribute('description', value)} required />}
-            {document.isNew && <Field label="文件路径" value={newSlug} onChange={onSlugChange} placeholder="lowercase-slug" required mono />}
+            <ContentIdentityField
+              document={document}
+              slug={slug}
+              originalSlug={originalSlug}
+              onChange={onSlugChange}
+            />
             {document.kind === 'news' && <>
               <Field label="发布日期" type="date" value={fieldValue(document.attributes, 'date')} onChange={(value) => onUpdateAttribute('date', value)} required />
               <Field label="封面路径" value={fieldValue(document.attributes, 'image')} onChange={(value) => onUpdateAttribute('image', value)} placeholder="./banner.png" mono />

@@ -57,6 +57,7 @@ declare module 'lucide-react' {
   export const Home: any
   export const KeyRound: any
   export const LayoutDashboard: any
+  export const Link2: any
   export const LoaderCircle: any
   export const LogOut: any
   export const Mail: any

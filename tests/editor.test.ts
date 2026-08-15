@@ -1,17 +1,24 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
 import {
+  isStarterContentPath,
+  isValidContentSlug,
+  normalizeContentSlug,
   parseDocument,
+  publicPathForSlug,
+  repositoryPathForSlug,
   repositoryPathToSlug,
   serializeDocument,
   splitCommaList,
 } from '../src/lib/content-formats.ts'
 import {
   canPushRepository,
+  commitRepositoryChanges,
   decodeBase64,
   encodeBase64,
   encodeBytesBase64,
   GitHubApiError,
+  githubErrorMessage,
 } from '../src/lib/github-editor.ts'
 import oauthWorker from '../workers/github-oauth/src/index.ts'
 import { readFileSync } from 'node:fs'
@@ -31,11 +38,25 @@ test('repository access requires a GitHub write-capable permission', () => {
 })
 
 test('GitHub API errors retain their HTTP status for conflict handling', () => {
-  const error = new GitHubApiError(409, 'sha does not match', 'https://docs.github.com/')
+  const error = new GitHubApiError(
+    409,
+    'sha does not match',
+    'https://docs.github.com/',
+    { requestId: 'request-1', rateLimitRemaining: 42 },
+  )
   assert.equal(error.name, 'GitHubApiError')
   assert.equal(error.status, 409)
   assert.equal(error.message, 'sha does not match')
   assert.equal(error.documentationUrl, 'https://docs.github.com/')
+  assert.equal(error.requestId, 'request-1')
+  assert.equal(error.rateLimitRemaining, 42)
+  assert.match(
+    githubErrorMessage(
+      new GitHubApiError(403, 'Resource not accessible by integration'),
+      '保存失败。',
+    ),
+    /OAuth App.*组织批准/,
+  )
 })
 
 test('content format preserves unicode frontmatter and markdown', () => {
@@ -72,6 +93,102 @@ test('content helpers normalize lists and repository slugs', () => {
     'future-notes',
   )
   assert.equal(repositoryPathToSlug('src/content/projects/game-a.md'), 'game-a')
+  assert.equal(
+    repositoryPathToSlug('src/content/blog/parent/child.mdx'),
+    'parent/child',
+  )
+  assert.equal(normalizeContentSlug(' Cloud 09 '), 'cloud-09')
+  assert.equal(normalizeContentSlug('歧光'), '歧光')
+  assert.equal(isValidContentSlug('研究-notes-2'), true)
+  assert.equal(isValidContentSlug('unfinished-'), false)
+  assert.equal(
+    repositoryPathForSlug('author', 'cloud09'),
+    'src/content/authors/cloud09.md',
+  )
+  assert.equal(publicPathForSlug('news', '研究-notes'), '/blog/研究-notes/')
+  assert.equal(
+    isStarterContentPath('src/content/authors/enscribe.md'),
+    true,
+  )
+})
+
+test('multi-file repository changes update one Git reference atomically', async () => {
+  const originalFetch = globalThis.fetch
+  const requests: Array<{ url: string; method: string; body?: unknown }> = []
+  let blobIndex = 0
+  globalThis.fetch = async (input, init) => {
+    const url = String(input)
+    const method = init?.method || 'GET'
+    const body = init?.body ? JSON.parse(String(init.body)) : undefined
+    requests.push({ url, method, body })
+
+    if (url.endsWith('/git/ref/heads/main')) {
+      return Response.json({ object: { sha: 'head-sha' } })
+    }
+    if (url.endsWith('/git/commits/head-sha')) {
+      return Response.json({ tree: { sha: 'base-tree-sha' } })
+    }
+    if (url.endsWith('/git/blobs')) {
+      blobIndex += 1
+      return Response.json({ sha: `blob-${blobIndex}` })
+    }
+    if (url.endsWith('/git/trees')) {
+      return Response.json({ sha: 'next-tree-sha' })
+    }
+    if (url.endsWith('/git/commits')) {
+      return Response.json({
+        sha: 'next-commit-sha',
+        html_url: 'https://github.com/example/commit/next-commit-sha',
+      })
+    }
+    if (url.endsWith('/git/refs/heads/main')) {
+      return Response.json({ ref: 'refs/heads/main' })
+    }
+    return Response.json({ message: 'Unexpected request' }, { status: 500 })
+  }
+
+  try {
+    const result = await commitRepositoryChanges({
+      token: 'token',
+      owner: 'Future-Game-Laboratory',
+      repo: 'Future-Game-Laboratory.github.io',
+      branch: 'main',
+      message: '迁移作者地址',
+      changes: [
+        { path: 'src/content/authors/cloud09.md', content: 'content' },
+        { path: 'src/content/authors/enscribe.md', content: null },
+      ],
+    })
+
+    assert.equal(result.contentShas['src/content/authors/cloud09.md'], 'blob-1')
+    const treeRequest = requests.find(
+      (request) => request.url.endsWith('/git/trees') && request.method === 'POST',
+    )
+    assert.deepEqual(treeRequest?.body, {
+      base_tree: 'base-tree-sha',
+      tree: [
+        {
+          path: 'src/content/authors/cloud09.md',
+          mode: '100644',
+          type: 'blob',
+          sha: 'blob-1',
+        },
+        {
+          path: 'src/content/authors/enscribe.md',
+          mode: '100644',
+          type: 'blob',
+          sha: null,
+        },
+      ],
+    })
+    const refUpdate = requests.find(
+      (request) =>
+        request.url.endsWith('/git/refs/heads/main') && request.method === 'PATCH',
+    )
+    assert.deepEqual(refUpdate?.body, { sha: 'next-commit-sha', force: false })
+  } finally {
+    globalThis.fetch = originalFetch
+  }
 })
 
 test('GitHub content encoding preserves unicode', () => {
@@ -234,6 +351,10 @@ test('editor implementation keeps the repository permission and content gates wi
     new URL('../src/lib/github-editor.ts', import.meta.url),
     'utf8',
   )
+  const formats = readFileSync(
+    new URL('../src/lib/content-formats.ts', import.meta.url),
+    'utf8',
+  )
   const workflow = readFileSync(
     new URL('../.github/workflows/deploy-pages.yml', import.meta.url),
     'utf8',
@@ -253,11 +374,18 @@ test('editor implementation keeps the repository permission and content gates wi
     'src/content/projects/',
     'src/content/authors/',
   ]) {
-    assert.match(manager, new RegExp(path.replace(/[./]/g, '\\$&')))
+    assert.match(
+      `${manager}\n${formats}`,
+      new RegExp(path.replace(/[./]/g, '\\$&')),
+    )
   }
   assert.match(manager, /后台界面已经部署，但尚未连接 GitHub OAuth 服务/)
   assert.match(manager, /PUBLIC_GITHUB_OAUTH_PROXY/)
   assert.match(manager, /docs\/EDITOR\.md/)
+  assert.match(manager, /保存并更新地址/)
+  assert.match(manager, /这是随站点附带的示例模板/)
+  assert.match(manager, /查看部署状态/)
+  assert.match(manager, /commitRepositoryChanges/)
   assert.match(workflow, /PUBLIC_GITHUB_OAUTH_PROXY:/)
 })
 
