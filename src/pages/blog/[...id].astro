@@ -99,7 +99,11 @@ const tocSections = await getTOCSections(currentPostId)
           uppercase={false}
         />
 
-        <p class="article-deck">{post.data.description}</p>
+        {
+          post.data.description.trim() && (
+            <p class="article-deck">{post.data.description}</p>
+          )
+        }
 
         <div class="article-meta">
           {

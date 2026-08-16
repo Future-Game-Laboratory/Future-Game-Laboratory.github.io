@@ -45,19 +45,28 @@ declare namespace JSX {
 
 declare module 'lucide-react' {
   export const Bell: any
+  export const Bold: any
   export const BookOpenText: any
   export const CheckCircle2: any
   export const ChevronRight: any
   export const CircleAlert: any
+  export const Code2: any
   export const ExternalLink: any
   export const FilePlus2: any
   export const FileText: any
   export const FolderKanban: any
   export const Github: any
+  export const Heading2: any
   export const Home: any
+  export const ImagePlus: any
+  export const Italic: any
   export const KeyRound: any
   export const LayoutDashboard: any
+  export const Link: any
   export const Link2: any
+  export const List: any
+  export const ListChecks: any
+  export const ListOrdered: any
   export const LoaderCircle: any
   export const LogOut: any
   export const Mail: any
@@ -68,7 +77,9 @@ declare module 'lucide-react' {
   export const Save: any
   export const Search: any
   export const ShieldCheck: any
+  export const Strikethrough: any
   export const Trash2: any
+  export const Quote: any
   export const UserRound: any
   export const Users: any
   export const X: any

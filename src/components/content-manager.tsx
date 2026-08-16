@@ -28,6 +28,9 @@ import {
   Users,
   X,
 } from 'lucide-react'
+import MarkdownEditor, {
+  type MarkdownEditorMode,
+} from '@/components/markdown-editor'
 import {
   canPushRepository,
   commitRepositoryChanges,
@@ -78,6 +81,7 @@ type Section =
   | 'about'
   | 'contact'
 type EditorKind = 'news' | 'project' | 'author' | 'page'
+type EditorTab = MarkdownEditorMode
 
 type EditableFile = {
   path: string
@@ -233,7 +237,7 @@ const targetPathForDocument = (document: EditableFile, slug: string) => {
 
 const serializeEditableDocument = (active: EditableFile) => {
   const optionalStringFields: Partial<Record<EditorKind, string[]>> = {
-    news: ['image'],
+    news: ['description', 'image'],
     project: ['startDate', 'endDate'],
     author: [
       'pronouns',
@@ -370,22 +374,6 @@ function Field({
   )
 }
 
-function MarkdownPreview({ source }: { source: string }) {
-  return (
-    <div className="admin-preview">
-      {source.split('\n').map((line, index) => {
-        if (line.startsWith('### ')) return <h3 key={index}>{line.slice(4)}</h3>
-        if (line.startsWith('## ')) return <h2 key={index}>{line.slice(3)}</h2>
-        if (line.startsWith('# ')) return <h1 key={index}>{line.slice(2)}</h1>
-        if (line.startsWith('- ')) return <li key={index}>{line.slice(2)}</li>
-        if (line.startsWith('> ')) return <blockquote key={index}>{line.slice(2)}</blockquote>
-        if (!line.trim()) return <div className="admin-preview__space" key={index} />
-        return <p key={index}>{line}</p>
-      })}
-    </div>
-  )
-}
-
 export default function ContentManager({ repository, oauthProxy }: Props) {
   const oauthReady = isHttpUrl(oauthProxy)
   const [token, setToken] = useState('')
@@ -408,7 +396,7 @@ export default function ContentManager({ repository, oauthProxy }: Props) {
   const [documentSlug, setDocumentSlug] = useState('')
   const [documentOriginalSlug, setDocumentOriginalSlug] = useState('')
   const [documentSlugTouched, setDocumentSlugTouched] = useState(false)
-  const [editorTab, setEditorTab] = useState<'edit' | 'preview' | 'source'>('edit')
+  const [editorTab, setEditorTab] = useState<EditorTab>('edit')
   const [homeSettings, setHomeSettings] = useState<HomeSettings | null>(null)
   const [homeOriginal, setHomeOriginal] = useState('')
   const [homeSha, setHomeSha] = useState('')
@@ -946,7 +934,6 @@ export default function ContentManager({ repository, oauthProxy }: Props) {
   const validateDocument = (active: EditableFile) => {
     if (active.kind === 'news') {
       if (!fieldValue(active.attributes, 'title').trim()) return '请填写文章标题。'
-      if (!fieldValue(active.attributes, 'description').trim()) return '请填写文章摘要。'
       if (!fieldValue(active.attributes, 'date')) return '请选择发布日期。'
       if (!active.body.trim()) return '文章正文不能为空。'
     }
@@ -986,7 +973,9 @@ export default function ContentManager({ repository, oauthProxy }: Props) {
     if (active.kind === 'page') {
       if (!fieldValue(active.attributes, 'title').trim()) return '请填写页面标题。'
       if (!fieldValue(active.attributes, 'description').trim()) return '请填写页面摘要。'
-      if (!active.body.trim()) return '页面正文不能为空。'
+      if (active.path !== WORKS_PATH && !active.body.trim()) {
+        return '页面正文不能为空。'
+      }
     }
 
     if (canEditDocumentSlug(active) && !isValidContentSlug(documentSlug)) {
@@ -2146,7 +2135,7 @@ function CollectionWorkspace(props: {
   documentDirty: boolean
   loading: boolean
   saving: boolean
-  editorTab: 'edit' | 'preview' | 'source'
+  editorTab: EditorTab
   slug: string
   originalSlug: string
   onSearch: (value: string) => void
@@ -2155,7 +2144,7 @@ function CollectionWorkspace(props: {
   onUpdateAttribute: (key: string, value: FrontmatterValue) => void
   onUpdateBody: (value: string) => void
   onSlugChange: (value: string) => void
-  onEditorTab: (tab: 'edit' | 'preview' | 'source') => void
+  onEditorTab: (tab: EditorTab) => void
   onSave: () => void
   onDelete: () => void
   createLabel?: string
@@ -2211,7 +2200,7 @@ function WorksWorkspace(props: {
   documentDirty: boolean
   loading: boolean
   saving: boolean
-  editorTab: 'edit' | 'preview' | 'source'
+  editorTab: EditorTab
   slug: string
   originalSlug: string
   onSearch: (value: string) => void
@@ -2221,7 +2210,7 @@ function WorksWorkspace(props: {
   onUpdateAttribute: (key: string, value: FrontmatterValue) => void
   onUpdateBody: (value: string) => void
   onSlugChange: (value: string) => void
-  onEditorTab: (tab: 'edit' | 'preview' | 'source') => void
+  onEditorTab: (tab: EditorTab) => void
   onSave: () => void
   onDelete: () => void
 }) {
@@ -2305,10 +2294,10 @@ function StandalonePageEditor(props: {
   loading: boolean
   saving: boolean
   dirty: boolean
-  editorTab: 'edit' | 'preview' | 'source'
+  editorTab: EditorTab
   onUpdateAttribute: (key: string, value: FrontmatterValue) => void
   onUpdateBody: (value: string) => void
-  onEditorTab: (tab: 'edit' | 'preview' | 'source') => void
+  onEditorTab: (tab: EditorTab) => void
   onSave: () => void
 }) {
   if (props.loading || !props.document) return <AdminSkeleton />
@@ -2425,13 +2414,13 @@ function DocumentEditor({
   document: EditableFile
   documentDirty: boolean
   saving: boolean
-  editorTab: 'edit' | 'preview' | 'source'
+  editorTab: EditorTab
   slug: string
   originalSlug: string
   onUpdateAttribute: (key: string, value: FrontmatterValue) => void
   onUpdateBody: (value: string) => void
   onSlugChange: (value: string) => void
-  onEditorTab: (tab: 'edit' | 'preview' | 'source') => void
+  onEditorTab: (tab: EditorTab) => void
   onSave: () => void
   onDelete?: () => void
 }) {
@@ -2465,19 +2454,17 @@ function DocumentEditor({
         changeLabel={pathChanged ? '地址将更新' : undefined}
       />
 
-      <div className="admin-editor-tabs" role="tablist" aria-label="编辑视图">
-        {(['edit', 'preview', 'source'] as const).map((tab) => (
-          <button type="button" role="tab" id={`editor-tab-${tab}`} aria-controls={`editor-panel-${tab}`} key={tab} aria-selected={editorTab === tab} className={editorTab === tab ? 'is-active' : ''} onClick={() => onEditorTab(tab)}>
-            {tab === 'edit' ? '编辑' : tab === 'preview' ? '预览' : '源文件'}
-          </button>
-        ))}
-      </div>
-
-      {editorTab === 'edit' ? (
-        <section id="editor-panel-edit" role="tabpanel" aria-labelledby="editor-tab-edit" className="admin-panel admin-form-section">
-          <div className="admin-form-grid">
-            <Field label={document.kind === 'project' ? '项目名称' : document.kind === 'author' ? '作者名称' : '标题'} value={fieldValue(document.attributes, titleKey)} onChange={(value) => onUpdateAttribute(titleKey, value)} required />
-            {document.kind !== 'author' && <Field label="摘要" value={fieldValue(document.attributes, 'description')} onChange={(value) => onUpdateAttribute('description', value)} required />}
+      <section className="admin-panel admin-form-section">
+        <div className="admin-form-grid">
+          <Field label={document.kind === 'project' ? '项目名称' : document.kind === 'author' ? '作者名称' : '标题'} value={fieldValue(document.attributes, titleKey)} onChange={(value) => onUpdateAttribute(titleKey, value)} required />
+          {document.kind !== 'author' && (
+            <Field
+              label={document.kind === 'news' ? '摘要（可选）' : '摘要'}
+              value={fieldValue(document.attributes, 'description')}
+              onChange={(value) => onUpdateAttribute('description', value)}
+              required={document.kind !== 'news'}
+            />
+          )}
             <ContentIdentityField
               document={document}
               slug={slug}
@@ -2512,19 +2499,24 @@ function DocumentEditor({
               <Field label="Discord 链接" type="url" value={fieldValue(document.attributes, 'discord')} onChange={(value) => onUpdateAttribute('discord', value)} placeholder="https://" />
               <label className="admin-checkbox"><input type="checkbox" checked={Boolean(document.attributes.draft)} onChange={(event) => onUpdateAttribute('draft', event.target.checked)} /><span><strong>隐藏作者档案</strong><small>隐藏后作者不会出现在公开作者页面，但文章中的署名 ID 仍会保留。</small></span></label>
             </>}
-            {(document.kind === 'news' || document.kind === 'page') && (
-              <label className="admin-form-field admin-form-field--wide">
-                <span>{document.kind === 'news' ? '正文（Markdown / MDX）' : '页面正文（Markdown）'}</span>
-                <textarea className="admin-textarea admin-source-editor" rows={24} value={document.body} onChange={(event) => onUpdateBody(event.target.value)} spellCheck />
-              </label>
-            )}
-          </div>
-        </section>
-      ) : editorTab === 'preview' ? (
-        <section id="editor-panel-preview" role="tabpanel" aria-labelledby="editor-tab-preview" className="admin-panel admin-preview-panel"><MarkdownPreview source={document.body} /></section>
-      ) : (
-        <section id="editor-panel-source" role="tabpanel" aria-labelledby="editor-tab-source" className="admin-panel admin-source-panel"><pre>{source}</pre></section>
-      )}
+          {(document.kind === 'news' || document.kind === 'page') && (
+            <MarkdownEditor
+              value={document.body}
+              mode={editorTab}
+              onChange={onUpdateBody}
+              onModeChange={onEditorTab}
+              onSave={onSave}
+            />
+          )}
+        </div>
+      </section>
+
+      <details className="admin-source-disclosure">
+        <summary>查看完整源文件</summary>
+        <div className="admin-source-panel">
+          <pre>{source}</pre>
+        </div>
+      </details>
     </div>
   )
 }

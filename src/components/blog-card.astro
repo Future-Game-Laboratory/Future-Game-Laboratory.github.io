@@ -64,7 +64,11 @@ const instituteLogo = withBase('/static/future-game-institute.png')
       </div>
 
       <h3 class="article-record__title">{entry.data.title}</h3>
-      <p class="article-record__description">{entry.data.description}</p>
+      {
+        entry.data.description.trim() && (
+          <p class="article-record__description">{entry.data.description}</p>
+        )
+      }
 
       <div class="article-record__footer">
         {

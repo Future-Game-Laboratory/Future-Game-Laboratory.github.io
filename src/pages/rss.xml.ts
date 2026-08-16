@@ -12,7 +12,9 @@ export async function GET() {
       site: SITE.href,
       items: posts.map((post) => ({
         title: post.data.title,
-        description: post.data.description,
+        ...(post.data.description.trim()
+          ? { description: post.data.description }
+          : {}),
         pubDate: post.data.date,
         link: `blog/${post.id}/`,
       })),

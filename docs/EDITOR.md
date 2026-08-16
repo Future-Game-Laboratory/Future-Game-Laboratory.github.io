@@ -102,7 +102,8 @@ npm run dev
 - 新 WORKS 项目：`src/content/projects/<slug>.md`
 - 新 AUTHORS 档案：`src/content/authors/<slug>.md`
 - `draft: true` 的 NEWS 会提交到仓库，但不会出现在公开页面与 RSS。
-- NEWS 编辑器支持封面路径以及子文章的可选排序值；正文仍可使用 Markdown / MDX。
+- NEWS 摘要可以留空；编辑器支持封面路径以及子文章的可选排序值。
+- NEWS 正文仍为必填，并支持 GitHub 风格的 Markdown 工具栏、快捷键与 GFM 预览；MDX 组件的最终效果以发布页面为准。
 - `draft: true` 的 WORKS 项目和 AUTHORS 档案不会出现在各自公开页面。
 - 保存已有文件时后台使用 Contents API 返回的最新文件 SHA，以支持连续编辑。
 - 删除 NEWS、项目、作者档案或首页轮播图片会直接产生一次 Git 提交；ABOUT、WORKS 页面正文不可在后台删除。

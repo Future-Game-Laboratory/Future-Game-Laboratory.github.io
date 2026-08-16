@@ -20,6 +20,11 @@ import {
   GitHubApiError,
   githubErrorMessage,
 } from '../src/lib/github-editor.ts'
+import {
+  applyMarkdownAction,
+  continueMarkdownList,
+  createMarkdownLinkEdit,
+} from '../src/lib/markdown-editor.ts'
 import oauthWorker from '../workers/github-oauth/src/index.ts'
 import { readFileSync } from 'node:fs'
 
@@ -110,6 +115,59 @@ test('content helpers normalize lists and repository slugs', () => {
     isStarterContentPath('src/content/authors/enscribe.md'),
     true,
   )
+})
+
+test('Markdown editor actions preserve selections and toggle common formatting', () => {
+  const bold = applyMarkdownAction('研究记录', 0, 4, 'bold')
+  assert.deepEqual(bold, {
+    value: '**研究记录**',
+    selectionStart: 2,
+    selectionEnd: 6,
+  })
+  assert.deepEqual(
+    applyMarkdownAction(
+      bold.value,
+      bold.selectionStart,
+      bold.selectionEnd,
+      'bold',
+    ),
+    { value: '研究记录', selectionStart: 0, selectionEnd: 4 },
+  )
+
+  const tasks = applyMarkdownAction('原型\n测试', 0, 5, 'task-list')
+  assert.equal(tasks.value, '- [ ] 原型\n- [ ] 测试')
+  assert.equal(
+    applyMarkdownAction(
+      tasks.value,
+      tasks.selectionStart,
+      tasks.selectionEnd,
+      'task-list',
+    ).value,
+    '原型\n测试',
+  )
+
+  const code = applyMarkdownAction('const 游戏 = true\nreturn 游戏', 0, 26, 'code')
+  assert.match(code.value, /^```\n[\s\S]+\n```$/)
+})
+
+test('Markdown editor creates links and continues GitHub-style lists', () => {
+  assert.deepEqual(createMarkdownLinkEdit('项目主页', 0, 4, 'https://example.com'), {
+    value: '[项目主页](https://example.com)',
+    selectionStart: 7,
+    selectionEnd: 26,
+  })
+
+  const continued = continueMarkdownList('2. 第二项', 6)
+  assert.deepEqual(continued, {
+    value: '2. 第二项\n3. ',
+    selectionStart: 10,
+    selectionEnd: 10,
+  })
+  assert.deepEqual(continueMarkdownList('- [ ] ', 6), {
+    value: '',
+    selectionStart: 0,
+    selectionEnd: 0,
+  })
 })
 
 test('multi-file repository changes update one Git reference atomically', async () => {
@@ -387,6 +445,29 @@ test('editor implementation keeps the repository permission and content gates wi
   assert.match(manager, /查看部署状态/)
   assert.match(manager, /commitRepositoryChanges/)
   assert.match(workflow, /PUBLIC_GITHUB_OAUTH_PROXY:/)
+})
+
+test('editor keeps NEWS summaries optional and exposes the GitHub-style composer', () => {
+  const manager = readFileSync(
+    new URL('../src/components/content-manager.tsx', import.meta.url),
+    'utf8',
+  )
+  const contentConfig = readFileSync(
+    new URL('../src/content.config.ts', import.meta.url),
+    'utf8',
+  )
+  const composer = readFileSync(
+    new URL('../src/components/markdown-editor.tsx', import.meta.url),
+    'utf8',
+  )
+
+  assert.doesNotMatch(manager, /请填写文章摘要/)
+  assert.match(manager, /news: \['description', 'image'\]/)
+  assert.match(manager, /摘要（可选）/)
+  assert.match(composer, /admin-markdown-toolbar/)
+  assert.match(composer, /ReactMarkdown/)
+  assert.match(composer, /remarkGfm/)
+  assert.match(contentConfig, /description: z\.string\(\)\.default\(''\)/)
 })
 
 test('site typecheck excludes the editor-only dependency stubs', () => {

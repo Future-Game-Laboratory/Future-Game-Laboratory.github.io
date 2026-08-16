@@ -10,6 +10,7 @@ const works = await getEntry('pages', 'works')
 if (!works) throw new Error('Missing works page content')
 const { Content } = await render(works)
 const projects = await getAllProjects()
+const hasIntroduction = Boolean(works.body?.trim())
 ---
 
 <Layout class="max-w-5xl">
@@ -23,16 +24,22 @@ const projects = await getAllProjects()
     <TitleReveal text="WORKS" />
   </header>
 
-  <article class="prose works-document">
-    <Content />
-  </article>
+  {
+    hasIntroduction && (
+      <article class="prose works-document">
+        <Content />
+      </article>
+    )
+  }
 
   {
     projects.length > 0 && (
       <section class="works-projects" aria-labelledby="works-projects-title">
         <h2 id="works-projects-title">PROJECTS</h2>
         <div class="works-projects__list">
-          {projects.map((project) => <ProjectCard project={project} />)}
+          {projects.map((project) => (
+            <ProjectCard project={project} />
+          ))}
         </div>
       </section>
     )

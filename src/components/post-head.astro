@@ -10,7 +10,7 @@ interface Props {
 const { post } = Astro.props
 
 const title = post.data.title || SITE.title
-const description = post.data.description || SITE.description
+const description = post.data.description.trim() || SITE.description
 const image = new URL(
   `${import.meta.env.BASE_URL.replace(/^\//, '')}static/1200x630.png`,
   Astro.site,
@@ -33,10 +33,7 @@ const author =
 
 <meta property="og:title" content={title} />
 <meta property="og:description" content={description} />
-<meta
-  property="og:image"
-  content={socialImage}
-/>
+<meta property="og:image" content={socialImage} />
 <meta property="og:image:alt" content={title} />
 <meta property="og:type" content="website" />
 <meta property="og:locale" content={SITE.locale} />
@@ -46,10 +43,7 @@ const author =
 
 <meta name="twitter:title" content={title} />
 <meta name="twitter:description" content={description} />
-<meta
-  property="twitter:image"
-  content={socialImage}
-/>
+<meta property="twitter:image" content={socialImage} />
 <meta name="twitter:image:alt" content={title} />
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:creator" content={author} />

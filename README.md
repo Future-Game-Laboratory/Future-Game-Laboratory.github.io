@@ -82,7 +82,7 @@ src/content/projects/<project-id>.md
 ```yaml
 ---
 title: '标题'
-description: '不超过 155 字的摘要'
+description: '可选摘要；留空时列表会只显示标题'
 date: 2026-08-08
 tags: ['game-design', 'research']
 authors: ['author-id']
@@ -91,6 +91,7 @@ draft: true
 ```
 
 设置 `draft: false` 后，文章会出现在首页、文章列表、RSS 和站点地图中。
+`description` 可以省略或留空；文章正文仍为必填。
 
 ## License
 

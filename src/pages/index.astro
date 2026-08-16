@@ -78,9 +78,11 @@ const carouselSlides = carouselFiles.map((file, index) => ({
                     </time>
                     <div>
                       <h2>{post.data.title}</h2>
-                      <p>{post.data.description}</p>
+                      {post.data.description.trim() && (
+                        <p>{post.data.description}</p>
+                      )}
                     </div>
-                    <span class="news-triangle" aria-hidden="true"></span>
+                    <span class="news-triangle" aria-hidden="true" />
                   </Link>
                 </li>
               ))}
@@ -98,8 +100,7 @@ const carouselSlides = carouselFiles.map((file, index) => ({
   .front-page {
     width: min(100%, var(--site-max));
     margin-inline: auto;
-    padding: clamp(1rem, 3vw, 2.5rem) var(--site-gutter)
-      clamp(4rem, 8vw, 6rem);
+    padding: clamp(1rem, 3vw, 2.5rem) var(--site-gutter) clamp(4rem, 8vw, 6rem);
   }
 
   .home-information {

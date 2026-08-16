@@ -241,11 +241,18 @@ test('section headers omit decorative labels and redundant rules', () => {
   const works = readFileSync(join(dist, 'works/index.html'), 'utf8')
 
   assert.doesNotMatch(news, /NEWS ARCHIVE \/ PAGE|class="signal-label"/)
+  assert.doesNotMatch(
+    news,
+    /社团动态、研究笔记、开发复盘与创作实验，按公开时间归档。/,
+  )
   assert.doesNotMatch(works, /WORKS \/ PROJECTS|W \/ 001|class="signal-label"/)
+  assert.doesNotMatch(works, /首批项目档案正在整理|先阅读研究资讯/)
+  assert.doesNotMatch(works, /class="prose works-document"/)
 })
 
 test('draft sample projects stay out of the public WORKS page', () => {
   const works = readFileSync(join(dist, 'works/index.html'), 'utf8')
+  assert.match(works, /歧光/)
   assert.doesNotMatch(works, /Project [ABC]/)
   assert.doesNotMatch(works, /PROJECT \/ EXTERNAL/)
 })
