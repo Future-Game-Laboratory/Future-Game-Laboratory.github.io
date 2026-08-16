@@ -259,10 +259,12 @@ test('template author and draft template posts are not generated', () => {
 test('RSS and robots use the GitHub Pages production base', () => {
   const rss = readFileSync(join(dist, 'rss.xml'), 'utf8')
   const robots = readFileSync(join(dist, 'robots.txt'), 'utf8')
-  assert.match(
-    rss,
-    /https:\/\/future-game-laboratory\.github\.io\/blog\/welcome\//,
+  const rssUrls = [...rss.matchAll(/<(?:link|guid)[^>]*>(https?:\/\/[^<]+)</g)].map(
+    ([, url]) => new URL(url),
   )
+
+  assert.ok(rssUrls.some(({ pathname }) => pathname.startsWith('/blog/')))
+  assert.ok(rssUrls.every(({ origin: rssOrigin }) => rssOrigin === origin))
   assert.match(
     robots,
     /https:\/\/future-game-laboratory\.github\.io\/sitemap-index\.xml/,
