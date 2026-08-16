@@ -6,6 +6,7 @@ import Footer from '@/components/footer.astro'
 import Head from '@/components/head.astro'
 import Header from '@/components/header.astro'
 import NixieLoader from '@/components/nixie-loader.astro'
+import PageSwitchSound from '@/components/page-switch-sound.astro'
 import { SITE } from '@/consts'
 import { cn } from '@/lib/utils'
 
@@ -23,6 +24,7 @@ const { class: className } = Astro.props
   </Head>
   <body class="site-body">
     <a class="skip-link" href="#main-content">跳到主要内容</a>
+    <PageSwitchSound />
     <NixieLoader />
     <header class="site-header-shell">
       <Header />

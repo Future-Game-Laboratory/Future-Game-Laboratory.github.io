@@ -185,6 +185,33 @@ test('homepage keeps the ordered carousel, NEWS entry point, and lean footer', (
   )
 })
 
+test('desktop and mobile page tabs use the persisted switch sound', () => {
+  const homepage = readFileSync(join(dist, 'index.html'), 'utf8')
+  const desktopNavigation = homepage.match(
+    /<div\b[^>]*class="desktop-navigation"[^>]*>[\s\S]*?<\/div>/,
+  )?.[0]
+  const mobileNavigation = homepage.match(
+    /<nav\b[^>]*class="site-menu__nav"[^>]*>[\s\S]*?<\/nav>/,
+  )?.[0]
+  const audio = homepage.match(/<audio[^>]+id="page-switch-sound"[^>]*>/)?.[0]
+
+  assert.ok(desktopNavigation)
+  assert.ok(mobileNavigation)
+  assert.equal(
+    (desktopNavigation.match(/data-page-switch-sound/g) ?? []).length,
+    4,
+  )
+  assert.equal(
+    (mobileNavigation.match(/data-page-switch-sound/g) ?? []).length,
+    4,
+  )
+  assert.ok(audio)
+  assert.match(audio, /src="\/audio\/page-switch\.mp3"/)
+  assert.match(audio, /preload="auto"/)
+  assert.match(audio, /data-astro-transition-persist="page-switch-sound"/)
+  assert.ok(existsSync(join(dist, 'audio/page-switch.mp3')))
+})
+
 test('contact renders the email form while unconfigured channels stay hidden', () => {
   const contact = readFileSync(join(dist, 'contact/index.html'), 'utf8')
   const about = readFileSync(join(dist, 'about/index.html'), 'utf8')

@@ -1,0 +1,63 @@
+---
+import { withBase } from '@/lib/paths'
+
+const source = withBase('/audio/page-switch.mp3')
+---
+
+<audio
+  id="page-switch-sound"
+  src={source}
+  preload="auto"
+  aria-hidden="true"
+  transition:persist="page-switch-sound"></audio>
+
+<script>
+  const pageSwitchSelector = 'a[data-page-switch-sound]'
+
+  const normalizePathname = (pathname: string) =>
+    pathname.replace(/\/+$/, '') || '/'
+
+  const playPageSwitchSound = (event: MouseEvent) => {
+    if (
+      event.defaultPrevented ||
+      event.button !== 0 ||
+      event.metaKey ||
+      event.ctrlKey ||
+      event.altKey ||
+      event.shiftKey
+    )
+      return
+
+    const target = event.target
+    if (!(target instanceof Element)) return
+
+    const link = target.closest<HTMLAnchorElement>(pageSwitchSelector)
+    if (
+      !link ||
+      link.hasAttribute('download') ||
+      (link.target && link.target !== '_self') ||
+      link.getAttribute('aria-disabled') === 'true' ||
+      link.getAttribute('aria-current') === 'page'
+    )
+      return
+
+    const destination = new URL(link.href, window.location.href)
+    if (destination.origin !== window.location.origin) return
+    if (
+      normalizePathname(destination.pathname) ===
+        normalizePathname(window.location.pathname) &&
+      destination.search === window.location.search
+    )
+      return
+
+    const sound = document.getElementById('page-switch-sound')
+    if (!(sound instanceof HTMLAudioElement)) return
+
+    sound.volume = 0.55
+    sound.pause()
+    sound.currentTime = 0
+    void sound.play().catch(() => {})
+  }
+
+  document.addEventListener('click', playPageSwitchSound, { capture: true })
+</script>

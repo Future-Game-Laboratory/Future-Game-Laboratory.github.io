@@ -33,6 +33,7 @@ const logo = withBase('/static/future-game-laboratory-lockup.png')
                 href={item.href}
                 class="nav-link"
                 aria-current={isActive(item.href) ? 'page' : undefined}
+                data-page-switch-sound
               >
                 <span>{item.label}</span>
               </Link>
@@ -93,6 +94,7 @@ const logo = withBase('/static/future-game-laboratory-lockup.png')
             <Link
               href={item.href}
               aria-current={isActive(item.href) ? 'page' : undefined}
+              data-page-switch-sound
             >
               {item.label}
             </Link>
